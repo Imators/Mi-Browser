@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mi Browser - History</title>
+  <link rel="stylesheet" href="mi://static/assets/css/tailwind.css">
+  <link rel="stylesheet" href="mi://static/renderer/shared/theme.css">
+</head>
+<body class="m-0 p-0 min-h-screen theme-light">
+  <div class="max-w-3xl mx-auto px-8 py-12">
+    <div class="flex items-center justify-between mb-1">
+      <h1 class="text-3xl font-bold">History</h1>
+      <div class="flex gap-2">
+        <button id="tab-history-btn" class="history-view-tab px-4 py-2 rounded-lg text-sm font-semibold border-2">History</button>
+        <button id="tab-bookmarks-btn" class="history-view-tab px-4 py-2 rounded-lg text-sm font-semibold border-2">Bookmarks</button>
+      </div>
+    </div>
+    <p class="text-sm opacity-70 mb-6">Pages you've visited, plus anything imported from another browser.</p>
+
+    <div class="flex gap-3 mb-6">
+      <input type="text" id="search-input" placeholder="Search..." class="flex-1 px-4 py-2.5 rounded-lg border-2 text-sm history-search">
+      <button id="clear-btn" class="px-5 py-2.5 rounded-lg font-semibold transition border-2 danger-btn">Clear all</button>
+    </div>
+
+    <p id="empty-state" class="text-sm opacity-70 hidden">Nothing here yet.</p>
+    <div id="entries-list" class="space-y-2"></div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>

@@ -1,0 +1,840 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mi Browser - New Tab</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    :root {
+      --bg: #fafafa;
+      --text: #0a0a0a;
+      --text-secondary: #666666;
+      --surface: #ffffff;
+      --border: #e5e5e5;
+      --border-hover: #d0d0d0;
+      --accent: #0a0a0a;
+      --accent-hover: #1a1a1a;
+      --accent-text: #ffffff;
+      --overlay-bg: #ffffff;
+      --overlay-close-bg: #f5f5f5;
+      --overlay-close-bg-hover: #e5e5e5;
+      --tool-item-bg: #f8f9fa;
+    }
+
+    body.theme-dark {
+      --bg: #1a1a1a;
+      --text: #e5e5e5;
+      --text-secondary: #a3a3a3;
+      --surface: #262626;
+      --border: #404040;
+      --border-hover: #525252;
+      --accent: #e5e5e5;
+      --accent-hover: #ffffff;
+      --accent-text: #1a1a1a;
+      --overlay-bg: #1a1a1a;
+      --overlay-close-bg: #262626;
+      --overlay-close-bg-hover: #404040;
+      --tool-item-bg: #262626;
+    }
+
+    body.theme-blue {
+      --bg: #dbeafe;
+      --text: #1e40af;
+      --text-secondary: #3b6fd4;
+      --surface: #ffffff;
+      --border: #93c5fd;
+      --border-hover: #60a5fa;
+      --accent: #1d4ed8;
+      --accent-hover: #1e40af;
+      --accent-text: #ffffff;
+      --overlay-bg: #eff6ff;
+      --overlay-close-bg: #dbeafe;
+      --overlay-close-bg-hover: #bfdbfe;
+      --tool-item-bg: #ffffff;
+    }
+
+    body.theme-green {
+      --bg: #dcfce7;
+      --text: #14532d;
+      --text-secondary: #3f8a5c;
+      --surface: #ffffff;
+      --border: #86efac;
+      --border-hover: #4ade80;
+      --accent: #16a34a;
+      --accent-hover: #15803d;
+      --accent-text: #ffffff;
+      --overlay-bg: #f0fdf4;
+      --overlay-close-bg: #dcfce7;
+      --overlay-close-bg-hover: #bbf7d0;
+      --tool-item-bg: #ffffff;
+    }
+
+    body.theme-sunset {
+      --bg: #ffedd5;
+      --text: #7c2d12;
+      --text-secondary: #b45f31;
+      --surface: #ffffff;
+      --border: #fdba74;
+      --border-hover: #fb923c;
+      --accent: #ea580c;
+      --accent-hover: #c2410c;
+      --accent-text: #ffffff;
+      --overlay-bg: #fff7ed;
+      --overlay-close-bg: #ffedd5;
+      --overlay-close-bg-hover: #fed7aa;
+      --tool-item-bg: #ffffff;
+    }
+
+    body.theme-desert {
+      --bg: #fef3c7;
+      --text: #451a03;
+      --text-secondary: #8a5a1f;
+      --surface: #fffbeb;
+      --border: #fcd34d;
+      --border-hover: #f59e0b;
+      --accent: #b45309;
+      --accent-hover: #92400e;
+      --accent-text: #ffffff;
+      --overlay-bg: #fffbeb;
+      --overlay-close-bg: #fef3c7;
+      --overlay-close-bg-hover: #fde68a;
+      --tool-item-bg: #fffbeb;
+    }
+
+    body.theme-midnight {
+      --bg: #0f172a;
+      --text: #e2e8f0;
+      --text-secondary: #94a3b8;
+      --surface: #1e293b;
+      --border: #334155;
+      --border-hover: #475569;
+      --accent: #3b82f6;
+      --accent-hover: #2563eb;
+      --accent-text: #ffffff;
+      --overlay-bg: #0f172a;
+      --overlay-close-bg: #1e293b;
+      --overlay-close-bg-hover: #334155;
+      --tool-item-bg: #1e293b;
+    }
+
+    body.theme-charcoal {
+      --bg: #1c1917;
+      --text: #e7e5e4;
+      --text-secondary: #a8a29e;
+      --surface: #292524;
+      --border: #44403c;
+      --border-hover: #57534e;
+      --accent: #a8a29e;
+      --accent-hover: #d6d3d1;
+      --accent-text: #1c1917;
+      --overlay-bg: #1c1917;
+      --overlay-close-bg: #292524;
+      --overlay-close-bg-hover: #44403c;
+      --tool-item-bg: #292524;
+    }
+
+    body.theme-crimson {
+      --bg: #1f0a0e;
+      --text: #fecdd3;
+      --text-secondary: #fb7185;
+      --surface: #3f1220;
+      --border: #5c1a2e;
+      --border-hover: #9f1239;
+      --accent: #e11d48;
+      --accent-hover: #be123c;
+      --accent-text: #ffffff;
+      --overlay-bg: #1f0a0e;
+      --overlay-close-bg: #3f1220;
+      --overlay-close-bg-hover: #5c1a2e;
+      --tool-item-bg: #3f1220;
+    }
+
+    body.theme-rose {
+      --bg: #fff1f2;
+      --text: #881337;
+      --text-secondary: #be123c;
+      --surface: #ffffff;
+      --border: #fda4af;
+      --border-hover: #fb7185;
+      --accent: #e11d48;
+      --accent-hover: #be123c;
+      --accent-text: #ffffff;
+      --overlay-bg: #fff1f2;
+      --overlay-close-bg: #fecdd3;
+      --overlay-close-bg-hover: #fda4af;
+      --tool-item-bg: #ffffff;
+    }
+
+    body.theme-lavender {
+      --bg: #f5f3ff;
+      --text: #4c1d95;
+      --text-secondary: #7c3aed;
+      --surface: #ffffff;
+      --border: #c4b5fd;
+      --border-hover: #a78bfa;
+      --accent: #7c3aed;
+      --accent-hover: #6d28d9;
+      --accent-text: #ffffff;
+      --overlay-bg: #f5f3ff;
+      --overlay-close-bg: #ddd6fe;
+      --overlay-close-bg-hover: #c4b5fd;
+      --tool-item-bg: #ffffff;
+    }
+
+    body.theme-mint {
+      --bg: #ecfeff;
+      --text: #164e63;
+      --text-secondary: #0891b2;
+      --surface: #ffffff;
+      --border: #67e8f9;
+      --border-hover: #22d3ee;
+      --accent: #0891b2;
+      --accent-hover: #0e7490;
+      --accent-text: #ffffff;
+      --overlay-bg: #ecfeff;
+      --overlay-close-bg: #a5f3fc;
+      --overlay-close-bg-hover: #67e8f9;
+      --tool-item-bg: #ffffff;
+    }
+    body.theme-neon {
+      --bg: #0a0014;
+      --text: #f0e6ff;
+      --text-secondary: #e879f9;
+      --surface: #1a0630;
+      --border: #4a1a7a;
+      --border-hover: #6b26ac;
+      --accent: #e879f9;
+      --accent-hover: #d946ef;
+      --accent-text: #0a0014;
+      --overlay-bg: #0a0014;
+      --overlay-close-bg: #1a0630;
+      --overlay-close-bg-hover: #2d0a4e;
+      --tool-item-bg: #1a0630;
+    }
+
+    body.theme-cyberpunk {
+      --bg: #0d0221;
+      --text: #e0f2fe;
+      --text-secondary: #38bdf8;
+      --surface: #1b0b3a;
+      --border: #c026d3;
+      --border-hover: #e879f9;
+      --accent: #38bdf8;
+      --accent-hover: #0ea5e9;
+      --accent-text: #0d0221;
+      --overlay-bg: #0d0221;
+      --overlay-close-bg: #1b0b3a;
+      --overlay-close-bg-hover: #2e1155;
+      --tool-item-bg: #1b0b3a;
+    }
+
+    body.theme-emerald {
+      --bg: #001a0f;
+      --text: #d1fae5;
+      --text-secondary: #10b981;
+      --surface: #00301c;
+      --border: #10b981;
+      --border-hover: #34d399;
+      --accent: #10b981;
+      --accent-hover: #059669;
+      --accent-text: #001a0f;
+      --overlay-bg: #001a0f;
+      --overlay-close-bg: #00301c;
+      --overlay-close-bg-hover: #00432a;
+      --tool-item-bg: #00301c;
+    }
+
+    body.theme-amethyst {
+      --bg: #170025;
+      --text: #f3e8ff;
+      --text-secondary: #a855f7;
+      --surface: #28053f;
+      --border: #a855f7;
+      --border-hover: #c084fc;
+      --accent: #a855f7;
+      --accent-hover: #9333ea;
+      --accent-text: #ffffff;
+      --overlay-bg: #170025;
+      --overlay-close-bg: #28053f;
+      --overlay-close-bg-hover: #3b0a5c;
+      --tool-item-bg: #28053f;
+    }
+
+    body.theme-inferno {
+      --bg: #1a0500;
+      --text: #ffe4d6;
+      --text-secondary: #f97316;
+      --surface: #2e0900;
+      --border: #f97316;
+      --border-hover: #fb923c;
+      --accent: #f97316;
+      --accent-hover: #ea580c;
+      --accent-text: #1a0500;
+      --overlay-bg: #1a0500;
+      --overlay-close-bg: #2e0900;
+      --overlay-close-bg-hover: #451400;
+      --tool-item-bg: #2e0900;
+    }
+
+    body.theme-ocean {
+      --bg: #001220;
+      --text: #cffafe;
+      --text-secondary: #2dd4bf;
+      --surface: #00253d;
+      --border: #2dd4bf;
+      --border-hover: #5eead4;
+      --accent: #2dd4bf;
+      --accent-hover: #14b8a6;
+      --accent-text: #001220;
+      --overlay-bg: #001220;
+      --overlay-close-bg: #00253d;
+      --overlay-close-bg-hover: #003654;
+      --tool-item-bg: #00253d;
+    }
+
+    body.theme-onyx {
+      --bg: #050505;
+      --text: #f5f5f5;
+      --text-secondary: #a3a3a3;
+      --surface: #141414;
+      --border: #333333;
+      --border-hover: #4d4d4d;
+      --accent: #e5e5e5;
+      --accent-hover: #ffffff;
+      --accent-text: #050505;
+      --overlay-bg: #050505;
+      --overlay-close-bg: #141414;
+      --overlay-close-bg-hover: #1f1f1f;
+      --tool-item-bg: #141414;
+    }
+
+    body.theme-nebula {
+      --bg: #0a0620;
+      --text: #f3e8ff;
+      --text-secondary: #d946ef;
+      --surface: #1a1040;
+      --border: #d946ef;
+      --border-hover: #f0abfc;
+      --accent: #d946ef;
+      --accent-hover: #c026d3;
+      --accent-text: #0a0620;
+      --overlay-bg: #0a0620;
+      --overlay-close-bg: #1a1040;
+      --overlay-close-bg-hover: #2a1a5e;
+      --tool-item-bg: #1a1040;
+    }
+
+    body.theme-toxic {
+      --bg: #05100a;
+      --text: #e5ffe0;
+      --text-secondary: #a3e635;
+      --surface: #0f2015;
+      --border: #a3e635;
+      --border-hover: #bef264;
+      --accent: #a3e635;
+      --accent-hover: #84cc16;
+      --accent-text: #05100a;
+      --overlay-bg: #05100a;
+      --overlay-close-bg: #0f2015;
+      --overlay-close-bg-hover: #1a3322;
+      --tool-item-bg: #0f2015;
+    }
+
+    body.theme-private {
+      --bg: #000000;
+      --text: #f5f5f5;
+      --text-secondary: #a3a3a3;
+      --surface: #141414;
+      --border: #2a2a2a;
+      --border-hover: #3a3a3a;
+      --accent: #7c3aed;
+      --accent-hover: #6d28d9;
+      --accent-text: #ffffff;
+      --overlay-bg: #0a0a0a;
+      --overlay-close-bg: #141414;
+      --overlay-close-bg-hover: #1f1f1f;
+      --tool-item-bg: #141414;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      padding: 40px;
+      transition: background 0.2s ease, color 0.2s ease;
+    }
+
+    .logo-text {
+      font-size: 56px;
+      font-weight: 400;
+      color: var(--text);
+      letter-spacing: -1px;
+      margin-bottom: 8px;
+    }
+
+    .logo-tagline {
+      font-size: 15px;
+      color: var(--text-secondary);
+      margin-bottom: 40px;
+      text-align: center;
+    }
+
+    .search-container {
+      width: 100%;
+      max-width: 700px;
+      margin-bottom: 32px;
+      position: relative;
+    }
+
+    .search-icon {
+      position: absolute;
+      left: 20px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 20px;
+      height: 20px;
+      opacity: 0.4;
+      transition: opacity 0.3s ease;
+    }
+
+    #search-input {
+      width: 100%;
+      padding: 20px 56px 20px 56px;
+      font-size: 16px;
+      border: 1.5px solid var(--border);
+      border-radius: 16px;
+      background: var(--surface);
+      color: var(--text);
+      transition: all 0.2s ease;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    }
+
+    #search-input::placeholder {
+      color: var(--text-secondary);
+    }
+
+    #search-input:focus {
+      outline: none;
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(128, 128, 128, 0.15);
+    }
+
+    .enter-button {
+      position: absolute;
+      right: 12px;
+      top: 50%;
+      transform: translateY(-50%) scale(0);
+      width: 40px;
+      height: 40px;
+      background: var(--accent);
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+      opacity: 0;
+    }
+
+    .enter-button.show {
+      transform: translateY(-50%) scale(1);
+      opacity: 1;
+    }
+
+    .enter-button:hover {
+      background: var(--accent-hover);
+    }
+
+    .enter-button svg {
+      width: 20px;
+      height: 20px;
+      stroke: var(--accent-text);
+      stroke-width: 2;
+      fill: none;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .buttons-container {
+      display: flex;
+      gap: 16px;
+      width: 100%;
+      max-width: 700px;
+    }
+
+    .action-button {
+      flex: 1;
+      padding: 16px 32px;
+      background: var(--surface);
+      border: 1.5px solid var(--border);
+      border-radius: 16px;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      font-size: 15px;
+      font-weight: 500;
+      color: var(--text);
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .action-button:hover {
+      border-color: var(--border-hover);
+      box-shadow: 0 4px 24px rgba(0, 0, 0, 0.12);
+      transform: translateY(-2px);
+    }
+
+    .overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: var(--overlay-bg);
+      color: var(--text);
+      z-index: 1000;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+      overflow-y: auto;
+    }
+
+    .overlay.show {
+      opacity: 1;
+      pointer-events: all;
+    }
+
+    .overlay-content {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 80px 48px;
+      transform: scale(0.95);
+      transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    .overlay.show .overlay-content {
+      transform: scale(1);
+    }
+
+    .overlay-close {
+      position: fixed;
+      top: 32px;
+      right: 32px;
+      width: 48px;
+      height: 48px;
+      background: var(--overlay-close-bg);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      z-index: 1001;
+    }
+
+    .overlay-close:hover {
+      background: var(--overlay-close-bg-hover);
+    }
+
+    .overlay-close svg {
+      width: 24px;
+      height: 24px;
+      stroke: var(--text);
+      stroke-width: 2;
+      fill: none;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .overlay-title {
+      font-size: 48px;
+      font-weight: 600;
+      margin-bottom: 32px;
+      color: var(--text);
+    }
+
+    .overlay-text {
+      font-size: 18px;
+      line-height: 1.8;
+      color: var(--text-secondary);
+      margin-bottom: 24px;
+    }
+
+    .tool-item {
+      background: var(--tool-item-bg);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 32px;
+      margin-bottom: 20px;
+    }
+
+    .tool-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 16px;
+    }
+
+    .tool-title {
+      font-size: 22px;
+      font-weight: 600;
+      color: var(--text);
+    }
+
+    .copy-link-btn {
+      padding: 10px 20px;
+      background: var(--accent);
+      color: var(--accent-text);
+      border: none;
+      border-radius: 10px;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .copy-link-btn:hover {
+      background: var(--accent-hover);
+      transform: translateY(-1px);
+    }
+
+    .copy-link-btn.copied {
+      background: #22c55e;
+      color: #ffffff;
+    }
+
+    .tool-description {
+      font-size: 16px;
+      line-height: 1.7;
+      color: var(--text-secondary);
+    }
+
+    .icon {
+      width: 20px;
+      height: 20px;
+      stroke: currentColor;
+      stroke-width: 2;
+      fill: none;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+  </style>
+</head>
+<body>
+
+  <h1 class="logo-text">Mi Browser</h1>
+  <p class="logo-tagline">They don’t know your name anymore</p>
+
+  <div class="search-container">
+    <svg class="search-icon icon" viewBox="0 0 24 24">
+      <circle cx="11" cy="11" r="8"></circle>
+      <path d="m21 21-4.35-4.35"></path>
+    </svg>
+    <input type="text" id="search-input" placeholder="Search the web..." autocomplete="off">
+    <div class="enter-button" id="enter-button">
+      <svg viewBox="0 0 24 24">
+        <polyline points="9 10 4 15 9 20"></polyline>
+        <path d="M20 4v7a4 4 0 0 1-4 4H4"></path>
+      </svg>
+    </div>
+  </div>
+
+  <div class="buttons-container">
+    <button class="action-button" id="why-btn">Why Mi Browser</button>
+    <button class="action-button" id="tools-btn">Tools</button>
+  </div>
+
+  <div class="overlay" id="why-overlay">
+    <div class="overlay-close" id="why-close">
+      <svg viewBox="0 0 24 24">
+        <line x1="18" y1="6" x2="6" y2="18"></line>
+        <line x1="6" y1="6" x2="18" y2="18"></line>
+      </svg>
+    </div>
+    <div class="overlay-content">
+      <h2 class="overlay-title">Why Mi Browser?</h2>
+      <p class="overlay-text">
+        The name "Mi Browser" wasn't picked at random. "Mi" stands for "My Internet" – your internet. Founded in 2024 by Imators, Mi Browser embodies the vision of a web where everyone takes back ownership of their online experience, without compromise or surveillance.
+      </p>
+      <p class="overlay-text">
+        Unlike traditional browsers, Mi Browser doesn't collect any personal data, doesn't track your browsing and doesn't show intrusive adverts. Every feature has been designed to put you at the centre of the experience, with a clean interface that doesn't distract from what matters.
+      </p>
+      <p class="overlay-text">
+        Mi Browser includes a groundbreaking technology: an advanced protocol that misleads data brokers. This protection can't be blocked or detected, working quietly in the background to scramble your digital footprint and make your profile unusable to data collectors.
+      </p>
+      <p class="overlay-text">
+        Our philosophy is simple: you should own your digital life. Mi Browser gives you the freedom to browse without surveillance, backed by powerful tools that actively protect your anonymity while keeping things fast and smooth.
+      </p>
+      <p class="overlay-text">
+        Join a growing community of people who've chosen to take back control. Mi Browser is My Internet – browsing, reinvented on your own terms.
+      </p>
+    </div>
+  </div>
+
+  <div class="overlay" id="tools-overlay">
+    <div class="overlay-close" id="tools-close">
+      <svg viewBox="0 0 24 24">
+        <line x1="18" y1="6" x2="6" y2="18"></line>
+        <line x1="6" y1="6" x2="18" y2="18"></line>
+      </svg>
+    </div>
+    <div class="overlay-content">
+      <h2 class="overlay-title">Imators Tools</h2>
+
+      <div class="tool-item">
+        <div class="tool-header">
+          <h3 class="tool-title">Vert Chasseur</h3>
+          <button class="copy-link-btn" onclick="copyToClipboard(this, 'https://vertchasseur.be')">Copy link</button>
+        </div>
+        <p class="tool-description">
+          A neighbourhood platform for Uccle, Brussels. Connect with your neighbours, discover local events and take part in community life.
+        </p>
+      </div>
+
+      <div class="tool-item">
+        <div class="tool-header">
+          <h3 class="tool-title">Quarter</h3>
+          <button class="copy-link-btn" onclick="copyToClipboard(this, 'https://quarter.imators.com')">Copy link</button>
+        </div>
+        <p class="tool-description">
+          A local membership system that lets shops and residents build genuine, lasting neighbourhood networks.
+        </p>
+      </div>
+
+      <div class="tool-item">
+        <div class="tool-header">
+          <h3 class="tool-title">Mi Browser</h3>
+          <button class="copy-link-btn" onclick="copyToClipboard(this, 'https://mibrowser.imators.com')">Copy link</button>
+        </div>
+        <p class="tool-description">
+          A minimalist, privacy-respecting web browser. Fast browsing with no tracking and no intrusive adverts.
+        </p>
+      </div>
+
+      <div class="tool-item">
+        <div class="tool-header">
+          <h3 class="tool-title">Imators Platform</h3>
+          <button class="copy-link-btn" onclick="copyToClipboard(this, 'https://imators.com')">Copy link</button>
+        </div>
+        <p class="tool-description">
+          Our main platform, bringing together all our tools and services dedicated to building privacy-respecting products.
+        </p>
+      </div>
+
+    </div>
+  </div>
+
+  <script>
+    var SEARCH_ENGINES = {
+      google: 'https://www.google.com/search?q=',
+      duckduckgo: 'https://duckduckgo.com/?q=',
+      bing: 'https://www.bing.com/search?q=',
+      ecosia: 'https://www.ecosia.org/search?q='
+    };
+    var searchEngine = 'google';
+
+    if (window.electron) {
+      window.electron.store.get('theme').then(function(theme) {
+        document.body.className = 'theme-' + (theme || 'light');
+      });
+      window.electron.store.get('search-engine').then(function(engine) {
+        searchEngine = engine || 'google';
+      });
+      window.electron.store.onChange(function(key, value) {
+        if (key === 'theme') document.body.className = 'theme-' + value;
+        if (key === 'search-engine') searchEngine = value;
+      });
+    }
+
+    var searchInput = document.getElementById('search-input');
+    var enterButton = document.getElementById('enter-button');
+    var whyBtn = document.getElementById('why-btn');
+    var toolsBtn = document.getElementById('tools-btn');
+    var whyOverlay = document.getElementById('why-overlay');
+    var toolsOverlay = document.getElementById('tools-overlay');
+    var whyClose = document.getElementById('why-close');
+    var toolsClose = document.getElementById('tools-close');
+
+    searchInput.addEventListener('input', function() {
+      if (this.value.trim().length > 0) {
+        enterButton.classList.add('show');
+      } else {
+        enterButton.classList.remove('show');
+      }
+    });
+
+    function performSearch() {
+      var query = searchInput.value.trim();
+      if (query) {
+        var engine = SEARCH_ENGINES[searchEngine] || SEARCH_ENGINES.google;
+        window.location.href = engine + encodeURIComponent(query);
+      }
+    }
+
+    searchInput.addEventListener('keypress', function(e) {
+      if (e.key === 'Enter') {
+        performSearch();
+      }
+    });
+
+    enterButton.addEventListener('click', function() {
+      performSearch();
+    });
+
+    whyBtn.addEventListener('click', function() {
+      whyOverlay.classList.add('show');
+    });
+
+    toolsBtn.addEventListener('click', function() {
+      toolsOverlay.classList.add('show');
+    });
+
+    whyClose.addEventListener('click', function() {
+      whyOverlay.classList.remove('show');
+    });
+
+    toolsClose.addEventListener('click', function() {
+      toolsOverlay.classList.remove('show');
+    });
+
+    function copyToClipboard(button, link) {
+      var textArea = document.createElement('textarea');
+      textArea.value = link;
+      textArea.style.position = 'fixed';
+      textArea.style.left = '-999999px';
+      textArea.style.top = '-999999px';
+      document.body.appendChild(textArea);
+      textArea.focus();
+      textArea.select();
+      
+      try {
+        document.execCommand('copy');
+        textArea.remove();
+        
+        var originalText = button.textContent;
+        button.textContent = 'Copied!';
+        button.classList.add('copied');
+
+        setTimeout(function() {
+          button.textContent = originalText;
+          button.classList.remove('copied');
+        }, 2000);
+      } catch (err) {
+        console.error('Copy failed:', err);
+        textArea.remove();
+      }
+    }
+  </script>
+
+</body>
+</html>

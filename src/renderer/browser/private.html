@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mi Browser - Private Browsing</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background:
+        radial-gradient(circle at 50% 0%, rgba(124, 58, 237, 0.18), transparent 55%),
+        #000000;
+      color: #f5f5f5;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 40px;
+    }
+
+    .mark {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 28px;
+      opacity: 0.9;
+    }
+
+    .mark-glyph {
+      width: 34px;
+      height: 34px;
+      border-radius: 10px;
+      background: linear-gradient(135deg, #7c3aed, #a855f7);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .mark-glyph svg {
+      width: 18px;
+      height: 18px;
+      stroke: #ffffff;
+      stroke-width: 2;
+      fill: none;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .fact-icon svg {
+      width: 18px;
+      height: 18px;
+      stroke: #a78bfa;
+      stroke-width: 2;
+      fill: none;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .mark-text {
+      font-size: 15px;
+      font-weight: 600;
+      letter-spacing: 0.02em;
+      color: #d8b4fe;
+    }
+
+    h1 {
+      font-size: 40px;
+      font-weight: 600;
+      text-align: center;
+      margin-bottom: 14px;
+      letter-spacing: -0.5px;
+    }
+
+    .subtitle {
+      font-size: 16px;
+      color: #a3a3a3;
+      text-align: center;
+      max-width: 560px;
+      margin-bottom: 40px;
+      line-height: 1.6;
+    }
+
+    .search-container {
+      width: 100%;
+      max-width: 640px;
+      margin-bottom: 40px;
+      position: relative;
+    }
+
+    .search-icon {
+      position: absolute;
+      left: 20px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 18px;
+      height: 18px;
+      opacity: 0.45;
+    }
+
+    #search-input {
+      width: 100%;
+      padding: 18px 20px 18px 52px;
+      font-size: 15px;
+      border: 1.5px solid #2a2a2a;
+      border-radius: 14px;
+      background: #141414;
+      color: #f5f5f5;
+      font-family: inherit;
+    }
+
+    #search-input::placeholder {
+      color: #737373;
+    }
+
+    #search-input:focus {
+      outline: none;
+      border-color: #7c3aed;
+      box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.2);
+    }
+
+    .facts {
+      width: 100%;
+      max-width: 640px;
+      background: #0d0d0d;
+      border: 1px solid #262626;
+      border-radius: 16px;
+      padding: 28px 32px;
+    }
+
+    .facts-heading {
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: #a78bfa;
+      margin-bottom: 16px;
+    }
+
+    .fact {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      margin-bottom: 14px;
+      font-size: 14px;
+      line-height: 1.6;
+      color: #d4d4d4;
+    }
+
+    .fact:last-child {
+      margin-bottom: 0;
+    }
+
+    .fact-icon {
+      flex-shrink: 0;
+      margin-top: 1px;
+    }
+
+    .fact b {
+      color: #f5f5f5;
+    }
+
+    .honesty {
+      margin-top: 18px;
+      padding-top: 18px;
+      border-top: 1px solid #262626;
+      font-size: 13px;
+      line-height: 1.7;
+      color: #8a8a8a;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>You're incognito now Bond.</h1>
+  <p class="subtitle" id="tagline">Loading a suitably dramatic one-liner…</p>
+
+  <div class="search-container">
+    <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <circle cx="11" cy="11" r="8"></circle>
+      <path d="m21 21-4.35-4.35"></path>
+    </svg>
+    <input type="text" id="search-input" placeholder="Search privately... well, privately from this device" autocomplete="off">
+  </div>
+
+  <div class="facts">
+    <p class="facts-heading">What this tab actually forgets</p>
+    <div class="fact">
+      <span class="fact-icon"><svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg></span>
+      <span><b>No history.</b> Close this tab and it's like it never happened, as far as Mi Browser is concerned.</span>
+    </div>
+    <div class="fact">
+      <span class="fact-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"></circle><line x1="5.4" y1="5.4" x2="18.6" y2="18.6"></line></svg></span>
+      <span><b>No cookies kept.</b> Everything this tab picks up is thrown out the moment it closes — nothing carries over to next time.</span>
+    </div>
+    <div class="fact">
+      <span class="fact-icon"><svg viewBox="0 0 24 24"><circle cx="7.5" cy="15.5" r="3.5"></circle><path d="M10.6 12.9 18 5.5"></path><path d="M15.5 8 18 5.5 20.5 8"></path><path d="M17 6.5 19 8.5"></path></svg></span>
+      <span><b>No passwords saved.</b> Log in all you like — nothing gets written to the vault from here.</span>
+    </div>
+
+    <p class="honesty">
+      The serious bit: this only hides your tracks from <i>this computer</i>. Your employer, your school, your Wi-Fi network,
+      your ISP and the websites you actually visit can still see exactly what you're up to. Private Browsing is a "not on this machine"
+      promise, not an invisibility cloak — so act accordingly.
+    </p>
+  </div>
+
+  <script>
+    var TAGLINES = [
+      "Whatever happens in this tab, stays in this tab. Mostly.",
+      "No history. No cookies. No judgement.",
+      "Your secret's safe with Mi Browser. Your Wi-Fi provider is a different story.",
+      "This tab has the memory of a goldfish, on purpose.",
+      "Incognito, not invisible — read the fine print below.",
+      "Browsing off the record, on purpose."
+    ];
+    document.getElementById('tagline').textContent = TAGLINES[Math.floor(Math.random() * TAGLINES.length)];
+
+    var SEARCH_ENGINES = {
+      google: 'https://www.google.com/search?q=',
+      duckduckgo: 'https://duckduckgo.com/?q=',
+      bing: 'https://www.bing.com/search?q=',
+      ecosia: 'https://www.ecosia.org/search?q='
+    };
+    var searchEngine = 'google';
+
+    if (window.electron) {
+      window.electron.store.get('search-engine').then(function (engine) {
+        searchEngine = engine || 'google';
+      });
+    }
+
+    var searchInput = document.getElementById('search-input');
+    searchInput.focus();
+
+    searchInput.addEventListener('keypress', function (e) {
+      if (e.key === 'Enter') {
+        var query = searchInput.value.trim();
+        if (query) {
+          var engine = SEARCH_ENGINES[searchEngine] || SEARCH_ENGINES.google;
+          window.location.href = engine + encodeURIComponent(query);
+        }
+      }
+    });
+  </script>
+
+</body>
+</html>

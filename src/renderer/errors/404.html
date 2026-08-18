@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mi Browser - Page Not Found</title>
+  <link rel="stylesheet" href="mi://static/assets/css/tailwind.css">
+  <link rel="stylesheet" href="mi://static/renderer/shared/theme.css">
+</head>
+<body class="m-0 p-0 h-screen theme-light">
+  <div class="flex flex-col items-center justify-center h-screen w-screen text-center px-8">
+    <div class="text-8xl mb-6">🏃</div>
+    <h1 class="text-4xl font-bold mb-4">This page did a runner.</h1>
+    <p class="text-lg opacity-75 mb-2 max-w-xl">We've had a good look under the sofa cushions, but <code id="bad-url" class="px-2 py-1 rounded error-code-chip"></code> is nowhere to be found.</p>
+    <p class="text-base opacity-60 mb-10">Error 404 &mdash; page not found</p>
+    <a href="mi://newtab" class="px-6 py-3 rounded-lg font-semibold transition primary-btn">Back to New Tab</a>
+  </div>
+  <script>
+    document.getElementById('bad-url').textContent = location.href === 'mi://404' ? 'that page' : location.href;
+    if (window.electron) {
+      window.electron.store.get('theme').then((theme) => {
+        document.body.className = `m-0 p-0 h-screen theme-${theme || 'light'}`;
+      });
+    }
+  </script>
+</body>
+</html>

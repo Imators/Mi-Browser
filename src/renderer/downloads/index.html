@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mi Browser - Downloads</title>
+  <link rel="stylesheet" href="mi://static/assets/css/tailwind.css">
+  <link rel="stylesheet" href="mi://static/renderer/shared/theme.css">
+</head>
+<body class="m-0 p-0 min-h-screen theme-light">
+  <div class="max-w-3xl mx-auto px-8 py-12">
+    <div class="flex items-center justify-between mb-1">
+      <h1 class="text-3xl font-bold">Downloads</h1>
+      <button id="clear-btn" class="px-4 py-2 rounded-lg text-sm font-semibold border-2 danger-btn">Clear list</button>
+    </div>
+    <p class="text-sm opacity-70 mb-6">Files you've downloaded in Mi Browser.</p>
+
+    <p id="empty-state" class="text-sm opacity-70 hidden">Nothing downloaded yet.</p>
+    <div id="downloads-list" class="space-y-2"></div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>

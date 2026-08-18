@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mi Browser - Setup</title>
+  <link rel="stylesheet" href="../../assets/css/tailwind.css">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body class="m-0 p-0 overflow-hidden h-screen theme-light">
+
+  <div id="drag-bar" class="drag-bar h-8 w-full flex items-center justify-start px-4">
+    <div class="flex gap-1">
+      <button id="close-btn" class="window-btn window-btn-close" title="Close">
+        <svg viewBox="0 0 12 12" width="11" height="11"><line x1="3" y1="3" x2="9" y2="9" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/><line x1="9" y1="3" x2="3" y2="9" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
+      </button>
+      <button id="minimize-btn" class="window-btn" title="Minimise">
+        <svg viewBox="0 0 12 12" width="11" height="11"><line x1="2" y1="6" x2="10" y2="6" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
+      </button>
+      <button id="maximize-btn" class="window-btn" title="Maximise">
+        <svg viewBox="0 0 12 12" width="11" height="11"><rect x="2.5" y="2.5" width="7" height="7" rx="1" stroke="currentColor" stroke-width="1.4" fill="none"/></svg>
+      </button>
+    </div>
+  </div>
+
+  <div id="setup-progress" class="setup-progress hidden">
+    <div class="setup-progress-dot" data-step="language"></div>
+    <div class="setup-progress-dot" data-step="import"></div>
+    <div class="setup-progress-dot" data-step="features"></div>
+    <div class="setup-progress-dot" data-step="theme"></div>
+    <div class="setup-progress-dot" data-step="privacy"></div>
+  </div>
+
+  <div id="setup-container" class="w-full flex flex-col items-center justify-center p-0" style="height: calc(100vh - 32px);">
+
+    <div id="step-video" class="step w-full h-full flex items-center justify-center">
+      <video id="intro-video" class="w-full h-full object-cover" autoplay>
+        <source src="../../assets/videos/intro.mp4" type="video/mp4">
+      </video>
+    </div>
+
+    <div id="step-language" class="step hidden w-full h-full flex items-center justify-center p-8">
+      <div class="w-full max-w-md">
+        <h1 class="text-3xl font-bold mb-2">Choose your language</h1>
+        <p class="text-base mb-8 opacity-75">You can change this later in Settings</p>
+
+        <div class="space-y-3 mb-8">
+          <label class="flex items-center p-4 rounded-lg border-2 cursor-pointer hover:opacity-80 transition">
+            <input type="radio" name="language" value="en-GB" class="w-5 h-5" checked>
+            <span class="ml-4 font-semibold">English (UK)</span>
+          </label>
+          <label class="flex items-center p-4 rounded-lg border-2 cursor-pointer hover:opacity-80 transition">
+            <input type="radio" name="language" value="fr" class="w-5 h-5">
+            <span class="ml-4 font-semibold">Français</span>
+          </label>
+        </div>
+
+        <button id="language-next-btn" class="w-full px-6 py-3 rounded-lg font-semibold transition primary-btn">
+          Continue
+        </button>
+      </div>
+    </div>
+
+    <div id="step-import" class="step hidden w-full h-full flex items-center justify-center p-8">
+      <div class="w-full max-w-2xl">
+        <button type="button" class="setup-back-btn"><svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg> Back</button>
+        <h1 class="text-3xl font-bold mb-2">Import your data</h1>
+        <p class="text-base mb-8 opacity-75">We've detected your browsers. Choose what you'd like to bring across</p>
+
+        <div id="browsers-detected" class="space-y-4 mb-8">
+        </div>
+
+        <div class="flex gap-4">
+          <button id="import-skip-btn" class="flex-1 px-6 py-3 rounded-lg font-semibold transition border-2 hover:opacity-80">
+            Skip
+          </button>
+          <button id="import-confirm-btn" class="flex-1 px-6 py-3 rounded-lg font-semibold transition">
+            Import
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div id="step-features" class="step hidden w-full h-full flex items-center justify-center p-8">
+      <div class="w-full max-w-2xl">
+        <button type="button" class="setup-back-btn"><svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg> Back</button>
+        <h1 class="text-3xl font-bold mb-2">Mi Browser</h1>
+        <p class="text-base mb-8 opacity-75">Your secure browser. Unlike other Chromium-based browsers, we lock down 80% of your privacy exposure</p>
+
+        <div class="space-y-4 mb-8">
+          <label class="flex items-start p-4 rounded-lg border-2 cursor-pointer hover:opacity-80 transition">
+            <input type="checkbox" class="feature-toggle w-5 h-5 mt-1" data-feature="ads" checked>
+            <div class="ml-4 flex-1">
+              <p class="font-semibold">Block adverts</p>
+              <p class="text-sm opacity-75">Block intrusive ads and slow down data harvesting</p>
+            </div>
+          </label>
+
+          <label class="flex items-start p-4 rounded-lg border-2 cursor-pointer hover:opacity-80 transition">
+            <input type="checkbox" class="feature-toggle w-5 h-5 mt-1" data-feature="trackers" checked>
+            <div class="ml-4 flex-1">
+              <p class="font-semibold">Block trackers</p>
+              <p class="text-sm opacity-75">Stop sites following you around the web</p>
+            </div>
+          </label>
+
+          <label class="flex items-start p-4 rounded-lg border-2 cursor-pointer hover:opacity-80 transition">
+            <input type="checkbox" class="feature-toggle w-5 h-5 mt-1" data-feature="eat-cookies" checked>
+            <div class="ml-4 flex-1">
+              <p class="font-semibold">Eat My Cookies</p>
+              <p class="text-sm opacity-75">Automatically wipe every cookie every 24 hours for maximum security</p>
+            </div>
+          </label>
+        </div>
+
+        <button id="features-next-btn" class="w-full px-6 py-3 rounded-lg font-semibold transition primary-btn">
+          Continue
+        </button>
+      </div>
+    </div>
+
+    <div id="step-theme" class="step hidden w-full h-full flex items-start justify-center p-8 overflow-y-auto">
+      <div class="w-full max-w-2xl py-8">
+        <button type="button" class="setup-back-btn"><svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg> Back</button>
+        <h1 class="text-3xl font-bold mb-2">Choose your theme</h1>
+        <p class="text-base mb-8 opacity-75">Pick the look that suits you</p>
+
+        <div class="grid grid-cols-4 gap-4 mb-8">
+          <label class="cursor-pointer">
+            <input type="radio" name="theme" value="light" class="hidden" checked>
+            <div class="theme-option p-6 rounded-lg border-2 shadow-md hover:shadow-lg transition">
+              <div class="w-full h-24 bg-gradient-to-b from-white to-gray-100 rounded mb-3"></div>
+              <p class="font-semibold text-center">Light</p>
+            </div>
+          </label>
+
+          <label class="cursor-pointer">
+            <input type="radio" name="theme" value="dark" class="hidden">
+            <div class="theme-option p-6 rounded-lg border-2 shadow-md hover:shadow-lg transition">
+              <div class="w-full h-24 bg-gradient-to-b from-gray-900 to-black rounded mb-3"></div>
+              <p class="font-semibold text-center">Dark</p>
+            </div>
+          </label>
+
+          <label class="cursor-pointer">
+            <input type="radio" name="theme" value="blue" class="hidden">
+            <div class="theme-option p-6 rounded-lg border-2 shadow-md hover:shadow-lg transition">
+              <div class="w-full h-24 bg-gradient-to-b from-blue-300 to-blue-600 rounded mb-3"></div>
+              <p class="font-semibold text-center">Blue</p>
+            </div>
+          </label>
+
+          <label class="cursor-pointer">
+            <input type="radio" name="theme" value="green" class="hidden">
+            <div class="theme-option p-6 rounded-lg border-2 shadow-md hover:shadow-lg transition">
+              <div class="w-full h-24 bg-gradient-to-b from-green-200 to-green-500 rounded mb-3"></div>
+              <p class="font-semibold text-center">Green</p>
+            </div>
+          </label>
+
+          <label class="cursor-pointer">
+            <input type="radio" name="theme" value="sunset" class="hidden">
+            <div class="theme-option p-6 rounded-lg border-2 shadow-md hover:shadow-lg transition">
+              <div class="w-full h-24 bg-gradient-to-b from-orange-200 to-orange-500 rounded mb-3"></div>
+              <p class="font-semibold text-center">Sunset</p>
+            </div>
+          </label>
+
+          <label class="cursor-pointer">
+            <input type="radio" name="theme" value="desert" class="hidden">
+            <div class="theme-option p-6 rounded-lg border-2 shadow-md hover:shadow-lg transition">
+              <div class="w-full h-24 bg-gradient-to-b from-amber-200 to-amber-600 rounded mb-3"></div>
+              <p class="font-semibold text-center">Desert</p>
+            </div>
+          </label>
+
+          <label class="cursor-pointer">
+            <input type="radio" name="theme" value="midnight" class="hidden">
+            <div class="theme-option p-6 rounded-lg border-2 shadow-md hover:shadow-lg transition">
+              <div class="w-full h-24 bg-gradient-to-b from-slate-800 to-slate-950 rounded mb-3"></div>
+              <p class="font-semibold text-center">Midnight</p>
+            </div>
+          </label>
+
+          <label class="cursor-pointer">
+            <input type="radio" name="theme" value="charcoal" class="hidden">
+            <div class="theme-option p-6 rounded-lg border-2 shadow-md hover:shadow-lg transition">
+              <div class="w-full h-24 bg-gradient-to-b from-stone-700 to-stone-900 rounded mb-3"></div>
+              <p class="font-semibold text-center">Charcoal</p>
+            </div>
+          </label>
+
+          <label class="cursor-pointer">
+            <input type="radio" name="theme" value="crimson" class="hidden">
+            <div class="theme-option p-6 rounded-lg border-2 shadow-md hover:shadow-lg transition">
+              <div class="w-full h-24 bg-gradient-to-b from-rose-900 to-rose-950 rounded mb-3"></div>
+              <p class="font-semibold text-center">Crimson</p>
+            </div>
+          </label>
+
+          <label class="cursor-pointer">
+            <input type="radio" name="theme" value="rose" class="hidden">
+            <div class="theme-option p-6 rounded-lg border-2 shadow-md hover:shadow-lg transition">
+              <div class="w-full h-24 bg-gradient-to-b from-rose-100 to-rose-300 rounded mb-3"></div>
+              <p class="font-semibold text-center">Rose</p>
+            </div>
+          </label>
+
+          <label class="cursor-pointer">
+            <input type="radio" name="theme" value="lavender" class="hidden">
+            <div class="theme-option p-6 rounded-lg border-2 shadow-md hover:shadow-lg transition">
+              <div class="w-full h-24 bg-gradient-to-b from-violet-100 to-violet-300 rounded mb-3"></div>
+              <p class="font-semibold text-center">Lavender</p>
+            </div>
+          </label>
+
+          <label class="cursor-pointer">
+            <input type="radio" name="theme" value="mint" class="hidden">
+            <div class="theme-option p-6 rounded-lg border-2 shadow-md hover:shadow-lg transition">
+              <div class="w-full h-24 bg-gradient-to-b from-cyan-100 to-cyan-300 rounded mb-3"></div>
+              <p class="font-semibold text-center">Mint</p>
+            </div>
+          </label>
+
+          <label class="cursor-pointer">
+            <input type="radio" name="theme" value="neon" class="hidden">
+            <div class="theme-option p-6 rounded-lg border-2 shadow-md hover:shadow-lg transition">
+              <div class="w-full h-24 rounded mb-3" style="background: linear-gradient(to bottom, #0a0014, #e879f9);"></div>
+              <p class="font-semibold text-center">Neon</p>
+            </div>
+          </label>
+
+          <label class="cursor-pointer">
+            <input type="radio" name="theme" value="cyberpunk" class="hidden">
+            <div class="theme-option p-6 rounded-lg border-2 shadow-md hover:shadow-lg transition">
+              <div class="w-full h-24 rounded mb-3" style="background: linear-gradient(to bottom, #0d0221, #38bdf8);"></div>
+              <p class="font-semibold text-center">Cyberpunk</p>
+            </div>
+          </label>
+
+          <label class="cursor-pointer">
+            <input type="radio" name="theme" value="emerald" class="hidden">
+            <div class="theme-option p-6 rounded-lg border-2 shadow-md hover:shadow-lg transition">
+              <div class="w-full h-24 rounded mb-3" style="background: linear-gradient(to bottom, #001a0f, #10b981);"></div>
+              <p class="font-semibold text-center">Emerald</p>
+            </div>
+          </label>
+
+          <label class="cursor-pointer">
+            <input type="radio" name="theme" value="amethyst" class="hidden">
+            <div class="theme-option p-6 rounded-lg border-2 shadow-md hover:shadow-lg transition">
+              <div class="w-full h-24 rounded mb-3" style="background: linear-gradient(to bottom, #170025, #a855f7);"></div>
+              <p class="font-semibold text-center">Amethyst</p>
+            </div>
+          </label>
+
+          <label class="cursor-pointer">
+            <input type="radio" name="theme" value="inferno" class="hidden">
+            <div class="theme-option p-6 rounded-lg border-2 shadow-md hover:shadow-lg transition">
+              <div class="w-full h-24 rounded mb-3" style="background: linear-gradient(to bottom, #1a0500, #f97316);"></div>
+              <p class="font-semibold text-center">Inferno</p>
+            </div>
+          </label>
+
+          <label class="cursor-pointer">
+            <input type="radio" name="theme" value="ocean" class="hidden">
+            <div class="theme-option p-6 rounded-lg border-2 shadow-md hover:shadow-lg transition">
+              <div class="w-full h-24 rounded mb-3" style="background: linear-gradient(to bottom, #001220, #2dd4bf);"></div>
+              <p class="font-semibold text-center">Ocean</p>
+            </div>
+          </label>
+
+          <label class="cursor-pointer">
+            <input type="radio" name="theme" value="onyx" class="hidden">
+            <div class="theme-option p-6 rounded-lg border-2 shadow-md hover:shadow-lg transition">
+              <div class="w-full h-24 rounded mb-3" style="background: linear-gradient(to bottom, #050505, #1a1a1a);"></div>
+              <p class="font-semibold text-center">Onyx</p>
+            </div>
+          </label>
+
+          <label class="cursor-pointer">
+            <input type="radio" name="theme" value="nebula" class="hidden">
+            <div class="theme-option p-6 rounded-lg border-2 shadow-md hover:shadow-lg transition">
+              <div class="w-full h-24 rounded mb-3" style="background: linear-gradient(to bottom, #0a0620, #d946ef);"></div>
+              <p class="font-semibold text-center">Nebula</p>
+            </div>
+          </label>
+
+          <label class="cursor-pointer">
+            <input type="radio" name="theme" value="toxic" class="hidden">
+            <div class="theme-option p-6 rounded-lg border-2 shadow-md hover:shadow-lg transition">
+              <div class="w-full h-24 rounded mb-3" style="background: linear-gradient(to bottom, #05100a, #a3e635);"></div>
+              <p class="font-semibold text-center">Toxic</p>
+            </div>
+          </label>
+        </div>
+
+        <button id="theme-next-btn" class="w-full px-6 py-3 rounded-lg font-semibold transition primary-btn">
+          Continue
+        </button>
+      </div>
+    </div>
+
+    <div id="step-privacy" class="step hidden w-full h-full flex items-center justify-center p-8">
+      <div class="w-full max-w-2xl">
+        <button type="button" class="setup-back-btn"><svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg> Back</button>
+        <h1 class="text-3xl font-bold mb-2">Your privacy comes first</h1>
+        <p class="text-base mb-8 opacity-75">No terms to accept. Everything stays on your machine. Your data never leaves your device.</p>
+
+        <div class="rounded-lg p-8 shadow-md mb-8 privacy-box">
+          <ul class="space-y-4">
+            <li class="flex items-start">
+              <span class="mr-3 mt-1">✓</span>
+              <span>No third-party server collects your data</span>
+            </li>
+            <li class="flex items-start">
+              <span class="mr-3 mt-1">✓</span>
+              <span>Your bookmarks and history stay local</span>
+            </li>
+            <li class="flex items-start">
+              <span class="mr-3 mt-1">✓</span>
+              <span>No tracking, no targeted adverts</span>
+            </li>
+            <li class="flex items-start">
+              <span class="mr-3 mt-1">✓</span>
+              <span>Full control over your settings</span>
+            </li>
+          </ul>
+        </div>
+
+        <button id="privacy-finish-btn" class="w-full px-6 py-3 rounded-lg font-semibold transition primary-btn">
+          Finish
+        </button>
+      </div>
+    </div>
+
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>

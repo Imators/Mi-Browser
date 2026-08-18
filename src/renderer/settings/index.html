@@ -1,0 +1,612 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mi Browser - Settings</title>
+  <link rel="stylesheet" href="mi://static/assets/css/tailwind.css">
+  <link rel="stylesheet" href="mi://static/renderer/shared/theme.css">
+</head>
+<body class="m-0 p-0 min-h-screen theme-light">
+  <div class="max-w-5xl mx-auto px-8 py-12 flex gap-12">
+
+    <nav class="w-48 shrink-0 hidden md:block">
+      <div class="sticky top-12 space-y-4">
+        <p class="text-2xl font-bold mb-2">Settings</p>
+
+        <div>
+          <p class="text-xs font-semibold uppercase opacity-50 px-3 mb-1">General</p>
+          <a href="#appearance" class="settings-nav-link block px-3 py-2 rounded-lg text-sm font-medium">Appearance &amp; language</a>
+          <a href="#search" class="settings-nav-link block px-3 py-2 rounded-lg text-sm font-medium">Search</a>
+          <a href="#startup" class="settings-nav-link block px-3 py-2 rounded-lg text-sm font-medium">Startup</a>
+          <a href="#personalisation" class="settings-nav-link block px-3 py-2 rounded-lg text-sm font-medium">Personalisation</a>
+        </div>
+
+        <div>
+          <p class="text-xs font-semibold uppercase opacity-50 px-3 mb-1">Privacy &amp; security</p>
+          <a href="#privacy" class="settings-nav-link block px-3 py-2 rounded-lg text-sm font-medium">Privacy &amp; data</a>
+          <a href="#downloads-safety" class="settings-nav-link block px-3 py-2 rounded-lg text-sm font-medium">Download safety</a>
+          <a href="#passwords" class="settings-nav-link block px-3 py-2 rounded-lg text-sm font-medium">Passwords</a>
+        </div>
+
+        <div>
+          <p class="text-xs font-semibold uppercase opacity-50 px-3 mb-1">Your data</p>
+          <a href="#import" class="settings-nav-link block px-3 py-2 rounded-lg text-sm font-medium">Import data</a>
+          <a href="#stats" class="settings-nav-link block px-3 py-2 rounded-lg text-sm font-medium">Stats</a>
+        </div>
+
+        <div>
+          <p class="text-xs font-semibold uppercase opacity-50 px-3 mb-1">Help</p>
+          <a href="#shortcuts" class="settings-nav-link block px-3 py-2 rounded-lg text-sm font-medium">Shortcuts</a>
+          <a href="#about" class="settings-nav-link block px-3 py-2 rounded-lg text-sm font-medium">About</a>
+          <a href="#reset" class="settings-nav-link block px-3 py-2 rounded-lg text-sm font-medium">Reset</a>
+        </div>
+      </div>
+    </nav>
+
+    <div class="flex-1 min-w-0">
+      <p class="text-base opacity-75 mb-10 md:hidden">Make Mi Browser yours.</p>
+
+      <section id="appearance" class="mb-14 scroll-mt-8">
+        <h2 class="text-xl font-semibold mb-1">Appearance</h2>
+        <p class="text-sm opacity-70 mb-4">Pick the look that suits you. Applies everywhere, straight away.</p>
+        <div class="grid grid-cols-3 gap-4">
+          <label class="cursor-pointer">
+            <input type="radio" name="theme" value="light" class="hidden">
+            <div class="theme-option card p-4 rounded-lg border-2 shadow-sm hover:shadow-md transition">
+              <div class="w-full h-16 bg-gradient-to-b from-white to-gray-100 rounded mb-2"></div>
+              <p class="font-semibold text-center text-sm">Light</p>
+            </div>
+          </label>
+          <label class="cursor-pointer">
+            <input type="radio" name="theme" value="dark" class="hidden">
+            <div class="theme-option card p-4 rounded-lg border-2 shadow-sm hover:shadow-md transition">
+              <div class="w-full h-16 bg-gradient-to-b from-gray-900 to-black rounded mb-2"></div>
+              <p class="font-semibold text-center text-sm">Dark</p>
+            </div>
+          </label>
+          <label class="cursor-pointer">
+            <input type="radio" name="theme" value="blue" class="hidden">
+            <div class="theme-option card p-4 rounded-lg border-2 shadow-sm hover:shadow-md transition">
+              <div class="w-full h-16 bg-gradient-to-b from-blue-300 to-blue-600 rounded mb-2"></div>
+              <p class="font-semibold text-center text-sm">Blue</p>
+            </div>
+          </label>
+          <label class="cursor-pointer">
+            <input type="radio" name="theme" value="green" class="hidden">
+            <div class="theme-option card p-4 rounded-lg border-2 shadow-sm hover:shadow-md transition">
+              <div class="w-full h-16 bg-gradient-to-b from-green-200 to-green-500 rounded mb-2"></div>
+              <p class="font-semibold text-center text-sm">Green</p>
+            </div>
+          </label>
+          <label class="cursor-pointer">
+            <input type="radio" name="theme" value="sunset" class="hidden">
+            <div class="theme-option card p-4 rounded-lg border-2 shadow-sm hover:shadow-md transition">
+              <div class="w-full h-16 bg-gradient-to-b from-orange-200 to-orange-500 rounded mb-2"></div>
+              <p class="font-semibold text-center text-sm">Sunset</p>
+            </div>
+          </label>
+          <label class="cursor-pointer">
+            <input type="radio" name="theme" value="desert" class="hidden">
+            <div class="theme-option card p-4 rounded-lg border-2 shadow-sm hover:shadow-md transition">
+              <div class="w-full h-16 bg-gradient-to-b from-amber-200 to-amber-600 rounded mb-2"></div>
+              <p class="font-semibold text-center text-sm">Desert</p>
+            </div>
+          </label>
+          <label class="cursor-pointer">
+            <input type="radio" name="theme" value="midnight" class="hidden">
+            <div class="theme-option card p-4 rounded-lg border-2 shadow-sm hover:shadow-md transition">
+              <div class="w-full h-16 bg-gradient-to-b from-slate-800 to-slate-950 rounded mb-2"></div>
+              <p class="font-semibold text-center text-sm">Midnight</p>
+            </div>
+          </label>
+          <label class="cursor-pointer">
+            <input type="radio" name="theme" value="charcoal" class="hidden">
+            <div class="theme-option card p-4 rounded-lg border-2 shadow-sm hover:shadow-md transition">
+              <div class="w-full h-16 bg-gradient-to-b from-stone-700 to-stone-900 rounded mb-2"></div>
+              <p class="font-semibold text-center text-sm">Charcoal</p>
+            </div>
+          </label>
+          <label class="cursor-pointer">
+            <input type="radio" name="theme" value="crimson" class="hidden">
+            <div class="theme-option card p-4 rounded-lg border-2 shadow-sm hover:shadow-md transition">
+              <div class="w-full h-16 bg-gradient-to-b from-rose-900 to-rose-950 rounded mb-2"></div>
+              <p class="font-semibold text-center text-sm">Crimson</p>
+            </div>
+          </label>
+          <label class="cursor-pointer">
+            <input type="radio" name="theme" value="rose" class="hidden">
+            <div class="theme-option card p-4 rounded-lg border-2 shadow-sm hover:shadow-md transition">
+              <div class="w-full h-16 bg-gradient-to-b from-rose-100 to-rose-300 rounded mb-2"></div>
+              <p class="font-semibold text-center text-sm">Rose</p>
+            </div>
+          </label>
+          <label class="cursor-pointer">
+            <input type="radio" name="theme" value="lavender" class="hidden">
+            <div class="theme-option card p-4 rounded-lg border-2 shadow-sm hover:shadow-md transition">
+              <div class="w-full h-16 bg-gradient-to-b from-violet-100 to-violet-300 rounded mb-2"></div>
+              <p class="font-semibold text-center text-sm">Lavender</p>
+            </div>
+          </label>
+          <label class="cursor-pointer">
+            <input type="radio" name="theme" value="mint" class="hidden">
+            <div class="theme-option card p-4 rounded-lg border-2 shadow-sm hover:shadow-md transition">
+              <div class="w-full h-16 bg-gradient-to-b from-cyan-100 to-cyan-300 rounded mb-2"></div>
+              <p class="font-semibold text-center text-sm">Mint</p>
+            </div>
+          </label>
+          <label class="cursor-pointer">
+            <input type="radio" name="theme" value="neon" class="hidden">
+            <div class="theme-option card p-4 rounded-lg border-2 shadow-sm hover:shadow-md transition">
+              <div class="w-full h-16 rounded mb-2" style="background: linear-gradient(to bottom, #0a0014, #e879f9);"></div>
+              <p class="font-semibold text-center text-sm">Neon</p>
+            </div>
+          </label>
+          <label class="cursor-pointer">
+            <input type="radio" name="theme" value="cyberpunk" class="hidden">
+            <div class="theme-option card p-4 rounded-lg border-2 shadow-sm hover:shadow-md transition">
+              <div class="w-full h-16 rounded mb-2" style="background: linear-gradient(to bottom, #0d0221, #38bdf8);"></div>
+              <p class="font-semibold text-center text-sm">Cyberpunk</p>
+            </div>
+          </label>
+          <label class="cursor-pointer">
+            <input type="radio" name="theme" value="emerald" class="hidden">
+            <div class="theme-option card p-4 rounded-lg border-2 shadow-sm hover:shadow-md transition">
+              <div class="w-full h-16 rounded mb-2" style="background: linear-gradient(to bottom, #001a0f, #10b981);"></div>
+              <p class="font-semibold text-center text-sm">Emerald</p>
+            </div>
+          </label>
+          <label class="cursor-pointer">
+            <input type="radio" name="theme" value="amethyst" class="hidden">
+            <div class="theme-option card p-4 rounded-lg border-2 shadow-sm hover:shadow-md transition">
+              <div class="w-full h-16 rounded mb-2" style="background: linear-gradient(to bottom, #170025, #a855f7);"></div>
+              <p class="font-semibold text-center text-sm">Amethyst</p>
+            </div>
+          </label>
+          <label class="cursor-pointer">
+            <input type="radio" name="theme" value="inferno" class="hidden">
+            <div class="theme-option card p-4 rounded-lg border-2 shadow-sm hover:shadow-md transition">
+              <div class="w-full h-16 rounded mb-2" style="background: linear-gradient(to bottom, #1a0500, #f97316);"></div>
+              <p class="font-semibold text-center text-sm">Inferno</p>
+            </div>
+          </label>
+          <label class="cursor-pointer">
+            <input type="radio" name="theme" value="ocean" class="hidden">
+            <div class="theme-option card p-4 rounded-lg border-2 shadow-sm hover:shadow-md transition">
+              <div class="w-full h-16 rounded mb-2" style="background: linear-gradient(to bottom, #001220, #2dd4bf);"></div>
+              <p class="font-semibold text-center text-sm">Ocean</p>
+            </div>
+          </label>
+          <label class="cursor-pointer">
+            <input type="radio" name="theme" value="onyx" class="hidden">
+            <div class="theme-option card p-4 rounded-lg border-2 shadow-sm hover:shadow-md transition">
+              <div class="w-full h-16 rounded mb-2" style="background: linear-gradient(to bottom, #050505, #1a1a1a);"></div>
+              <p class="font-semibold text-center text-sm">Onyx</p>
+            </div>
+          </label>
+          <label class="cursor-pointer">
+            <input type="radio" name="theme" value="nebula" class="hidden">
+            <div class="theme-option card p-4 rounded-lg border-2 shadow-sm hover:shadow-md transition">
+              <div class="w-full h-16 rounded mb-2" style="background: linear-gradient(to bottom, #0a0620, #d946ef);"></div>
+              <p class="font-semibold text-center text-sm">Nebula</p>
+            </div>
+          </label>
+          <label class="cursor-pointer">
+            <input type="radio" name="theme" value="toxic" class="hidden">
+            <div class="theme-option card p-4 rounded-lg border-2 shadow-sm hover:shadow-md transition">
+              <div class="w-full h-16 rounded mb-2" style="background: linear-gradient(to bottom, #05100a, #a3e635);"></div>
+              <p class="font-semibold text-center text-sm">Toxic</p>
+            </div>
+          </label>
+        </div>
+
+        <div class="card p-5 rounded-lg border-2 mt-4">
+          <label class="block text-sm font-semibold mb-2" for="language-select">Language</label>
+          <select id="language-select" class="w-full px-4 py-2.5 rounded-lg border-2 text-sm settings-select">
+            <option value="en-GB">English (UK)</option>
+            <option value="fr">Français</option>
+          </select>
+          <p class="text-xs opacity-60 mt-2">Currently applies to the first-run setup wizard. Full in-app translation is on the way.</p>
+        </div>
+
+        <div class="card p-5 rounded-lg border-2 mt-4 flex items-center justify-between gap-4">
+          <div>
+            <p class="font-semibold mb-1">Private Browsing</p>
+            <p class="text-sm opacity-75">Opens a tab that never saves history, passwords or cookies, with its own fixed dark look. Also <span class="shortcut-key">Ctrl/&#8984; + Shift + N</span>.</p>
+          </div>
+          <button id="open-private-tab-btn" class="shrink-0 px-5 py-2.5 rounded-lg font-semibold transition border-2 hover:opacity-80 flex items-center gap-2">
+            <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="7" cy="12" r="3.2"></circle><circle cx="17" cy="12" r="3.2"></circle><line x1="10.2" y1="12" x2="13.8" y2="12"></line><path d="M3.5 8 6 6h2l1.5 2"></path><path d="M20.5 8 18 6h-2l-1.5 2"></path></svg>
+            Open
+          </button>
+        </div>
+
+        <div class="card p-5 rounded-lg border-2 mt-4 flex items-center justify-between gap-4">
+          <div>
+            <p class="font-semibold mb-1">Default browser</p>
+            <p id="default-browser-status" class="text-sm opacity-75">Checking…</p>
+          </div>
+          <button id="set-default-browser-btn" class="shrink-0 px-5 py-2.5 rounded-lg font-semibold transition primary-btn">Make default</button>
+        </div>
+      </section>
+
+      <section id="search" class="mb-14 scroll-mt-8">
+        <h2 class="text-xl font-semibold mb-1">Search</h2>
+        <p class="text-sm opacity-70 mb-4">Used by the address bar and the New Tab search box.</p>
+        <div class="card p-5 rounded-lg border-2">
+          <label class="block text-sm font-semibold mb-2" for="search-engine-select">Default search engine</label>
+          <select id="search-engine-select" class="w-full px-4 py-2.5 rounded-lg border-2 text-sm settings-select">
+            <option value="google">Google</option>
+            <option value="duckduckgo">DuckDuckGo</option>
+            <option value="bing">Bing</option>
+            <option value="ecosia">Ecosia</option>
+          </select>
+        </div>
+      </section>
+
+      <section id="startup" class="mb-14 scroll-mt-8">
+        <h2 class="text-xl font-semibold mb-1">Startup</h2>
+        <p class="text-sm opacity-70 mb-4">What Mi Browser should do when it opens.</p>
+        <div class="space-y-3">
+          <label class="flex items-start p-4 rounded-lg border-2 card cursor-pointer hover:opacity-80 transition">
+            <input type="radio" name="startup-mode" value="restore" class="w-5 h-5 mt-1">
+            <div class="ml-4 flex-1">
+              <p class="font-semibold">Reopen the tabs I had open</p>
+              <p class="text-sm opacity-75">Pick up right where you left off</p>
+            </div>
+          </label>
+          <label class="flex items-start p-4 rounded-lg border-2 card cursor-pointer hover:opacity-80 transition">
+            <input type="radio" name="startup-mode" value="newtab" class="w-5 h-5 mt-1">
+            <div class="ml-4 flex-1">
+              <p class="font-semibold">Always start on a New Tab</p>
+              <p class="text-sm opacity-75">A clean slate every time you launch</p>
+            </div>
+          </label>
+        </div>
+
+        <div class="card p-5 rounded-lg border-2 mt-4">
+          <label class="block text-sm font-semibold mb-2" for="homepage-input">Homepage for new tabs</label>
+          <input type="text" id="homepage-input" placeholder="mi://newtab" class="w-full px-4 py-2.5 rounded-lg border-2 text-sm settings-select">
+          <p class="text-xs opacity-60 mt-2">Leave empty to use the default New Tab page.</p>
+        </div>
+
+        <div class="card p-5 rounded-lg border-2 mt-4 flex items-center justify-between gap-4">
+          <div>
+            <p class="font-semibold mb-1">Launch Mi Browser at login</p>
+            <p class="text-sm opacity-75">Starts automatically when you log into your computer.</p>
+          </div>
+          <input type="checkbox" id="launch-at-login-toggle" class="w-5 h-5 shrink-0">
+        </div>
+      </section>
+
+      <section id="personalisation" class="mb-14 scroll-mt-8">
+        <h2 class="text-xl font-semibold mb-1">Personalisation</h2>
+        <p class="text-sm opacity-70 mb-4">Make Mi Browser behave exactly the way you want it to.</p>
+
+        <div class="card p-5 rounded-lg border-2 mb-3 flex items-center justify-between gap-4">
+          <div>
+            <p class="font-semibold mb-1">Auto-hide toolbar</p>
+            <p class="text-sm opacity-75">Hides the address bar and tabs for a more immersive view. Move your mouse to the top of the window to bring it back.</p>
+          </div>
+          <input type="checkbox" id="auto-hide-toolbar-toggle" class="w-5 h-5 shrink-0">
+        </div>
+
+        <div class="card p-5 rounded-lg border-2 mb-3">
+          <p class="font-semibold mb-1">Accent colour</p>
+          <p class="text-sm opacity-75 mb-3">Colours the active tab underline and the downloads indicator, on top of your chosen theme.</p>
+          <div class="flex items-center gap-3">
+            <input type="color" id="accent-color-input" class="w-12 h-10 rounded border-2 cursor-pointer">
+            <button id="accent-color-reset-btn" class="px-4 py-2 rounded-lg text-sm font-semibold border-2 hover:opacity-80">Reset to theme default</button>
+          </div>
+        </div>
+
+        <div class="card p-5 rounded-lg border-2 mb-3">
+          <div class="flex items-center justify-between mb-2">
+            <p class="font-semibold">Interface size</p>
+            <span id="ui-zoom-value" class="text-sm opacity-70">100%</span>
+          </div>
+          <input type="range" id="ui-zoom-slider" min="80" max="130" step="5" class="w-full">
+        </div>
+
+        <div class="space-y-3 mb-3">
+          <label class="flex items-start p-4 rounded-lg border-2 card cursor-pointer hover:opacity-80 transition">
+            <input type="checkbox" class="custom-toggle w-5 h-5 mt-1" data-custom="confirmCloseMultiTab">
+            <div class="ml-4 flex-1">
+              <p class="font-semibold">Confirm before closing several tabs</p>
+              <p class="text-sm opacity-75">Asks before quitting if more than one tab is open</p>
+            </div>
+          </label>
+          <label class="flex items-start p-4 rounded-lg border-2 card cursor-pointer hover:opacity-80 transition">
+            <input type="checkbox" class="custom-toggle w-5 h-5 mt-1" data-custom="openTabsInBackground">
+            <div class="ml-4 flex-1">
+              <p class="font-semibold">Open new tabs in the background</p>
+              <p class="text-sm opacity-75">Links opened in a new tab don't steal focus from what you're reading</p>
+            </div>
+          </label>
+          <label class="flex items-start p-4 rounded-lg border-2 card cursor-pointer hover:opacity-80 transition">
+            <input type="checkbox" class="custom-toggle w-5 h-5 mt-1" data-custom="autoMuteBackgroundTabs">
+            <div class="ml-4 flex-1">
+              <p class="font-semibold">Auto-mute background tabs</p>
+              <p class="text-sm opacity-75">Only the tab you're looking at can make noise</p>
+            </div>
+          </label>
+          <label class="flex items-start p-4 rounded-lg border-2 card cursor-pointer hover:opacity-80 transition">
+            <input type="checkbox" class="custom-toggle w-5 h-5 mt-1" data-custom="smoothScrolling">
+            <div class="ml-4 flex-1">
+              <p class="font-semibold">Smooth scrolling</p>
+              <p class="text-sm opacity-75">Eases scrolling on pages instead of jumping straight there</p>
+            </div>
+          </label>
+          <label class="flex items-start p-4 rounded-lg border-2 card cursor-pointer hover:opacity-80 transition">
+            <input type="checkbox" class="custom-toggle w-5 h-5 mt-1" data-custom="showClock">
+            <div class="ml-4 flex-1">
+              <p class="font-semibold">Show a clock in the toolbar</p>
+              <p class="text-sm opacity-75">A small 24-hour clock next to the Passwords button</p>
+            </div>
+          </label>
+          <label class="flex items-start p-4 rounded-lg border-2 card cursor-pointer hover:opacity-80 transition">
+            <input type="checkbox" class="custom-toggle w-5 h-5 mt-1" data-custom="compactTabs">
+            <div class="ml-4 flex-1">
+              <p class="font-semibold">Compact tabs</p>
+              <p class="text-sm opacity-75">Narrower tabs so more of them fit in the tab bar</p>
+            </div>
+          </label>
+          <label class="flex items-start p-4 rounded-lg border-2 card cursor-pointer hover:opacity-80 transition">
+            <input type="checkbox" class="custom-toggle w-5 h-5 mt-1" data-custom="alwaysShowTabClose">
+            <div class="ml-4 flex-1">
+              <p class="font-semibold">Always show the tab close button</p>
+              <p class="text-sm opacity-75">Instead of only appearing when you hover a tab</p>
+            </div>
+          </label>
+          <label class="flex items-start p-4 rounded-lg border-2 card cursor-pointer hover:opacity-80 transition">
+            <input type="checkbox" id="spellcheck-toggle" class="w-5 h-5 mt-1">
+            <div class="ml-4 flex-1">
+              <p class="font-semibold">Spellcheck</p>
+              <p class="text-sm opacity-75">Underlines misspelt words in text fields across the web</p>
+            </div>
+          </label>
+        </div>
+
+        <div class="card p-5 rounded-lg border-2 mb-3">
+          <p class="font-semibold mb-1">Downloads folder</p>
+          <p id="downloads-folder-path" class="text-sm opacity-75 mb-3 truncate">Default (OS Downloads folder)</p>
+          <button id="choose-downloads-folder-btn" class="px-4 py-2 rounded-lg text-sm font-semibold border-2 hover:opacity-80">Choose folder…</button>
+        </div>
+
+        <div class="card p-5 rounded-lg border-2">
+          <p class="font-semibold mb-3">Custom search engines</p>
+          <form id="add-search-engine-form" class="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-3">
+            <input type="text" id="add-engine-name" placeholder="Name (e.g. Startpage)" required class="px-4 py-2.5 rounded-lg border-2 text-sm settings-select">
+            <input type="text" id="add-engine-url" placeholder="https://.../search?q=" required class="px-4 py-2.5 rounded-lg border-2 text-sm settings-select">
+            <button type="submit" class="px-5 py-2.5 rounded-lg font-semibold transition primary-btn">Add</button>
+          </form>
+          <p class="text-xs opacity-60 mb-3">The URL should be everything before your search term — Mi Browser appends the term (URL-encoded) straight after it.</p>
+          <div id="custom-engines-list" class="space-y-2"></div>
+        </div>
+      </section>
+
+      <section id="privacy" class="mb-14 scroll-mt-8">
+        <h2 class="text-xl font-semibold mb-1">Privacy &amp; data</h2>
+        <p class="text-sm opacity-70 mb-4">Control what Mi Browser blocks, and what it remembers.</p>
+        <div class="space-y-3 mb-4">
+          <label class="flex items-start p-4 rounded-lg border-2 card cursor-pointer hover:opacity-80 transition">
+            <input type="checkbox" class="feature-toggle w-5 h-5 mt-1" data-feature="ads">
+            <div class="ml-4 flex-1">
+              <p class="font-semibold">Block adverts</p>
+              <p class="text-sm opacity-75">Keep intrusive ads out of your way</p>
+            </div>
+          </label>
+          <label class="flex items-start p-4 rounded-lg border-2 card cursor-pointer hover:opacity-80 transition">
+            <input type="checkbox" class="feature-toggle w-5 h-5 mt-1" data-feature="trackers">
+            <div class="ml-4 flex-1">
+              <p class="font-semibold">Block trackers</p>
+              <p class="text-sm opacity-75">Stop sites following you around the web</p>
+            </div>
+          </label>
+          <label class="flex items-start p-4 rounded-lg border-2 card cursor-pointer hover:opacity-80 transition">
+            <input type="checkbox" class="feature-toggle w-5 h-5 mt-1" data-feature="eat-cookies">
+            <div class="ml-4 flex-1">
+              <p class="font-semibold">Eat My Cookies</p>
+              <p class="text-sm opacity-75">Automatically gobble up all cookies every 24 hours</p>
+              <p id="eat-cookies-status" class="text-xs opacity-60 mt-1"></p>
+            </div>
+          </label>
+          <label class="flex items-start p-4 rounded-lg border-2 card cursor-pointer hover:opacity-80 transition">
+            <input type="checkbox" class="feature-toggle w-5 h-5 mt-1" data-feature="google-suggest">
+            <div class="ml-4 flex-1">
+              <p class="font-semibold">Live Google search suggestions</p>
+              <p class="text-sm opacity-75">Show Google's real-time suggestions as you type in the address bar — only used when Google is your search engine.</p>
+              <p class="text-xs opacity-60 mt-1 flex items-start gap-1.5">
+                <svg viewBox="0 0 24 24" width="13" height="13" class="shrink-0 mt-0.5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
+                <span>Off by default. When on, everything you type in the address bar is sent to Google as you type it, not just when you press Enter.</span>
+              </p>
+            </div>
+          </label>
+        </div>
+        <div class="card p-5 rounded-lg border-2">
+          <p class="font-semibold mb-1">Clear browsing data</p>
+          <p class="text-sm opacity-75 mb-4">Empties cache, cookies and other site data, and closes every open tab. Your saved settings are untouched.</p>
+          <button id="clear-data-btn" class="px-5 py-2.5 rounded-lg font-semibold transition border-2 hover:opacity-80">Clear browsing data now</button>
+          <span id="clear-data-status" class="text-sm ml-3 opacity-75"></span>
+        </div>
+      </section>
+
+      <section id="downloads-safety" class="mb-14 scroll-mt-8">
+        <h2 class="text-xl font-semibold mb-1">Download safety</h2>
+        <p class="text-sm opacity-70 mb-4">Mi Browser can flag risky downloads before they land on your disk. This is a heuristic check based on file type, not a real antivirus scan.</p>
+        <div class="space-y-3 mb-4">
+          <label class="flex items-start p-4 rounded-lg border-2 card cursor-pointer hover:opacity-80 transition">
+            <input type="checkbox" id="malware-check-toggle" class="w-5 h-5 mt-1">
+            <div class="ml-4 flex-1">
+              <p class="font-semibold">Warn on risky file types</p>
+              <p class="text-sm opacity-75">Pauses downloads like .exe, .bat, .jar or .apk and asks you to confirm first</p>
+            </div>
+          </label>
+        </div>
+        <div class="card p-5 rounded-lg border-2">
+          <label class="block text-sm font-semibold mb-2" for="mass-download-limit">Warn me if more than this many downloads start at once</label>
+          <input type="number" id="mass-download-limit" min="1" max="50" class="w-32 px-4 py-2.5 rounded-lg border-2 text-sm settings-select">
+          <p class="text-xs opacity-60 mt-2">Set to 0 to switch this warning off entirely.</p>
+        </div>
+      </section>
+
+      <section id="passwords" class="mb-14 scroll-mt-8">
+        <div class="flex items-center justify-between mb-1">
+          <h2 class="text-xl font-semibold">Passwords</h2>
+          <button id="add-password-open-btn" class="px-4 py-2 rounded-lg text-sm font-semibold transition primary-btn">+ Add password</button>
+        </div>
+        <p class="text-sm opacity-70 mb-4">Saved passwords are encrypted on your device. Values are hidden until you choose to reveal them.</p>
+
+        <div id="passwords-empty" class="card p-5 rounded-lg border-2 text-sm opacity-70">No passwords saved yet. Import some below, or add one with the button above.</div>
+        <div id="passwords-list" class="space-y-2"></div>
+      </section>
+
+      <section id="import" class="mb-14 scroll-mt-8">
+        <h2 class="text-xl font-semibold mb-1">Import data</h2>
+        <p class="text-sm opacity-70 mb-4">Bring bookmarks, history and passwords across from another browser at any time.</p>
+        <div class="card p-5 rounded-lg border-2">
+          <button id="detect-browsers-btn" class="px-5 py-2.5 rounded-lg font-semibold transition border-2 hover:opacity-80 mb-4">Detect installed browsers</button>
+          <div id="browsers-detected" class="space-y-3"></div>
+          <button id="import-confirm-btn" class="hidden mt-4 px-5 py-2.5 rounded-lg font-semibold transition primary-btn">Import selected data</button>
+          <span id="import-status" class="text-sm ml-3 opacity-75"></span>
+        </div>
+      </section>
+
+      <section id="stats" class="mb-14 scroll-mt-8">
+        <h2 class="text-xl font-semibold mb-1">Stats</h2>
+        <p class="text-sm opacity-70 mb-4">What Mi Browser is actually holding onto, right now.</p>
+        <div class="grid grid-cols-2 gap-4">
+          <div class="stat-card p-5 rounded-lg border-2">
+            <p id="stat-history" class="text-3xl font-bold">&mdash;</p>
+            <p class="text-sm opacity-70">History entries · <a href="mi://history" class="underline">view</a></p>
+          </div>
+          <div class="stat-card p-5 rounded-lg border-2">
+            <p id="stat-bookmarks" class="text-3xl font-bold">&mdash;</p>
+            <p class="text-sm opacity-70">Bookmarks saved</p>
+          </div>
+          <div class="stat-card p-5 rounded-lg border-2">
+            <p id="stat-passwords" class="text-3xl font-bold">&mdash;</p>
+            <p class="text-sm opacity-70">Passwords saved</p>
+          </div>
+          <div class="stat-card p-5 rounded-lg border-2">
+            <p id="stat-cookies" class="text-3xl font-bold">&mdash;</p>
+            <p class="text-sm opacity-70">Cookie sweeps by Eat My Cookies</p>
+          </div>
+        </div>
+      </section>
+
+      <section id="shortcuts" class="mb-14 scroll-mt-8">
+        <h2 class="text-xl font-semibold mb-1">Keyboard shortcuts</h2>
+        <p class="text-sm opacity-70 mb-4">Work faster. These work anywhere in the browser, including inside the page itself.</p>
+        <div class="card rounded-lg border-2">
+          <div class="shortcut-row flex items-center justify-between px-5 py-3">
+            <span class="text-sm">New tab</span>
+            <span class="shortcut-key">Ctrl / &#8984; + T</span>
+          </div>
+          <div class="shortcut-row flex items-center justify-between px-5 py-3">
+            <span class="text-sm">Reopen closed tab</span>
+            <span class="shortcut-key">Ctrl / &#8984; + Shift + T</span>
+          </div>
+          <div class="shortcut-row flex items-center justify-between px-5 py-3">
+            <span class="text-sm">Close tab</span>
+            <span class="shortcut-key">Ctrl / &#8984; + W</span>
+          </div>
+          <div class="shortcut-row flex items-center justify-between px-5 py-3">
+            <span class="text-sm">Switch to tab 1&ndash;9</span>
+            <span class="shortcut-key">Ctrl / &#8984; + 1&ndash;9</span>
+          </div>
+          <div class="shortcut-row flex items-center justify-between px-5 py-3">
+            <span class="text-sm">Next / previous tab</span>
+            <span class="shortcut-key">Ctrl / &#8984; + Tab / Shift + Tab</span>
+          </div>
+          <div class="shortcut-row flex items-center justify-between px-5 py-3">
+            <span class="text-sm">Focus the address bar</span>
+            <span class="shortcut-key">Ctrl / &#8984; + L</span>
+          </div>
+          <div class="shortcut-row flex items-center justify-between px-5 py-3">
+            <span class="text-sm">Reload the page</span>
+            <span class="shortcut-key">Ctrl / &#8984; + R</span>
+          </div>
+          <div class="shortcut-row flex items-center justify-between px-5 py-3">
+            <span class="text-sm">Open History</span>
+            <span class="shortcut-key">Ctrl / &#8984; + H</span>
+          </div>
+          <div class="shortcut-row flex items-center justify-between px-5 py-3">
+            <span class="text-sm">Open Downloads</span>
+            <span class="shortcut-key">Ctrl / &#8984; + J</span>
+          </div>
+          <div class="shortcut-row flex items-center justify-between px-5 py-3">
+            <span class="text-sm">Back / Forward</span>
+            <span class="shortcut-key">Alt + &larr; / &rarr;</span>
+          </div>
+          <div class="shortcut-row flex items-center justify-between px-5 py-3">
+            <span class="text-sm">Open Settings</span>
+            <span class="shortcut-key">Ctrl / &#8984; + ,</span>
+          </div>
+        </div>
+        <p class="text-sm opacity-70 mt-4">Right-click a tab, the page, or the window bar for more options too.</p>
+      </section>
+
+      <section id="about" class="mb-14 scroll-mt-8">
+        <h2 class="text-xl font-semibold mb-1">About</h2>
+        <div class="card p-6 rounded-lg border-2">
+          <p class="font-semibold text-lg mb-1">Mi Browser</p>
+          <p class="text-sm opacity-75 mb-4">Version 1.0.0 &middot; built by Imators</p>
+          <p class="text-sm opacity-75 leading-relaxed mb-4">
+            "Mi" stands for "My Internet". No tracking, no intrusive adverts, and everything stored on your own device &mdash; see the full story on the <a href="mi://newtab" class="underline font-medium">Why Mi Browser</a> page.
+          </p>
+          <p class="text-xs opacity-60">Released under the MIT License &mdash; free and open to build on.</p>
+        </div>
+      </section>
+
+      <section id="reset" class="scroll-mt-8">
+        <h2 class="text-xl font-semibold mb-1">Reset</h2>
+        <p class="text-sm opacity-70 mb-4">Start completely from scratch.</p>
+        <div class="card p-6 rounded-lg border-2">
+          <p class="font-semibold mb-1">Factory reset Mi Browser</p>
+          <p class="text-sm opacity-75 mb-4">Wipes every setting, tab, preference, saved password, bookmark and history entry, and takes you back through first-time setup. There's no undo button for this one.</p>
+          <button id="reset-btn" class="px-5 py-2.5 rounded-lg font-semibold transition border-2 danger-btn">Reset to factory settings</button>
+        </div>
+      </section>
+    </div>
+  </div>
+
+  <div id="add-password-overlay" class="fixed inset-0 hidden items-center justify-center bg-black bg-opacity-50 p-8">
+    <div class="card rounded-lg p-8 max-w-md w-full border-2">
+      <h3 class="text-lg font-bold mb-1">Add a password</h3>
+      <p class="text-sm opacity-70 mb-5">Stored encrypted on this device, just like an imported one.</p>
+      <form id="add-password-form" class="space-y-3">
+        <div>
+          <label class="block text-xs font-semibold uppercase opacity-60 mb-1" for="add-password-origin">Site</label>
+          <input type="text" id="add-password-origin" placeholder="https://example.com" required class="w-full px-4 py-2.5 rounded-lg border-2 text-sm settings-select">
+        </div>
+        <div>
+          <label class="block text-xs font-semibold uppercase opacity-60 mb-1" for="add-password-username">Username or email</label>
+          <input type="text" id="add-password-username" placeholder="you@example.com" required class="w-full px-4 py-2.5 rounded-lg border-2 text-sm settings-select">
+        </div>
+        <div>
+          <label class="block text-xs font-semibold uppercase opacity-60 mb-1" for="add-password-value">Password</label>
+          <input type="password" id="add-password-value" placeholder="••••••••" required class="w-full px-4 py-2.5 rounded-lg border-2 text-sm settings-select">
+        </div>
+        <p id="add-password-status" class="text-sm opacity-75"></p>
+        <div class="flex gap-3 pt-1">
+          <button type="button" id="add-password-cancel-btn" class="flex-1 px-5 py-2.5 rounded-lg font-semibold border-2 hover:opacity-80 transition">Cancel</button>
+          <button type="submit" class="flex-1 px-5 py-2.5 rounded-lg font-semibold transition primary-btn">Save password</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div id="reset-confirm-overlay" class="fixed inset-0 hidden items-center justify-center bg-black bg-opacity-50 p-8">
+    <div class="card rounded-lg p-8 max-w-md w-full border-2">
+      <h3 class="text-lg font-bold mb-2">Certain about this?</h3>
+      <p class="text-sm opacity-75 mb-6">This will reset Mi Browser to its factory settings and restart the app. All local settings and session data will be gone for good.</p>
+      <div class="flex gap-3">
+        <button id="reset-cancel-btn" class="flex-1 px-5 py-2.5 rounded-lg font-semibold border-2 hover:opacity-80 transition">Cancel</button>
+        <button id="reset-confirm-btn" class="flex-1 px-5 py-2.5 rounded-lg font-semibold transition danger-btn border-2">Yes, reset it</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>

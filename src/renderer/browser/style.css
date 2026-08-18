@@ -1,0 +1,2271 @@
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+body {
+  animation: fadeIn 0.3s ease-out;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+.drag-bar {
+  -webkit-app-region: drag;
+}
+
+.drag-bar button {
+  -webkit-app-region: no-drag;
+}
+
+.window-btn {
+  width: 26px;
+  height: 26px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 9999px;
+  transition: background-color 0.15s ease, color 0.15s ease;
+}
+
+.window-btn-close:hover {
+  background-color: #ef4444;
+  color: #ffffff;
+}
+
+.toolbar-icon-btn {
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+  transition: background-color 0.15s ease;
+  flex-shrink: 0;
+}
+
+.toolbar-icon-btn.hidden {
+  display: none;
+}
+
+.toolbar-icon-btn.active {
+  background-color: rgba(59, 130, 246, 0.15);
+}
+
+.downloads-indicator {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  width: 8px;
+  height: 8px;
+  border-radius: 9999px;
+  background-color: #3b82f6;
+  animation: downloads-pulse 1.2s ease-in-out infinite;
+}
+
+.downloads-indicator.hidden {
+  display: none;
+}
+
+@keyframes downloads-pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.5; transform: scale(0.8); }
+}
+
+.site-menu-popover {
+  position: absolute;
+  top: 84px;
+  right: 16px;
+  width: 280px;
+  padding: 16px;
+  border-radius: 12px;
+  border: 1px solid;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.18);
+  z-index: 50;
+}
+
+.site-menu-popover.hidden {
+  display: none;
+}
+
+.address-suggestions {
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 0;
+  right: 0;
+  border-radius: 10px;
+  border: 1px solid;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.18);
+  z-index: 50;
+  overflow: hidden;
+}
+
+.address-suggestions.hidden {
+  display: none;
+}
+
+.address-suggestion-row {
+  padding: 9px 14px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.address-suggestion-row.selected {
+  background-color: rgba(59, 130, 246, 0.12);
+}
+
+.address-suggestion-title {
+  font-size: 13px;
+  font-weight: 600;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.address-suggestion-url {
+  font-size: 12px;
+  opacity: 0.6;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.address-suggestion-google-tag {
+  flex-shrink: 0;
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  opacity: 0.55;
+  padding: 2px 6px;
+  border-radius: 4px;
+  border: 1px solid currentColor;
+}
+
+.address-suggestion-notice {
+  display: flex;
+  align-items: flex-start;
+  gap: 6px;
+  padding: 8px 14px;
+  font-size: 11px;
+  opacity: 0.6;
+  border-top: 1px solid currentColor;
+}
+
+.bookmarks-bar.hidden {
+  display: none;
+}
+
+.bookmark-chip {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  border-radius: 6px;
+  font-size: 12.5px;
+  white-space: nowrap;
+  cursor: pointer;
+  flex-shrink: 0;
+  max-width: 160px;
+}
+
+.bookmark-chip-title {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.bookmark-chip-favicon {
+  width: 14px;
+  height: 14px;
+  flex-shrink: 0;
+  border-radius: 2px;
+}
+
+.tab {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0 12px;
+  height: 32px;
+  border-radius: 8px 8px 0 0;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-size: 13px;
+  max-width: 200px;
+}
+
+.tab.active {
+  box-shadow: inset 0 -2px 0 #3b82f6;
+}
+
+.tab-title {
+  flex: 1;
+  min-width: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.tab-spinner {
+  flex-shrink: 0;
+  width: 11px;
+  height: 11px;
+  border: 1.5px solid currentColor;
+  border-top-color: transparent;
+  border-radius: 50%;
+  opacity: 0.6;
+  animation: tab-spin 0.7s linear infinite;
+}
+
+@keyframes tab-spin {
+  to { transform: rotate(360deg); }
+}
+
+.tab-close {
+  flex-shrink: 0;
+  opacity: 0;
+  cursor: pointer;
+  transition: opacity 0.2s ease;
+}
+
+.tab:hover .tab-close {
+  opacity: 1;
+}
+
+.tab-private-badge {
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+}
+
+webview {
+  width: 100%;
+  height: 100%;
+}
+
+/* Light Theme */
+body.theme-light {
+  background: #ffffff;
+  color: #000000;
+}
+
+body.theme-light .drag-bar {
+  background: #ffffff;
+}
+
+body.theme-light .window-btn {
+  color: #000000;
+}
+
+body.theme-light .window-btn:not(.window-btn-close):hover {
+  background-color: rgba(0, 0, 0, 0.06);
+}
+
+body.theme-light .toolbar {
+  background: #ffffff;
+  border-color: rgba(0, 0, 0, 0.1);
+}
+
+body.theme-light .toolbar button {
+  color: #000000;
+}
+
+body.theme-light .toolbar-icon-btn:hover {
+  background-color: #f3f4f6;
+}
+
+body.theme-light .site-menu-popover {
+  background-color: #ffffff;
+  border-color: #e5e7eb;
+  color: #000000;
+}
+
+body.theme-light .address-suggestions {
+  background-color: #ffffff;
+  border-color: #e5e7eb;
+  color: #000000;
+}
+
+body.theme-light .address-suggestion-row:hover {
+  background-color: #f3f4f6;
+}
+
+body.theme-light body.theme-light .bookmarks-bar {
+  background: #ffffff;
+  border-color: rgba(0, 0, 0, 0.1);
+}
+
+body.theme-light .bookmark-chip {
+  background-color: #f3f4f6;
+  color: #000000;
+}
+
+body.theme-light .bookmark-chip:hover {
+  background-color: #e5e7eb;
+}
+
+body.theme-light #address-bar {
+  background-color: #f3f4f6;
+  color: #000000;
+  border: 1px solid #e5e7eb;
+}
+
+body.theme-light #address-bar::placeholder {
+  color: #9ca3af;
+}
+
+body.theme-light .tabs-bar {
+  background: #ffffff;
+  border-color: rgba(0, 0, 0, 0.1);
+}
+
+body.theme-light .tab {
+  background: #f3f4f6;
+  color: #000000;
+}
+
+body.theme-light .tab:hover {
+  background: #e5e7eb;
+}
+
+body.theme-light .tab.active {
+  background: #ffffff;
+}
+
+/* Dark Theme */
+body.theme-dark {
+  background: #1a1a1a;
+  color: #e5e5e5;
+}
+
+body.theme-dark .drag-bar {
+  background: #1a1a1a;
+}
+
+body.theme-dark .window-btn {
+  color: #e5e5e5;
+}
+
+body.theme-dark .window-btn:not(.window-btn-close):hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+body.theme-dark .toolbar {
+  background: #1a1a1a;
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+body.theme-dark .toolbar button {
+  color: #e5e5e5;
+}
+
+body.theme-dark .toolbar-icon-btn:hover {
+  background-color: #262626;
+}
+
+body.theme-dark .site-menu-popover {
+  background-color: #262626;
+  border-color: #404040;
+  color: #e5e5e5;
+}
+
+body.theme-dark .address-suggestions {
+  background-color: #262626;
+  border-color: #404040;
+  color: #e5e5e5;
+}
+
+body.theme-dark .address-suggestion-row:hover {
+  background-color: #333333;
+}
+
+body.theme-dark body.theme-dark .bookmarks-bar {
+  background: #1a1a1a;
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+body.theme-dark .bookmark-chip {
+  background-color: #262626;
+  color: #e5e5e5;
+}
+
+body.theme-dark .bookmark-chip:hover {
+  background-color: #404040;
+}
+
+body.theme-dark #address-bar {
+  background-color: #262626;
+  color: #e5e5e5;
+  border: 1px solid #404040;
+}
+
+body.theme-dark #address-bar::placeholder {
+  color: #737373;
+}
+
+body.theme-dark .tabs-bar {
+  background: #1a1a1a;
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+body.theme-dark .tab {
+  background: #262626;
+  color: #e5e5e5;
+}
+
+body.theme-dark .tab:hover {
+  background: #404040;
+}
+
+body.theme-dark .tab.active {
+  background: #1a1a1a;
+}
+
+/* Blue Theme */
+body.theme-blue {
+  background: #dbeafe;
+  color: #1e40af;
+}
+
+body.theme-blue .drag-bar {
+  background: #dbeafe;
+}
+
+body.theme-blue .window-btn {
+  color: #1e40af;
+}
+
+body.theme-blue .window-btn:not(.window-btn-close):hover {
+  background-color: rgba(30, 64, 175, 0.1);
+}
+
+body.theme-blue .toolbar {
+  background: #dbeafe;
+  border-color: rgba(96, 165, 250, 0.3);
+}
+
+body.theme-blue .toolbar button {
+  color: #1e40af;
+}
+
+body.theme-blue .toolbar-icon-btn:hover {
+  background-color: #bfdbfe;
+}
+
+body.theme-blue .site-menu-popover {
+  background-color: #eff6ff;
+  border-color: #93c5fd;
+  color: #1e40af;
+}
+
+body.theme-blue .address-suggestions {
+  background-color: #eff6ff;
+  border-color: #93c5fd;
+  color: #1e40af;
+}
+
+body.theme-blue .address-suggestion-row:hover {
+  background-color: #dbeafe;
+}
+
+body.theme-blue body.theme-blue .bookmarks-bar {
+  background: #dbeafe;
+  border-color: rgba(96, 165, 250, 0.3);
+}
+
+body.theme-blue .bookmark-chip {
+  background-color: #bfdbfe;
+  color: #1e40af;
+}
+
+body.theme-blue .bookmark-chip:hover {
+  background-color: #93c5fd;
+}
+
+body.theme-blue #address-bar {
+  background-color: #bfdbfe;
+  color: #1e40af;
+  border: 1px solid #60a5fa;
+}
+
+body.theme-blue #address-bar::placeholder {
+  color: #3b82f6;
+}
+
+body.theme-blue .tabs-bar {
+  background: #dbeafe;
+  border-color: rgba(96, 165, 250, 0.3);
+}
+
+body.theme-blue .tab {
+  background: #bfdbfe;
+  color: #1e40af;
+}
+
+body.theme-blue .tab:hover {
+  background: #93c5fd;
+}
+
+body.theme-blue .tab.active {
+  background: #dbeafe;
+}
+
+/* Green Theme */
+body.theme-green {
+  background: #dcfce7;
+  color: #14532d;
+}
+
+body.theme-green .drag-bar {
+  background: #dcfce7;
+}
+
+body.theme-green .window-btn {
+  color: #14532d;
+}
+
+body.theme-green .window-btn:not(.window-btn-close):hover {
+  background-color: rgba(20, 83, 45, 0.1);
+}
+
+body.theme-green .toolbar {
+  background: #dcfce7;
+  border-color: rgba(34, 197, 94, 0.3);
+}
+
+body.theme-green .toolbar button {
+  color: #14532d;
+}
+
+body.theme-green .toolbar-icon-btn:hover {
+  background-color: #bbf7d0;
+}
+
+body.theme-green .site-menu-popover {
+  background-color: #f0fdf4;
+  border-color: #86efac;
+  color: #14532d;
+}
+
+body.theme-green .address-suggestions {
+  background-color: #f0fdf4;
+  border-color: #86efac;
+  color: #14532d;
+}
+
+body.theme-green .address-suggestion-row:hover {
+  background-color: #dcfce7;
+}
+
+body.theme-green body.theme-green .bookmarks-bar {
+  background: #dcfce7;
+  border-color: rgba(34, 197, 94, 0.3);
+}
+
+body.theme-green .bookmark-chip {
+  background-color: #bbf7d0;
+  color: #14532d;
+}
+
+body.theme-green .bookmark-chip:hover {
+  background-color: #86efac;
+}
+
+body.theme-green #address-bar {
+  background-color: #bbf7d0;
+  color: #14532d;
+  border: 1px solid #4ade80;
+}
+
+body.theme-green #address-bar::placeholder {
+  color: #16a34a;
+}
+
+body.theme-green .tabs-bar {
+  background: #dcfce7;
+  border-color: rgba(34, 197, 94, 0.3);
+}
+
+body.theme-green .tab {
+  background: #bbf7d0;
+  color: #14532d;
+}
+
+body.theme-green .tab:hover {
+  background: #86efac;
+}
+
+body.theme-green .tab.active {
+  background: #dcfce7;
+}
+
+/* Sunset Theme */
+body.theme-sunset {
+  background: #ffedd5;
+  color: #7c2d12;
+}
+
+body.theme-sunset .drag-bar {
+  background: #ffedd5;
+}
+
+body.theme-sunset .window-btn {
+  color: #7c2d12;
+}
+
+body.theme-sunset .window-btn:not(.window-btn-close):hover {
+  background-color: rgba(124, 45, 18, 0.1);
+}
+
+body.theme-sunset .toolbar {
+  background: #ffedd5;
+  border-color: rgba(249, 115, 22, 0.3);
+}
+
+body.theme-sunset .toolbar button {
+  color: #7c2d12;
+}
+
+body.theme-sunset .toolbar-icon-btn:hover {
+  background-color: #fed7aa;
+}
+
+body.theme-sunset .site-menu-popover {
+  background-color: #fff7ed;
+  border-color: #fdba74;
+  color: #7c2d12;
+}
+
+body.theme-sunset .address-suggestions {
+  background-color: #fff7ed;
+  border-color: #fdba74;
+  color: #7c2d12;
+}
+
+body.theme-sunset .address-suggestion-row:hover {
+  background-color: #ffedd5;
+}
+
+body.theme-sunset body.theme-sunset .bookmarks-bar {
+  background: #ffedd5;
+  border-color: rgba(249, 115, 22, 0.3);
+}
+
+body.theme-sunset .bookmark-chip {
+  background-color: #fed7aa;
+  color: #7c2d12;
+}
+
+body.theme-sunset .bookmark-chip:hover {
+  background-color: #fdba74;
+}
+
+body.theme-sunset #address-bar {
+  background-color: #fed7aa;
+  color: #7c2d12;
+  border: 1px solid #fb923c;
+}
+
+body.theme-sunset #address-bar::placeholder {
+  color: #ea580c;
+}
+
+body.theme-sunset .tabs-bar {
+  background: #ffedd5;
+  border-color: rgba(249, 115, 22, 0.3);
+}
+
+body.theme-sunset .tab {
+  background: #fed7aa;
+  color: #7c2d12;
+}
+
+body.theme-sunset .tab:hover {
+  background: #fdba74;
+}
+
+body.theme-sunset .tab.active {
+  background: #ffedd5;
+}
+
+/* Desert Theme */
+body.theme-desert {
+  background: #fef3c7;
+  color: #451a03;
+}
+
+body.theme-desert .drag-bar {
+  background: #fef3c7;
+}
+
+body.theme-desert .window-btn {
+  color: #451a03;
+}
+
+body.theme-desert .window-btn:not(.window-btn-close):hover {
+  background-color: rgba(69, 26, 3, 0.1);
+}
+
+body.theme-desert .toolbar {
+  background: #fef3c7;
+  border-color: rgba(180, 83, 9, 0.3);
+}
+
+body.theme-desert .toolbar button {
+  color: #451a03;
+}
+
+body.theme-desert .toolbar-icon-btn:hover {
+  background-color: #fde68a;
+}
+
+body.theme-desert .site-menu-popover {
+  background-color: #fffbeb;
+  border-color: #fcd34d;
+  color: #451a03;
+}
+
+body.theme-desert .address-suggestions {
+  background-color: #fffbeb;
+  border-color: #fcd34d;
+  color: #451a03;
+}
+
+body.theme-desert .address-suggestion-row:hover {
+  background-color: #fef3c7;
+}
+
+body.theme-desert body.theme-desert .bookmarks-bar {
+  background: #fef3c7;
+  border-color: rgba(180, 83, 9, 0.3);
+}
+
+body.theme-desert .bookmark-chip {
+  background-color: #fde68a;
+  color: #451a03;
+}
+
+body.theme-desert .bookmark-chip:hover {
+  background-color: #fcd34d;
+}
+
+body.theme-desert #address-bar {
+  background-color: #fde68a;
+  color: #451a03;
+  border: 1px solid #f59e0b;
+}
+
+body.theme-desert #address-bar::placeholder {
+  color: #b45309;
+}
+
+body.theme-desert .tabs-bar {
+  background: #fef3c7;
+  border-color: rgba(180, 83, 9, 0.3);
+}
+
+body.theme-desert .tab {
+  background: #fde68a;
+  color: #451a03;
+}
+
+body.theme-desert .tab:hover {
+  background: #fcd34d;
+}
+
+body.theme-desert .tab.active {
+  background: #fef3c7;
+}
+
+/* Midnight Theme */
+body.theme-midnight {
+  background: #0f172a;
+  color: #e2e8f0;
+}
+
+body.theme-midnight .drag-bar {
+  background: #0f172a;
+}
+
+body.theme-midnight .window-btn {
+  color: #e2e8f0;
+}
+
+body.theme-midnight .window-btn:not(.window-btn-close):hover {
+  background-color: rgba(148,163,184,0.3);
+}
+
+body.theme-midnight .toolbar {
+  background: #0f172a;
+  border-color: rgba(148,163,184,0.3);
+}
+
+body.theme-midnight .toolbar button {
+  color: #e2e8f0;
+}
+
+body.theme-midnight .toolbar-icon-btn:hover {
+  background-color: #1e293b;
+}
+
+body.theme-midnight .site-menu-popover {
+  background-color: #1e293b;
+  border-color: #475569;
+  color: #e2e8f0;
+}
+
+body.theme-midnight .address-suggestions {
+  background-color: #1e293b;
+  border-color: #475569;
+  color: #e2e8f0;
+}
+
+body.theme-midnight .address-suggestion-row:hover {
+  background-color: #334155;
+}
+
+body.theme-midnight body.theme-midnight .bookmarks-bar {
+  background: #0f172a;
+  border-color: rgba(148,163,184,0.3);
+}
+
+body.theme-midnight .bookmark-chip {
+  background-color: #1e293b;
+  color: #e2e8f0;
+}
+
+body.theme-midnight .bookmark-chip:hover {
+  background-color: #334155;
+}
+
+body.theme-midnight #address-bar {
+  background-color: #1e293b;
+  color: #e2e8f0;
+  border: 1px solid #475569;
+}
+
+body.theme-midnight #address-bar::placeholder {
+  color: #94a3b8;
+}
+
+body.theme-midnight .tabs-bar {
+  background: #0f172a;
+  border-color: rgba(148,163,184,0.3);
+}
+
+body.theme-midnight .tab {
+  background: #1e293b;
+  color: #e2e8f0;
+}
+
+body.theme-midnight .tab:hover {
+  background: #334155;
+}
+
+body.theme-midnight .tab.active {
+  background: #0f172a;
+}
+
+
+/* Charcoal Theme */
+body.theme-charcoal {
+  background: #1c1917;
+  color: #e7e5e4;
+}
+
+body.theme-charcoal .drag-bar {
+  background: #1c1917;
+}
+
+body.theme-charcoal .window-btn {
+  color: #e7e5e4;
+}
+
+body.theme-charcoal .window-btn:not(.window-btn-close):hover {
+  background-color: rgba(168,162,158,0.3);
+}
+
+body.theme-charcoal .toolbar {
+  background: #1c1917;
+  border-color: rgba(168,162,158,0.3);
+}
+
+body.theme-charcoal .toolbar button {
+  color: #e7e5e4;
+}
+
+body.theme-charcoal .toolbar-icon-btn:hover {
+  background-color: #292524;
+}
+
+body.theme-charcoal .site-menu-popover {
+  background-color: #292524;
+  border-color: #57534e;
+  color: #e7e5e4;
+}
+
+body.theme-charcoal .address-suggestions {
+  background-color: #292524;
+  border-color: #57534e;
+  color: #e7e5e4;
+}
+
+body.theme-charcoal .address-suggestion-row:hover {
+  background-color: #44403c;
+}
+
+body.theme-charcoal body.theme-charcoal .bookmarks-bar {
+  background: #1c1917;
+  border-color: rgba(168,162,158,0.3);
+}
+
+body.theme-charcoal .bookmark-chip {
+  background-color: #292524;
+  color: #e7e5e4;
+}
+
+body.theme-charcoal .bookmark-chip:hover {
+  background-color: #44403c;
+}
+
+body.theme-charcoal #address-bar {
+  background-color: #292524;
+  color: #e7e5e4;
+  border: 1px solid #57534e;
+}
+
+body.theme-charcoal #address-bar::placeholder {
+  color: #a8a29e;
+}
+
+body.theme-charcoal .tabs-bar {
+  background: #1c1917;
+  border-color: rgba(168,162,158,0.3);
+}
+
+body.theme-charcoal .tab {
+  background: #292524;
+  color: #e7e5e4;
+}
+
+body.theme-charcoal .tab:hover {
+  background: #44403c;
+}
+
+body.theme-charcoal .tab.active {
+  background: #1c1917;
+}
+
+
+/* Crimson Theme */
+body.theme-crimson {
+  background: #1f0a0e;
+  color: #fecdd3;
+}
+
+body.theme-crimson .drag-bar {
+  background: #1f0a0e;
+}
+
+body.theme-crimson .window-btn {
+  color: #fecdd3;
+}
+
+body.theme-crimson .window-btn:not(.window-btn-close):hover {
+  background-color: rgba(251,113,133,0.3);
+}
+
+body.theme-crimson .toolbar {
+  background: #1f0a0e;
+  border-color: rgba(251,113,133,0.3);
+}
+
+body.theme-crimson .toolbar button {
+  color: #fecdd3;
+}
+
+body.theme-crimson .toolbar-icon-btn:hover {
+  background-color: #3f1220;
+}
+
+body.theme-crimson .site-menu-popover {
+  background-color: #3f1220;
+  border-color: #9f1239;
+  color: #fecdd3;
+}
+
+body.theme-crimson .address-suggestions {
+  background-color: #3f1220;
+  border-color: #9f1239;
+  color: #fecdd3;
+}
+
+body.theme-crimson .address-suggestion-row:hover {
+  background-color: #5c1a2e;
+}
+
+body.theme-crimson body.theme-crimson .bookmarks-bar {
+  background: #1f0a0e;
+  border-color: rgba(251,113,133,0.3);
+}
+
+body.theme-crimson .bookmark-chip {
+  background-color: #3f1220;
+  color: #fecdd3;
+}
+
+body.theme-crimson .bookmark-chip:hover {
+  background-color: #5c1a2e;
+}
+
+body.theme-crimson #address-bar {
+  background-color: #3f1220;
+  color: #fecdd3;
+  border: 1px solid #9f1239;
+}
+
+body.theme-crimson #address-bar::placeholder {
+  color: #fb7185;
+}
+
+body.theme-crimson .tabs-bar {
+  background: #1f0a0e;
+  border-color: rgba(251,113,133,0.3);
+}
+
+body.theme-crimson .tab {
+  background: #3f1220;
+  color: #fecdd3;
+}
+
+body.theme-crimson .tab:hover {
+  background: #5c1a2e;
+}
+
+body.theme-crimson .tab.active {
+  background: #1f0a0e;
+}
+
+
+/* Rose Theme */
+body.theme-rose {
+  background: #fff1f2;
+  color: #881337;
+}
+
+body.theme-rose .drag-bar {
+  background: #fff1f2;
+}
+
+body.theme-rose .window-btn {
+  color: #881337;
+}
+
+body.theme-rose .window-btn:not(.window-btn-close):hover {
+  background-color: rgba(244,63,94,0.3);
+}
+
+body.theme-rose .toolbar {
+  background: #fff1f2;
+  border-color: rgba(244,63,94,0.3);
+}
+
+body.theme-rose .toolbar button {
+  color: #881337;
+}
+
+body.theme-rose .toolbar-icon-btn:hover {
+  background-color: #fecdd3;
+}
+
+body.theme-rose .site-menu-popover {
+  background-color: #fecdd3;
+  border-color: #fb7185;
+  color: #881337;
+}
+
+body.theme-rose .address-suggestions {
+  background-color: #fecdd3;
+  border-color: #fb7185;
+  color: #881337;
+}
+
+body.theme-rose .address-suggestion-row:hover {
+  background-color: #fda4af;
+}
+
+body.theme-rose body.theme-rose .bookmarks-bar {
+  background: #fff1f2;
+  border-color: rgba(244,63,94,0.3);
+}
+
+body.theme-rose .bookmark-chip {
+  background-color: #fecdd3;
+  color: #881337;
+}
+
+body.theme-rose .bookmark-chip:hover {
+  background-color: #fda4af;
+}
+
+body.theme-rose #address-bar {
+  background-color: #fecdd3;
+  color: #881337;
+  border: 1px solid #fb7185;
+}
+
+body.theme-rose #address-bar::placeholder {
+  color: #e11d48;
+}
+
+body.theme-rose .tabs-bar {
+  background: #fff1f2;
+  border-color: rgba(244,63,94,0.3);
+}
+
+body.theme-rose .tab {
+  background: #fecdd3;
+  color: #881337;
+}
+
+body.theme-rose .tab:hover {
+  background: #fda4af;
+}
+
+body.theme-rose .tab.active {
+  background: #fff1f2;
+}
+
+
+/* Lavender Theme */
+body.theme-lavender {
+  background: #f5f3ff;
+  color: #4c1d95;
+}
+
+body.theme-lavender .drag-bar {
+  background: #f5f3ff;
+}
+
+body.theme-lavender .window-btn {
+  color: #4c1d95;
+}
+
+body.theme-lavender .window-btn:not(.window-btn-close):hover {
+  background-color: rgba(139,92,246,0.3);
+}
+
+body.theme-lavender .toolbar {
+  background: #f5f3ff;
+  border-color: rgba(139,92,246,0.3);
+}
+
+body.theme-lavender .toolbar button {
+  color: #4c1d95;
+}
+
+body.theme-lavender .toolbar-icon-btn:hover {
+  background-color: #ddd6fe;
+}
+
+body.theme-lavender .site-menu-popover {
+  background-color: #ddd6fe;
+  border-color: #a78bfa;
+  color: #4c1d95;
+}
+
+body.theme-lavender .address-suggestions {
+  background-color: #ddd6fe;
+  border-color: #a78bfa;
+  color: #4c1d95;
+}
+
+body.theme-lavender .address-suggestion-row:hover {
+  background-color: #c4b5fd;
+}
+
+body.theme-lavender body.theme-lavender .bookmarks-bar {
+  background: #f5f3ff;
+  border-color: rgba(139,92,246,0.3);
+}
+
+body.theme-lavender .bookmark-chip {
+  background-color: #ddd6fe;
+  color: #4c1d95;
+}
+
+body.theme-lavender .bookmark-chip:hover {
+  background-color: #c4b5fd;
+}
+
+body.theme-lavender #address-bar {
+  background-color: #ddd6fe;
+  color: #4c1d95;
+  border: 1px solid #a78bfa;
+}
+
+body.theme-lavender #address-bar::placeholder {
+  color: #7c3aed;
+}
+
+body.theme-lavender .tabs-bar {
+  background: #f5f3ff;
+  border-color: rgba(139,92,246,0.3);
+}
+
+body.theme-lavender .tab {
+  background: #ddd6fe;
+  color: #4c1d95;
+}
+
+body.theme-lavender .tab:hover {
+  background: #c4b5fd;
+}
+
+body.theme-lavender .tab.active {
+  background: #f5f3ff;
+}
+
+
+/* Mint Theme */
+body.theme-mint {
+  background: #ecfeff;
+  color: #164e63;
+}
+
+body.theme-mint .drag-bar {
+  background: #ecfeff;
+}
+
+body.theme-mint .window-btn {
+  color: #164e63;
+}
+
+body.theme-mint .window-btn:not(.window-btn-close):hover {
+  background-color: rgba(6,182,212,0.3);
+}
+
+body.theme-mint .toolbar {
+  background: #ecfeff;
+  border-color: rgba(6,182,212,0.3);
+}
+
+body.theme-mint .toolbar button {
+  color: #164e63;
+}
+
+body.theme-mint .toolbar-icon-btn:hover {
+  background-color: #a5f3fc;
+}
+
+body.theme-mint .site-menu-popover {
+  background-color: #a5f3fc;
+  border-color: #22d3ee;
+  color: #164e63;
+}
+
+body.theme-mint .address-suggestions {
+  background-color: #a5f3fc;
+  border-color: #22d3ee;
+  color: #164e63;
+}
+
+body.theme-mint .address-suggestion-row:hover {
+  background-color: #67e8f9;
+}
+
+body.theme-mint body.theme-mint .bookmarks-bar {
+  background: #ecfeff;
+  border-color: rgba(6,182,212,0.3);
+}
+
+body.theme-mint .bookmark-chip {
+  background-color: #a5f3fc;
+  color: #164e63;
+}
+
+body.theme-mint .bookmark-chip:hover {
+  background-color: #67e8f9;
+}
+
+body.theme-mint #address-bar {
+  background-color: #a5f3fc;
+  color: #164e63;
+  border: 1px solid #22d3ee;
+}
+
+body.theme-mint #address-bar::placeholder {
+  color: #0891b2;
+}
+
+body.theme-mint .tabs-bar {
+  background: #ecfeff;
+  border-color: rgba(6,182,212,0.3);
+}
+
+body.theme-mint .tab {
+  background: #a5f3fc;
+  color: #164e63;
+}
+
+body.theme-mint .tab:hover {
+  background: #67e8f9;
+}
+
+body.theme-mint .tab.active {
+  background: #ecfeff;
+}
+
+/* Private Browsing -- fixed, always black regardless of chosen theme */
+body.theme-private {
+  background: #000000;
+  color: #f5f5f5;
+}
+
+body.theme-private .drag-bar { background: #000000; }
+body.theme-private .window-btn { color: #f5f5f5; }
+body.theme-private .window-btn:not(.window-btn-close):hover { background-color: rgba(255,255,255,0.12); }
+body.theme-private .toolbar { background: #000000; border-color: rgba(255,255,255,0.12); }
+body.theme-private .toolbar button { color: #f5f5f5; }
+body.theme-private .toolbar-icon-btn:hover { background-color: #1a1a1a; }
+body.theme-private .site-menu-popover { background-color: #141414; border-color: #2a2a2a; color: #f5f5f5; }
+body.theme-private .address-suggestions { background-color: #141414; border-color: #2a2a2a; color: #f5f5f5; }
+body.theme-private .address-suggestion-row:hover { background-color: #1f1f1f; }
+body.theme-private .bookmarks-bar { background: #000000; border-color: rgba(255,255,255,0.12); }
+body.theme-private .bookmark-chip { background-color: #1a1a1a; color: #f5f5f5; }
+body.theme-private .bookmark-chip:hover { background-color: #262626; }
+body.theme-private #address-bar { background-color: #141414; color: #f5f5f5; border: 1px solid #7c3aed; }
+body.theme-private #address-bar::placeholder { color: #a78bfa; }
+body.theme-private .tabs-bar { background: #000000; border-color: rgba(255,255,255,0.12); }
+body.theme-private .tab { background: #141414; color: #f5f5f5; }
+body.theme-private .tab:hover { background: #1f1f1f; }
+body.theme-private .tab.active { background: #000000; border-bottom: 2px solid #7c3aed; }
+body.theme-private .tab-private-badge { margin-right: 2px; }
+
+/* Neon Theme */
+body.theme-neon {
+  background: #0a0014;
+  color: #f0e6ff;
+}
+
+body.theme-neon .drag-bar {
+  background: #0a0014;
+}
+
+body.theme-neon .window-btn {
+  color: #f0e6ff;
+}
+
+body.theme-neon .window-btn:not(.window-btn-close):hover {
+  background-color: rgba(232,121,249,0.35);
+}
+
+body.theme-neon .toolbar {
+  background: #0a0014;
+  border-color: rgba(232,121,249,0.35);
+}
+
+body.theme-neon .toolbar button {
+  color: #f0e6ff;
+}
+
+body.theme-neon .toolbar-icon-btn:hover {
+  background-color: #1a0630;
+}
+
+body.theme-neon .site-menu-popover {
+  background-color: #1a0630;
+  border-color: #e879f9;
+  color: #f0e6ff;
+}
+
+body.theme-neon .address-suggestions {
+  background-color: #1a0630;
+  border-color: #e879f9;
+  color: #f0e6ff;
+}
+
+body.theme-neon .address-suggestion-row:hover {
+  background-color: #2d0a4e;
+}
+
+body.theme-neon body.theme-neon .bookmarks-bar {
+  background: #0a0014;
+  border-color: rgba(232,121,249,0.35);
+}
+
+body.theme-neon .bookmark-chip {
+  background-color: #1a0630;
+  color: #f0e6ff;
+}
+
+body.theme-neon .bookmark-chip:hover {
+  background-color: #2d0a4e;
+}
+
+body.theme-neon #address-bar {
+  background-color: #1a0630;
+  color: #f0e6ff;
+  border: 1px solid #e879f9;
+}
+
+body.theme-neon #address-bar::placeholder {
+  color: #f472b6;
+}
+
+body.theme-neon .tabs-bar {
+  background: #0a0014;
+  border-color: rgba(232,121,249,0.35);
+}
+
+body.theme-neon .tab {
+  background: #1a0630;
+  color: #f0e6ff;
+}
+
+body.theme-neon .tab:hover {
+  background: #2d0a4e;
+}
+
+body.theme-neon .tab.active {
+  background: #0a0014;
+}
+
+
+/* Cyberpunk Theme */
+body.theme-cyberpunk {
+  background: #0d0221;
+  color: #e0f2fe;
+}
+
+body.theme-cyberpunk .drag-bar {
+  background: #0d0221;
+}
+
+body.theme-cyberpunk .window-btn {
+  color: #e0f2fe;
+}
+
+body.theme-cyberpunk .window-btn:not(.window-btn-close):hover {
+  background-color: rgba(56,189,248,0.35);
+}
+
+body.theme-cyberpunk .toolbar {
+  background: #0d0221;
+  border-color: rgba(56,189,248,0.35);
+}
+
+body.theme-cyberpunk .toolbar button {
+  color: #e0f2fe;
+}
+
+body.theme-cyberpunk .toolbar-icon-btn:hover {
+  background-color: #1b0b3a;
+}
+
+body.theme-cyberpunk .site-menu-popover {
+  background-color: #1b0b3a;
+  border-color: #c026d3;
+  color: #e0f2fe;
+}
+
+body.theme-cyberpunk .address-suggestions {
+  background-color: #1b0b3a;
+  border-color: #c026d3;
+  color: #e0f2fe;
+}
+
+body.theme-cyberpunk .address-suggestion-row:hover {
+  background-color: #2e1155;
+}
+
+body.theme-cyberpunk body.theme-cyberpunk .bookmarks-bar {
+  background: #0d0221;
+  border-color: rgba(56,189,248,0.35);
+}
+
+body.theme-cyberpunk .bookmark-chip {
+  background-color: #1b0b3a;
+  color: #e0f2fe;
+}
+
+body.theme-cyberpunk .bookmark-chip:hover {
+  background-color: #2e1155;
+}
+
+body.theme-cyberpunk #address-bar {
+  background-color: #1b0b3a;
+  color: #e0f2fe;
+  border: 1px solid #c026d3;
+}
+
+body.theme-cyberpunk #address-bar::placeholder {
+  color: #38bdf8;
+}
+
+body.theme-cyberpunk .tabs-bar {
+  background: #0d0221;
+  border-color: rgba(56,189,248,0.35);
+}
+
+body.theme-cyberpunk .tab {
+  background: #1b0b3a;
+  color: #e0f2fe;
+}
+
+body.theme-cyberpunk .tab:hover {
+  background: #2e1155;
+}
+
+body.theme-cyberpunk .tab.active {
+  background: #0d0221;
+}
+
+
+/* Emerald Theme */
+body.theme-emerald {
+  background: #001a0f;
+  color: #d1fae5;
+}
+
+body.theme-emerald .drag-bar {
+  background: #001a0f;
+}
+
+body.theme-emerald .window-btn {
+  color: #d1fae5;
+}
+
+body.theme-emerald .window-btn:not(.window-btn-close):hover {
+  background-color: rgba(52,211,153,0.35);
+}
+
+body.theme-emerald .toolbar {
+  background: #001a0f;
+  border-color: rgba(52,211,153,0.35);
+}
+
+body.theme-emerald .toolbar button {
+  color: #d1fae5;
+}
+
+body.theme-emerald .toolbar-icon-btn:hover {
+  background-color: #00301c;
+}
+
+body.theme-emerald .site-menu-popover {
+  background-color: #00301c;
+  border-color: #10b981;
+  color: #d1fae5;
+}
+
+body.theme-emerald .address-suggestions {
+  background-color: #00301c;
+  border-color: #10b981;
+  color: #d1fae5;
+}
+
+body.theme-emerald .address-suggestion-row:hover {
+  background-color: #00432a;
+}
+
+body.theme-emerald body.theme-emerald .bookmarks-bar {
+  background: #001a0f;
+  border-color: rgba(52,211,153,0.35);
+}
+
+body.theme-emerald .bookmark-chip {
+  background-color: #00301c;
+  color: #d1fae5;
+}
+
+body.theme-emerald .bookmark-chip:hover {
+  background-color: #00432a;
+}
+
+body.theme-emerald #address-bar {
+  background-color: #00301c;
+  color: #d1fae5;
+  border: 1px solid #10b981;
+}
+
+body.theme-emerald #address-bar::placeholder {
+  color: #34d399;
+}
+
+body.theme-emerald .tabs-bar {
+  background: #001a0f;
+  border-color: rgba(52,211,153,0.35);
+}
+
+body.theme-emerald .tab {
+  background: #00301c;
+  color: #d1fae5;
+}
+
+body.theme-emerald .tab:hover {
+  background: #00432a;
+}
+
+body.theme-emerald .tab.active {
+  background: #001a0f;
+}
+
+
+/* Amethyst Theme */
+body.theme-amethyst {
+  background: #170025;
+  color: #f3e8ff;
+}
+
+body.theme-amethyst .drag-bar {
+  background: #170025;
+}
+
+body.theme-amethyst .window-btn {
+  color: #f3e8ff;
+}
+
+body.theme-amethyst .window-btn:not(.window-btn-close):hover {
+  background-color: rgba(168,85,247,0.35);
+}
+
+body.theme-amethyst .toolbar {
+  background: #170025;
+  border-color: rgba(168,85,247,0.35);
+}
+
+body.theme-amethyst .toolbar button {
+  color: #f3e8ff;
+}
+
+body.theme-amethyst .toolbar-icon-btn:hover {
+  background-color: #28053f;
+}
+
+body.theme-amethyst .site-menu-popover {
+  background-color: #28053f;
+  border-color: #a855f7;
+  color: #f3e8ff;
+}
+
+body.theme-amethyst .address-suggestions {
+  background-color: #28053f;
+  border-color: #a855f7;
+  color: #f3e8ff;
+}
+
+body.theme-amethyst .address-suggestion-row:hover {
+  background-color: #3b0a5c;
+}
+
+body.theme-amethyst body.theme-amethyst .bookmarks-bar {
+  background: #170025;
+  border-color: rgba(168,85,247,0.35);
+}
+
+body.theme-amethyst .bookmark-chip {
+  background-color: #28053f;
+  color: #f3e8ff;
+}
+
+body.theme-amethyst .bookmark-chip:hover {
+  background-color: #3b0a5c;
+}
+
+body.theme-amethyst #address-bar {
+  background-color: #28053f;
+  color: #f3e8ff;
+  border: 1px solid #a855f7;
+}
+
+body.theme-amethyst #address-bar::placeholder {
+  color: #c084fc;
+}
+
+body.theme-amethyst .tabs-bar {
+  background: #170025;
+  border-color: rgba(168,85,247,0.35);
+}
+
+body.theme-amethyst .tab {
+  background: #28053f;
+  color: #f3e8ff;
+}
+
+body.theme-amethyst .tab:hover {
+  background: #3b0a5c;
+}
+
+body.theme-amethyst .tab.active {
+  background: #170025;
+}
+
+
+/* Inferno Theme */
+body.theme-inferno {
+  background: #1a0500;
+  color: #ffe4d6;
+}
+
+body.theme-inferno .drag-bar {
+  background: #1a0500;
+}
+
+body.theme-inferno .window-btn {
+  color: #ffe4d6;
+}
+
+body.theme-inferno .window-btn:not(.window-btn-close):hover {
+  background-color: rgba(251,146,60,0.35);
+}
+
+body.theme-inferno .toolbar {
+  background: #1a0500;
+  border-color: rgba(251,146,60,0.35);
+}
+
+body.theme-inferno .toolbar button {
+  color: #ffe4d6;
+}
+
+body.theme-inferno .toolbar-icon-btn:hover {
+  background-color: #2e0900;
+}
+
+body.theme-inferno .site-menu-popover {
+  background-color: #2e0900;
+  border-color: #f97316;
+  color: #ffe4d6;
+}
+
+body.theme-inferno .address-suggestions {
+  background-color: #2e0900;
+  border-color: #f97316;
+  color: #ffe4d6;
+}
+
+body.theme-inferno .address-suggestion-row:hover {
+  background-color: #451400;
+}
+
+body.theme-inferno body.theme-inferno .bookmarks-bar {
+  background: #1a0500;
+  border-color: rgba(251,146,60,0.35);
+}
+
+body.theme-inferno .bookmark-chip {
+  background-color: #2e0900;
+  color: #ffe4d6;
+}
+
+body.theme-inferno .bookmark-chip:hover {
+  background-color: #451400;
+}
+
+body.theme-inferno #address-bar {
+  background-color: #2e0900;
+  color: #ffe4d6;
+  border: 1px solid #f97316;
+}
+
+body.theme-inferno #address-bar::placeholder {
+  color: #fb923c;
+}
+
+body.theme-inferno .tabs-bar {
+  background: #1a0500;
+  border-color: rgba(251,146,60,0.35);
+}
+
+body.theme-inferno .tab {
+  background: #2e0900;
+  color: #ffe4d6;
+}
+
+body.theme-inferno .tab:hover {
+  background: #451400;
+}
+
+body.theme-inferno .tab.active {
+  background: #1a0500;
+}
+
+
+/* Ocean Theme */
+body.theme-ocean {
+  background: #001220;
+  color: #cffafe;
+}
+
+body.theme-ocean .drag-bar {
+  background: #001220;
+}
+
+body.theme-ocean .window-btn {
+  color: #cffafe;
+}
+
+body.theme-ocean .window-btn:not(.window-btn-close):hover {
+  background-color: rgba(45,212,191,0.35);
+}
+
+body.theme-ocean .toolbar {
+  background: #001220;
+  border-color: rgba(45,212,191,0.35);
+}
+
+body.theme-ocean .toolbar button {
+  color: #cffafe;
+}
+
+body.theme-ocean .toolbar-icon-btn:hover {
+  background-color: #00253d;
+}
+
+body.theme-ocean .site-menu-popover {
+  background-color: #00253d;
+  border-color: #2dd4bf;
+  color: #cffafe;
+}
+
+body.theme-ocean .address-suggestions {
+  background-color: #00253d;
+  border-color: #2dd4bf;
+  color: #cffafe;
+}
+
+body.theme-ocean .address-suggestion-row:hover {
+  background-color: #003654;
+}
+
+body.theme-ocean body.theme-ocean .bookmarks-bar {
+  background: #001220;
+  border-color: rgba(45,212,191,0.35);
+}
+
+body.theme-ocean .bookmark-chip {
+  background-color: #00253d;
+  color: #cffafe;
+}
+
+body.theme-ocean .bookmark-chip:hover {
+  background-color: #003654;
+}
+
+body.theme-ocean #address-bar {
+  background-color: #00253d;
+  color: #cffafe;
+  border: 1px solid #2dd4bf;
+}
+
+body.theme-ocean #address-bar::placeholder {
+  color: #5eead4;
+}
+
+body.theme-ocean .tabs-bar {
+  background: #001220;
+  border-color: rgba(45,212,191,0.35);
+}
+
+body.theme-ocean .tab {
+  background: #00253d;
+  color: #cffafe;
+}
+
+body.theme-ocean .tab:hover {
+  background: #003654;
+}
+
+body.theme-ocean .tab.active {
+  background: #001220;
+}
+
+/* Onyx Theme */
+body.theme-onyx {
+  background: #050505;
+  color: #f5f5f5;
+}
+
+body.theme-onyx .drag-bar {
+  background: #050505;
+}
+
+body.theme-onyx .window-btn {
+  color: #f5f5f5;
+}
+
+body.theme-onyx .window-btn:not(.window-btn-close):hover {
+  background-color: rgba(255,255,255,0.14);
+}
+
+body.theme-onyx .toolbar {
+  background: #050505;
+  border-color: rgba(255,255,255,0.14);
+}
+
+body.theme-onyx .toolbar button {
+  color: #f5f5f5;
+}
+
+body.theme-onyx .toolbar-icon-btn:hover {
+  background-color: #141414;
+}
+
+body.theme-onyx .site-menu-popover {
+  background-color: #141414;
+  border-color: #525252;
+  color: #f5f5f5;
+}
+
+body.theme-onyx .address-suggestions {
+  background-color: #141414;
+  border-color: #525252;
+  color: #f5f5f5;
+}
+
+body.theme-onyx .address-suggestion-row:hover {
+  background-color: #1f1f1f;
+}
+
+body.theme-onyx body.theme-onyx .bookmarks-bar {
+  background: #050505;
+  border-color: rgba(255,255,255,0.14);
+}
+
+body.theme-onyx .bookmark-chip {
+  background-color: #141414;
+  color: #f5f5f5;
+}
+
+body.theme-onyx .bookmark-chip:hover {
+  background-color: #1f1f1f;
+}
+
+body.theme-onyx #address-bar {
+  background-color: #141414;
+  color: #f5f5f5;
+  border: 1px solid #525252;
+}
+
+body.theme-onyx #address-bar::placeholder {
+  color: #a3a3a3;
+}
+
+body.theme-onyx .tabs-bar {
+  background: #050505;
+  border-color: rgba(255,255,255,0.14);
+}
+
+body.theme-onyx .tab {
+  background: #141414;
+  color: #f5f5f5;
+}
+
+body.theme-onyx .tab:hover {
+  background: #1f1f1f;
+}
+
+body.theme-onyx .tab.active {
+  background: #050505;
+}
+
+
+/* Nebula Theme */
+body.theme-nebula {
+  background: #0a0620;
+  color: #f3e8ff;
+}
+
+body.theme-nebula .drag-bar {
+  background: #0a0620;
+}
+
+body.theme-nebula .window-btn {
+  color: #f3e8ff;
+}
+
+body.theme-nebula .window-btn:not(.window-btn-close):hover {
+  background-color: rgba(217,70,239,0.35);
+}
+
+body.theme-nebula .toolbar {
+  background: #0a0620;
+  border-color: rgba(217,70,239,0.35);
+}
+
+body.theme-nebula .toolbar button {
+  color: #f3e8ff;
+}
+
+body.theme-nebula .toolbar-icon-btn:hover {
+  background-color: #1a1040;
+}
+
+body.theme-nebula .site-menu-popover {
+  background-color: #1a1040;
+  border-color: #d946ef;
+  color: #f3e8ff;
+}
+
+body.theme-nebula .address-suggestions {
+  background-color: #1a1040;
+  border-color: #d946ef;
+  color: #f3e8ff;
+}
+
+body.theme-nebula .address-suggestion-row:hover {
+  background-color: #2a1a5e;
+}
+
+body.theme-nebula body.theme-nebula .bookmarks-bar {
+  background: #0a0620;
+  border-color: rgba(217,70,239,0.35);
+}
+
+body.theme-nebula .bookmark-chip {
+  background-color: #1a1040;
+  color: #f3e8ff;
+}
+
+body.theme-nebula .bookmark-chip:hover {
+  background-color: #2a1a5e;
+}
+
+body.theme-nebula #address-bar {
+  background-color: #1a1040;
+  color: #f3e8ff;
+  border: 1px solid #d946ef;
+}
+
+body.theme-nebula #address-bar::placeholder {
+  color: #f0abfc;
+}
+
+body.theme-nebula .tabs-bar {
+  background: #0a0620;
+  border-color: rgba(217,70,239,0.35);
+}
+
+body.theme-nebula .tab {
+  background: #1a1040;
+  color: #f3e8ff;
+}
+
+body.theme-nebula .tab:hover {
+  background: #2a1a5e;
+}
+
+body.theme-nebula .tab.active {
+  background: #0a0620;
+}
+
+
+/* Toxic Theme */
+body.theme-toxic {
+  background: #05100a;
+  color: #e5ffe0;
+}
+
+body.theme-toxic .drag-bar {
+  background: #05100a;
+}
+
+body.theme-toxic .window-btn {
+  color: #e5ffe0;
+}
+
+body.theme-toxic .window-btn:not(.window-btn-close):hover {
+  background-color: rgba(163,230,53,0.35);
+}
+
+body.theme-toxic .toolbar {
+  background: #05100a;
+  border-color: rgba(163,230,53,0.35);
+}
+
+body.theme-toxic .toolbar button {
+  color: #e5ffe0;
+}
+
+body.theme-toxic .toolbar-icon-btn:hover {
+  background-color: #0f2015;
+}
+
+body.theme-toxic .site-menu-popover {
+  background-color: #0f2015;
+  border-color: #a3e635;
+  color: #e5ffe0;
+}
+
+body.theme-toxic .address-suggestions {
+  background-color: #0f2015;
+  border-color: #a3e635;
+  color: #e5ffe0;
+}
+
+body.theme-toxic .address-suggestion-row:hover {
+  background-color: #1a3322;
+}
+
+body.theme-toxic body.theme-toxic .bookmarks-bar {
+  background: #05100a;
+  border-color: rgba(163,230,53,0.35);
+}
+
+body.theme-toxic .bookmark-chip {
+  background-color: #0f2015;
+  color: #e5ffe0;
+}
+
+body.theme-toxic .bookmark-chip:hover {
+  background-color: #1a3322;
+}
+
+body.theme-toxic #address-bar {
+  background-color: #0f2015;
+  color: #e5ffe0;
+  border: 1px solid #a3e635;
+}
+
+body.theme-toxic #address-bar::placeholder {
+  color: #bef264;
+}
+
+body.theme-toxic .tabs-bar {
+  background: #05100a;
+  border-color: rgba(163,230,53,0.35);
+}
+
+body.theme-toxic .tab {
+  background: #0f2015;
+  color: #e5ffe0;
+}
+
+body.theme-toxic .tab:hover {
+  background: #1a3322;
+}
+
+body.theme-toxic .tab.active {
+  background: #05100a;
+}
+
+/* Find in page */
+.find-bar {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  width: auto;
+  z-index: 60;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 6px 8px;
+}
+
+.find-bar.hidden {
+  display: none;
+}
+
+#find-input {
+  border: none;
+  outline: none;
+  background: transparent;
+  font-size: 13px;
+  width: 180px;
+  padding: 4px 6px;
+  color: inherit;
+}
+
+.find-matches {
+  font-size: 12px;
+  opacity: 0.55;
+  min-width: 44px;
+  text-align: center;
+  flex-shrink: 0;
+}
+
+.find-btn {
+  width: 26px;
+  height: 26px;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: background-color 0.15s ease;
+}
+
+.find-btn:hover {
+  background-color: rgba(128, 128, 128, 0.15);
+}
+
+/* Toolbar auto-hide (Settings > Appearance). Collapses actual layout
+   height (not just a visual offset) so the webview area genuinely expands
+   to fill the freed space, right up under the drag bar -- which stays
+   visible and is what the mouse actually hovers to bring the toolbar back,
+   since mouse movement over the (out-of-process) webview itself never
+   reaches this document at all. */
+body.auto-hide-toolbar #browser-chrome {
+  overflow: hidden;
+  max-height: 0;
+  transition: max-height 0.18s ease;
+}
+
+/* A generous fixed cap rather than a JS-measured height -- the real content
+   is always well under this, and a fixed value can't go stale (e.g. once
+   the bookmarks bar shows up after the height was first measured). */
+body.auto-hide-toolbar.toolbar-revealed #browser-chrome {
+  max-height: 600px;
+}
+
+.toolbar-reveal-strip {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 6px;
+  z-index: 80;
+  -webkit-app-region: no-drag;
+}
+
+body:not(.auto-hide-toolbar) .toolbar-reveal-strip {
+  display: none;
+}
+
+/* Personalisation (Settings > Appearance) */
+.toolbar-clock {
+  font-size: 12px;
+  font-variant-numeric: tabular-nums;
+  opacity: 0.65;
+  padding: 0 6px;
+  flex-shrink: 0;
+}
+
+.toolbar-clock.hidden {
+  display: none;
+}
+
+.tab.active {
+  box-shadow: inset 0 -2px 0 var(--user-accent, #3b82f6);
+}
+
+.downloads-indicator {
+  background-color: var(--user-accent, #3b82f6);
+}
+
+body.compact-tabs .tab {
+  max-width: 130px;
+  padding: 0 8px;
+  gap: 5px;
+}
+
+body.always-show-tab-close .tab-close {
+  opacity: 1;
+}
