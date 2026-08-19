@@ -977,3 +977,11 @@ body.theme-toxic label > div:first-child {
 .setup-back-btn:hover {
   opacity: 1;
 }
+
+/* No visible scrollbar on the theme step -- still scrolls with the wheel/
+   trackpad, just no chunky OS-styled bar over the tiles. */
+::-webkit-scrollbar {
+  width: 0;
+  height: 0;
+  background: transparent;
+}

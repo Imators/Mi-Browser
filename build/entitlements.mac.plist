@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+  <!-- Electron itself needs these under Hardened Runtime to run at all. -->
+  <key>com.apple.security.cs.allow-jit</key>
+  <true/>
+  <key>com.apple.security.cs.allow-unsigned-executable-memory</key>
+  <true/>
+  <key>com.apple.security.cs.allow-dyld-environment-variables</key>
+  <true/>
+  <key>com.apple.security.cs.disable-library-validation</key>
+  <true/>
+
+  <!-- Sites the user grants camera/mic/location permission to (see
+       permission-manager.js) need these to actually reach the hardware
+       under Hardened Runtime; without them the OS silently denies the
+       request no matter what the user clicked. -->
+  <key>com.apple.security.device.camera</key>
+  <true/>
+  <key>com.apple.security.device.audio-input</key>
+  <true/>
+  <key>com.apple.security.personal-information.location</key>
+  <true/>
+
+  <!-- WebAuthn platform authenticator (Touch ID passkeys) stores/retrieves
+       credentials via the Secure Enclave through Keychain; this is what
+       that access is scoped to. Note: this alone isn't sufficient for
+       passkeys to work in a built app; it also needs to be signed with a
+       real Apple Developer ID (ad-hoc/self-signed builds are refused
+       Keychain access regardless of what's declared here). -->
+  <key>com.apple.security.keychain-access-groups</key>
+  <array>
+    <string>$(AppIdentifierPrefix)com.imators.mibrowser</string>
+  </array>
+</dict>
+</plist>

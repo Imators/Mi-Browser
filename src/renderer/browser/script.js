@@ -308,6 +308,11 @@ function createWebview(tabId, url, isPrivate = false) {
 
   const webview = document.createElement('webview');
   webview.id = `webview-${tabId}`;
+  // Without this, Electron blocks target="_blank" links and window.open()
+  // outright, before it even reaches setWindowOpenHandler or fires
+  // 'new-window' -- silently, with no error and no event to catch. This is
+  // the actual reason "dynamic" links never opened on a real click.
+  webview.setAttribute('allowpopups', 'true');
   if (isPrivate) webview.partition = PRIVATE_PARTITION;
   webview.src = url;
   webview.style.position = 'absolute';
@@ -456,11 +461,13 @@ function createWebview(tabId, url, isPrivate = false) {
     }
   });
 
-  // target="_blank" links / window.open() calls fire this instead of
-  // navigating in place -- without a handler here they silently do nothing.
-  webview.addEventListener('new-window', (e) => {
+  // target="_blank" links / window.open() calls are handled entirely in the
+  // main process (see setWindowOpenHandler in main.js) which is the only
+  // reliable interception point for a <webview> guest; it reaches back here
+  // via 'guest-new-window', matched to this tab through webContentsId.
+  webview.addEventListener('dom-ready', () => {
     const tab = tabs.find(t => t.id === tabId);
-    createTab(e.url, { isPrivate: tab && tab.isPrivate, background: state.openTabsInBackground });
+    if (tab) tab.webContentsId = webview.getWebContentsId();
   });
 
   webview.addEventListener('found-in-page', (e) => {
@@ -503,10 +510,21 @@ function getSearchEngineUrlPrefix(key) {
   return custom ? custom.urlPrefix : SEARCH_ENGINES.google;
 }
 
+// A search engine URL can be given either as a bare prefix ("https://x/?q=",
+// the term gets appended) or with an explicit %s placeholder (the format
+// most sites, e.g. Kagi, actually document/copy-paste). Not substituting %s
+// left it in the URL literally -- which Chromium then can't load, and a
+// failed load of that malformed URL was itself getting fed back in as a new
+// "query" on the next attempt, nesting the mess deeper each time.
+function buildSearchUrl(urlPrefix, query) {
+  const encoded = encodeURIComponent(query);
+  return urlPrefix.includes('%s') ? urlPrefix.replace(/%s/g, encoded) : `${urlPrefix}${encoded}`;
+}
+
 function resolveAddressBarInput(text) {
   let url = text.trim();
   if (!url.startsWith('http://') && !url.startsWith('https://') && !url.startsWith('mi://')) {
-    url = `${getSearchEngineUrlPrefix(state.searchEngine)}${encodeURIComponent(url)}`;
+    url = buildSearchUrl(getSearchEngineUrlPrefix(state.searchEngine), url);
   }
   return url;
 }
@@ -881,6 +899,13 @@ async function refreshDownloadsIndicator() {
 window.electron.downloads.onChange(refreshDownloadsIndicator);
 refreshDownloadsIndicator();
 
+function updateUpdateIndicator(result) {
+  document.getElementById('update-indicator').classList.toggle('hidden', !(result && result.updateAvailable));
+}
+
+window.electron.updates.getCached().then(updateUpdateIndicator);
+window.electron.updates.onStatusChanged(updateUpdateIndicator);
+
 // Right-click on empty tab-bar space (not on a tab itself, that has its own menu)
 document.getElementById('tabs-container').addEventListener('contextmenu', async (e) => {
   if (e.target.closest('.tab')) return;
@@ -983,6 +1008,11 @@ window.electron.app.onOpenPrivateTab(() => {
 
 window.electron.app.onOpenExternalUrl((url) => {
   createTab(url);
+});
+
+window.electron.app.onGuestNewWindow((webContentsId, url) => {
+  const sourceTab = tabs.find(t => t.webContentsId === webContentsId);
+  createTab(url, { isPrivate: sourceTab && sourceTab.isPrivate, background: state.openTabsInBackground });
 });
 
 // --- Find in page ---

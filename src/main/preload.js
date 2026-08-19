@@ -25,6 +25,7 @@ contextBridge.exposeInMainWorld('electron', {
     reset: () => ipcRenderer.invoke('app-reset'),
     onOpenPrivateTab: (callback) => ipcRenderer.on('open-private-tab', () => callback()),
     onOpenExternalUrl: (callback) => ipcRenderer.on('open-external-url', (event, url) => callback(url)),
+    onGuestNewWindow: (callback) => ipcRenderer.on('guest-new-window', (event, webContentsId, url) => callback(webContentsId, url)),
     onMenuEvent: (callback) => {
       const channels = [
         'menu-new-tab', 'menu-new-private-tab', 'menu-reopen-tab', 'menu-close-tab',
@@ -34,6 +35,10 @@ contextBridge.exposeInMainWorld('electron', {
       ];
       channels.forEach((channel) => ipcRenderer.on(channel, () => callback(channel)));
     }
+  },
+  updates: {
+    getCached: () => ipcRenderer.invoke('update-get-cached'),
+    onStatusChanged: (callback) => ipcRenderer.on('update-status-changed', (event, result) => callback(result))
   },
   defaultBrowser: {
     getStatus: () => ipcRenderer.invoke('default-browser-status'),

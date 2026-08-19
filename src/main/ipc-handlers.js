@@ -7,6 +7,8 @@ const passwordManager = require('./password-manager');
 const cookieManager = require('./cookie-manager');
 const downloadManager = require('./download-manager');
 const nativeIntegration = require('./native-integration');
+const securityManager = require('./security-manager');
+const updateManager = require('./update-manager');
 
 function register(mainWindow) {
   ipcMain.handle('store-get', (event, key) => {
@@ -173,6 +175,23 @@ function register(mainWindow) {
       return [];
     }
   });
+
+  ipcMain.handle('security-get', () => {
+    const stored = storage.get('security') || {};
+    return {
+      dnsProvider: securityManager.getDnsProvider(),
+      httpsOnly: stored.httpsOnly === true
+    };
+  });
+
+  ipcMain.handle('security-set', (event, patch) => {
+    const current = storage.get('security') || {};
+    storage.set('security', { ...current, ...patch });
+  });
+
+  ipcMain.handle('update-check', () => updateManager.checkForUpdate());
+  ipcMain.handle('update-get-cached', () => updateManager.getCached());
+  ipcMain.handle('update-download', (event, url) => updateManager.downloadUpdate(url));
 
   ipcMain.handle('choose-downloads-folder', async (event) => {
     const win = BrowserWindow.fromWebContents(event.sender);

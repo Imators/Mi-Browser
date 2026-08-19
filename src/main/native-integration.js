@@ -25,10 +25,16 @@ function wireDownloadProgress(mainWindow) {
 }
 
 // Applies the persisted "launch Mi Browser at login" preference. Only
-// meaningful once packaged (an unpackaged `npm start` dev run would
-// register the Electron binary itself, which isn't useful), but it's safe
-// to call either way -- setLoginItemSettings just no-ops sensibly in dev.
+// meaningful once packaged -- an unpackaged `npm start` dev run isn't
+// "self-responsible" as far as macOS LaunchServices is concerned (it was
+// exec'd from Terminal, not launched via Finder/the Dock), and asking to
+// register a login item in that state doesn't just no-op, it logs a native
+// "Unable to set login item: Operation not permitted" error straight from
+// Chromium's own platform code -- which happens below the JS layer, so no
+// try/catch here can suppress it. Skipping the call entirely when
+// unpackaged is the only way to avoid it; it applies normally once built.
 function applyLoginItemSetting() {
+  if (!app.isPackaged) return;
   const enabled = !!storage.get('launchAtLogin');
   try {
     app.setLoginItemSettings({ openAtLogin: enabled });

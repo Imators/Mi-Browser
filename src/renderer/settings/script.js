@@ -57,6 +57,74 @@ async function loadState() {
   await loadStats();
   await loadPasswords();
   await loadDefaultBrowserStatus();
+  await loadSecurityStatus();
+  await loadUpdateStatus();
+}
+
+async function loadSecurityStatus() {
+  const security = await window.electron.security.get();
+
+  const dnsSelect = document.getElementById('dns-provider-select');
+  dnsSelect.value = security.dnsProvider;
+  const dnsBadge = document.getElementById('dns-badge');
+  if (security.dnsProvider === 'off') {
+    dnsBadge.textContent = 'Off';
+    dnsBadge.className = 'security-badge security-badge-off';
+  } else {
+    dnsBadge.textContent = 'Active';
+    dnsBadge.className = 'security-badge security-badge-on';
+  }
+
+  document.getElementById('https-only-toggle').checked = security.httpsOnly;
+
+  const downloadSafety = { malwareCheck: true, ...(await window.electron.store.get('downloadSafety') || {}) };
+  const malwareBadge = document.getElementById('malware-check-badge');
+  malwareBadge.textContent = downloadSafety.malwareCheck ? 'Active' : 'Off';
+  malwareBadge.className = downloadSafety.malwareCheck ? 'security-badge security-badge-on' : 'security-badge security-badge-off';
+}
+
+function renderUpdateStatus(result) {
+  const upToDateEl = document.getElementById('update-uptodate-state');
+  const availableEl = document.getElementById('update-available-state');
+  const errorEl = document.getElementById('update-error-state');
+  upToDateEl.classList.add('hidden');
+  availableEl.classList.add('hidden');
+  errorEl.classList.add('hidden');
+
+  if (!result) {
+    document.getElementById('update-current-version').textContent = 'Checking…';
+    upToDateEl.classList.remove('hidden');
+    return;
+  }
+
+  if (!result.ok) {
+    document.getElementById('update-error-message').textContent = result.error || 'Unknown error.';
+    errorEl.classList.remove('hidden');
+    return;
+  }
+
+  if (result.updateAvailable) {
+    document.getElementById('update-latest-version').textContent = result.latestVersion;
+    const meta = [result.releaseDate, result.releaseTime].filter(Boolean).join(' at ');
+    document.getElementById('update-release-meta').textContent = meta ? `Released ${meta}` : '';
+    const list = document.getElementById('update-changelog');
+    list.innerHTML = '';
+    (result.changelog || []).forEach((line) => {
+      const li = document.createElement('li');
+      li.textContent = line;
+      list.appendChild(li);
+    });
+    document.getElementById('update-download-btn').classList.toggle('hidden', !result.downloadUrl);
+    availableEl.classList.remove('hidden');
+  } else {
+    document.getElementById('update-current-version').textContent = `Version ${result.currentVersion} — you're up to date.`;
+    upToDateEl.classList.remove('hidden');
+  }
+}
+
+async function loadUpdateStatus() {
+  const cached = await window.electron.updates.getCached();
+  renderUpdateStatus(cached);
 }
 
 function populateSearchEngineOptions(customEngines, selectedValue) {
@@ -463,5 +531,39 @@ document.getElementById('add-search-engine-form').addEventListener('submit', asy
   populateSearchEngineOptions(engines, document.getElementById('search-engine-select').value);
   e.target.reset();
 });
+
+document.getElementById('dns-provider-select').addEventListener('change', async (e) => {
+  await window.electron.security.set({ dnsProvider: e.target.value });
+  loadSecurityStatus();
+});
+
+document.getElementById('https-only-toggle').addEventListener('change', async (e) => {
+  await window.electron.security.set({ httpsOnly: e.target.checked });
+});
+
+document.getElementById('check-updates-btn').addEventListener('click', async () => {
+  const btn = document.getElementById('check-updates-btn');
+  const status = document.getElementById('update-check-status');
+  btn.disabled = true;
+  status.textContent = 'Checking…';
+  const result = await window.electron.updates.check();
+  renderUpdateStatus(result);
+  status.textContent = result.ok ? '' : '';
+  btn.disabled = false;
+  setTimeout(() => { status.textContent = ''; }, 2000);
+});
+
+document.getElementById('update-download-btn').addEventListener('click', async () => {
+  const cached = await window.electron.updates.getCached();
+  if (cached && cached.downloadUrl) {
+    await window.electron.updates.download(cached.downloadUrl);
+    document.getElementById('update-check-status').textContent = 'Downloading… check your Downloads folder.';
+    setTimeout(() => { document.getElementById('update-check-status').textContent = ''; }, 4000);
+  }
+});
+
+if (window.electron.updates.onStatusChanged) {
+  window.electron.updates.onStatusChanged(renderUpdateStatus);
+}
 
 loadState();

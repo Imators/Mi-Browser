@@ -1,6 +1,7 @@
 {
   "name": "mi-browser",
   "version": "1.2.0",
+  "description": "A privacy-respecting desktop web browser with no tracking and no intrusive adverts.",
   "author": "Imators LLC",
   "license": "MIT",
   "main": "src/main/main.js",
@@ -41,7 +42,9 @@
         "zip"
       ],
       "category": "public.app-category.web-browser",
-      "hardenedRuntime": true
+      "hardenedRuntime": true,
+      "entitlements": "build/entitlements.mac.plist",
+      "entitlementsInherit": "build/entitlements.mac.plist"
     },
     "win": {
       "target": [

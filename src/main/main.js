@@ -7,6 +7,13 @@ const permissionManager = require('./permission-manager');
 const downloadManager = require('./download-manager');
 const appMenu = require('./app-menu');
 const nativeIntegration = require('./native-integration');
+const securityManager = require('./security-manager');
+const updateManager = require('./update-manager');
+
+// Also must run before app is ready -- Chromium locks in DNS mode when its
+// network service starts during startup, same as the scheme registration
+// just below.
+securityManager.applyDnsSettings();
 
 // Must run before app is ready: without this, Chromium treats "mi:" as a
 // non-standard scheme, and relative URLs (e.g. <script src="script.js">) on
@@ -160,6 +167,11 @@ app.on('ready', () => {
   session.defaultSession.setSpellCheckerEnabled(spellcheckOn);
   privateSession.setSpellCheckerEnabled(spellcheckOn);
 
+  securityManager.setupHttpsUpgrade(session.defaultSession);
+  securityManager.setupHttpsUpgrade(privateSession);
+  securityManager.applyRealisticUserAgent(session.defaultSession);
+  securityManager.applyRealisticUserAgent(privateSession);
+
   mainWindow = windowManager.createMainWindow();
   ipcHandlers.register(mainWindow);
   cookieManager.start();
@@ -169,6 +181,7 @@ app.on('ready', () => {
   downloadManager.setupSession(privateSession, mainWindow);
   appMenu.setup(mainWindow);
   nativeIntegration.setup(mainWindow);
+  updateManager.setup(mainWindow);
 
   // Guest pages should only ever navigate to real web content or our own
   // internal pages -- never straight to a local file or a devtools-only
@@ -193,6 +206,18 @@ app.on('ready', () => {
       let protocol;
       try { protocol = new URL(targetUrl).protocol; } catch (err) { navEvent.preventDefault(); return; }
       if (!ALLOWED_PROTOCOLS.has(protocol)) navEvent.preventDefault();
+    });
+
+    // target="_blank" links and window.open() calls go through here, not
+    // through a DOM event on the <webview> tag -- without an explicit
+    // handler, Electron's default for a webview guest is to deny the
+    // request outright, which is exactly "links never open on a normal
+    // click" (right-click "open in new tab" works because that's a
+    // completely different path: the app's own context menu building a
+    // fresh tab directly from the link's href, never touching this at all).
+    guestContents.setWindowOpenHandler(({ url }) => {
+      mainWindow.webContents.send('guest-new-window', guestContents.id, url);
+      return { action: 'deny' };
     });
   });
 });

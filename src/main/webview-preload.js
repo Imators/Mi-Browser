@@ -20,6 +20,16 @@ if (location.protocol === 'mi:') {
       chooseDownloadsFolder: () => ipcRenderer.invoke('choose-downloads-folder'),
       setSpellcheckEnabled: (enabled) => ipcRenderer.invoke('set-spellcheck-enabled', enabled)
     },
+    security: {
+      get: () => ipcRenderer.invoke('security-get'),
+      set: (patch) => ipcRenderer.invoke('security-set', patch)
+    },
+    updates: {
+      check: () => ipcRenderer.invoke('update-check'),
+      getCached: () => ipcRenderer.invoke('update-get-cached'),
+      download: (url) => ipcRenderer.invoke('update-download', url),
+      onStatusChanged: (callback) => ipcRenderer.on('update-status-changed', (event, result) => callback(result))
+    },
     import: {
       detectBrowsers: () => ipcRenderer.invoke('detect-browsers'),
       importData: (browserName, selections) => ipcRenderer.invoke('import-data', browserName, selections)

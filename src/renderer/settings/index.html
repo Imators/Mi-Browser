@@ -24,6 +24,7 @@
 
         <div>
           <p class="text-xs font-semibold uppercase opacity-50 px-3 mb-1">Privacy &amp; security</p>
+          <a href="#security" class="settings-nav-link block px-3 py-2 rounded-lg text-sm font-medium">Security</a>
           <a href="#privacy" class="settings-nav-link block px-3 py-2 rounded-lg text-sm font-medium">Privacy &amp; data</a>
           <a href="#downloads-safety" class="settings-nav-link block px-3 py-2 rounded-lg text-sm font-medium">Download safety</a>
           <a href="#passwords" class="settings-nav-link block px-3 py-2 rounded-lg text-sm font-medium">Passwords</a>
@@ -38,6 +39,7 @@
         <div>
           <p class="text-xs font-semibold uppercase opacity-50 px-3 mb-1">Help</p>
           <a href="#shortcuts" class="settings-nav-link block px-3 py-2 rounded-lg text-sm font-medium">Shortcuts</a>
+          <a href="#updates" class="settings-nav-link block px-3 py-2 rounded-lg text-sm font-medium">Updates</a>
           <a href="#about" class="settings-nav-link block px-3 py-2 rounded-lg text-sm font-medium">About</a>
           <a href="#reset" class="settings-nav-link block px-3 py-2 rounded-lg text-sm font-medium">Reset</a>
         </div>
@@ -379,8 +381,66 @@
             <input type="text" id="add-engine-url" placeholder="https://.../search?q=" required class="px-4 py-2.5 rounded-lg border-2 text-sm settings-select">
             <button type="submit" class="px-5 py-2.5 rounded-lg font-semibold transition primary-btn">Add</button>
           </form>
-          <p class="text-xs opacity-60 mb-3">The URL should be everything before your search term — Mi Browser appends the term (URL-encoded) straight after it.</p>
+          <p class="text-xs opacity-60 mb-3">Either paste a URL with <code>%s</code> where the search term goes (most sites' own instructions use this, e.g. Kagi), or just the part before your term — Mi Browser appends it (URL-encoded) automatically either way.</p>
           <div id="custom-engines-list" class="space-y-2"></div>
+        </div>
+      </section>
+
+      <section id="security" class="mb-14 scroll-mt-8">
+        <h2 class="text-xl font-semibold mb-1">Security</h2>
+        <p class="text-sm opacity-70 mb-4">What Mi Browser is doing, right now, to keep your connection and your files safe.</p>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
+          <div class="card p-5 rounded-lg border-2">
+            <div class="flex items-center justify-between mb-2">
+              <p class="font-semibold flex items-center gap-2">
+                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="10" rx="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+                Sandboxed browsing
+              </p>
+              <span class="security-badge security-badge-on">Always on</span>
+            </div>
+            <p class="text-sm opacity-75">Every tab runs in an isolated, sandboxed process — a malicious page can't reach the rest of your computer or your other tabs.</p>
+          </div>
+
+          <div class="card p-5 rounded-lg border-2">
+            <div class="flex items-center justify-between mb-2">
+              <p class="font-semibold flex items-center gap-2">
+                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><line x1="3" y1="12" x2="21" y2="12"></line><path d="M12 3a15 15 0 0 1 0 18a15 15 0 0 1 0-18z"></path></svg>
+                Encrypted DNS
+              </p>
+              <span id="dns-badge" class="security-badge">&mdash;</span>
+            </div>
+            <p class="text-sm opacity-75 mb-3">Looks up site addresses over an encrypted connection, so your Wi-Fi network or ISP can't see which sites you're visiting just from DNS traffic.</p>
+            <select id="dns-provider-select" class="w-full px-3 py-2 rounded-lg border-2 text-sm settings-select">
+              <option value="cloudflare">Cloudflare (1.1.1.1)</option>
+              <option value="google">Google</option>
+              <option value="quad9">Quad9</option>
+              <option value="off">Off</option>
+            </select>
+            <p class="text-xs opacity-60 mt-2">Changing this needs a restart of Mi Browser to take effect.</p>
+          </div>
+
+          <div class="card p-5 rounded-lg border-2">
+            <div class="flex items-center justify-between mb-2">
+              <p class="font-semibold flex items-center gap-2">
+                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="10" rx="2"></rect><path d="M7 11V7a5 5 0 0 1 9.9-1"></path></svg>
+                HTTPS-Only Mode
+              </p>
+              <input type="checkbox" id="https-only-toggle" class="w-5 h-5">
+            </div>
+            <p class="text-sm opacity-75">Upgrades every site to a secure connection automatically. Pages that only work over plain HTTP (some older or local devices) will fail to load rather than being shown insecurely.</p>
+          </div>
+
+          <div class="card p-5 rounded-lg border-2">
+            <div class="flex items-center justify-between mb-2">
+              <p class="font-semibold flex items-center gap-2">
+                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
+                Risky download warnings
+              </p>
+              <span id="malware-check-badge" class="security-badge">&mdash;</span>
+            </div>
+            <p class="text-sm opacity-75">Pauses and warns on file types commonly used to spread malware before they land on disk. Manage this under <a href="#downloads-safety" class="underline font-medium">Download safety</a>.</p>
+          </div>
         </div>
       </section>
 
@@ -544,6 +604,41 @@
           </div>
         </div>
         <p class="text-sm opacity-70 mt-4">Right-click a tab, the page, or the window bar for more options too.</p>
+      </section>
+
+      <section id="updates" class="mb-14 scroll-mt-8">
+        <h2 class="text-xl font-semibold mb-1">Updates</h2>
+        <p class="text-sm opacity-70 mb-4">Mi Browser checks for new versions automatically every few hours.</p>
+
+        <div class="card p-6 rounded-lg border-2">
+          <div id="update-uptodate-state">
+            <p class="font-semibold mb-1">You're on the latest version</p>
+            <p id="update-current-version" class="text-sm opacity-75">Version 1.0.0</p>
+          </div>
+
+          <div id="update-available-state" class="hidden">
+            <div class="flex items-start justify-between gap-4 mb-3">
+              <div>
+                <p class="font-semibold mb-1">A new version is available: <span id="update-latest-version"></span></p>
+                <p id="update-release-meta" class="text-sm opacity-75"></p>
+              </div>
+              <button id="update-download-btn" class="shrink-0 px-5 py-2.5 rounded-lg font-semibold transition primary-btn">Download update</button>
+            </div>
+            <div class="mt-3 pt-3 border-t">
+              <p class="text-xs font-semibold uppercase opacity-60 mb-2">What's new</p>
+              <ul id="update-changelog" class="text-sm opacity-80 space-y-1 list-disc list-inside"></ul>
+            </div>
+            <p class="text-xs opacity-60 mt-3">Downloads straight to your Downloads folder — open the installer from there to finish updating.</p>
+          </div>
+
+          <div id="update-error-state" class="hidden">
+            <p class="font-semibold mb-1">Couldn't check for updates</p>
+            <p id="update-error-message" class="text-sm opacity-75"></p>
+          </div>
+
+          <button id="check-updates-btn" class="mt-4 px-5 py-2.5 rounded-lg font-semibold transition border-2 hover:opacity-80">Check for updates now</button>
+          <span id="update-check-status" class="text-sm ml-3 opacity-75"></span>
+        </div>
       </section>
 
       <section id="about" class="mb-14 scroll-mt-8">
