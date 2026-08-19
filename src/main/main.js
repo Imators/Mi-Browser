@@ -1,4 +1,4 @@
-const { app, BrowserWindow, ipcMain, protocol, session, net } = require('electron');
+const { app, BrowserWindow, ipcMain, protocol, session, net, shell, Notification } = require('electron');
 const path = require('path');
 const windowManager = require('./window-manager');
 const ipcHandlers = require('./ipc-handlers');
@@ -11,6 +11,7 @@ const securityManager = require('./security-manager');
 const updateManager = require('./update-manager');
 
 securityManager.applyDnsSettings();
+securityManager.applyUserAgentClientHints();
 
 protocol.registerSchemesAsPrivileged([
   {
@@ -129,10 +130,10 @@ app.on('ready', () => {
   session.defaultSession.setSpellCheckerEnabled(spellcheckOn);
   privateSession.setSpellCheckerEnabled(spellcheckOn);
 
-  securityManager.setupHttpsUpgrade(session.defaultSession);
-  securityManager.setupHttpsUpgrade(privateSession);
   securityManager.applyRealisticUserAgent(session.defaultSession);
   securityManager.applyRealisticUserAgent(privateSession);
+  securityManager.setupRequestInterception(session.defaultSession, openGoogleSignInExternally);
+  securityManager.setupRequestInterception(privateSession, openGoogleSignInExternally);
 
   mainWindow = windowManager.createMainWindow();
   ipcHandlers.register(mainWindow);
@@ -156,14 +157,33 @@ app.on('ready', () => {
     webPreferences.backgroundThrottling = false;
   });
 
+  function openGoogleSignInExternally(targetUrl) {
+    shell.openExternal(targetUrl);
+    if (Notification.isSupported()) {
+      new Notification({
+        title: 'Opened in your default browser',
+        body: 'Google blocks sign-in inside embedded browsers like Mi Browser, so this opened in your system browser instead.'
+      }).show();
+    }
+  }
+
   mainWindow.webContents.on('did-attach-webview', (event, guestContents) => {
     guestContents.on('will-navigate', (navEvent, targetUrl) => {
+      if (securityManager.isGoogleSignInUrl(targetUrl)) {
+        navEvent.preventDefault();
+        openGoogleSignInExternally(targetUrl);
+        return;
+      }
       let protocol;
       try { protocol = new URL(targetUrl).protocol; } catch (err) { navEvent.preventDefault(); return; }
       if (!ALLOWED_PROTOCOLS.has(protocol)) navEvent.preventDefault();
     });
 
     guestContents.setWindowOpenHandler(({ url }) => {
+      if (securityManager.isGoogleSignInUrl(url)) {
+        openGoogleSignInExternally(url);
+        return { action: 'deny' };
+      }
       mainWindow.webContents.send('guest-new-window', guestContents.id, url);
       return { action: 'deny' };
     });

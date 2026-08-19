@@ -200,6 +200,41 @@
               <p class="font-semibold text-center text-sm">Toxic</p>
             </div>
           </label>
+          <label class="cursor-pointer">
+            <input type="radio" name="theme" value="sakura" class="hidden">
+            <div class="theme-option card p-4 rounded-lg border-2 shadow-sm hover:shadow-md transition">
+              <div class="w-full h-16 rounded mb-2" style="background: linear-gradient(to bottom, #fdf2f8, #f9a8d4);"></div>
+              <p class="font-semibold text-center text-sm">Sakura</p>
+            </div>
+          </label>
+          <label class="cursor-pointer">
+            <input type="radio" name="theme" value="arctic" class="hidden">
+            <div class="theme-option card p-4 rounded-lg border-2 shadow-sm hover:shadow-md transition">
+              <div class="w-full h-16 rounded mb-2" style="background: linear-gradient(to bottom, #f0f9ff, #bae6fd);"></div>
+              <p class="font-semibold text-center text-sm">Arctic</p>
+            </div>
+          </label>
+          <label class="cursor-pointer">
+            <input type="radio" name="theme" value="solar" class="hidden">
+            <div class="theme-option card p-4 rounded-lg border-2 shadow-sm hover:shadow-md transition">
+              <div class="w-full h-16 rounded mb-2" style="background: linear-gradient(to bottom, #fffbeb, #fde68a);"></div>
+              <p class="font-semibold text-center text-sm">Solar</p>
+            </div>
+          </label>
+          <label class="cursor-pointer">
+            <input type="radio" name="theme" value="sage" class="hidden">
+            <div class="theme-option card p-4 rounded-lg border-2 shadow-sm hover:shadow-md transition">
+              <div class="w-full h-16 rounded mb-2" style="background: linear-gradient(to bottom, #f4f6f2, #cdd8c2);"></div>
+              <p class="font-semibold text-center text-sm">Sage</p>
+            </div>
+          </label>
+          <label class="cursor-pointer">
+            <input type="radio" name="theme" value="espresso" class="hidden">
+            <div class="theme-option card p-4 rounded-lg border-2 shadow-sm hover:shadow-md transition">
+              <div class="w-full h-16 rounded mb-2" style="background: linear-gradient(to bottom, #1e140f, #4a3527);"></div>
+              <p class="font-semibold text-center text-sm">Espresso</p>
+            </div>
+          </label>
         </div>
 
         <div class="card p-5 rounded-lg border-2 mt-4">
@@ -366,6 +401,144 @@
               <p class="text-sm opacity-75">Underlines misspelt words in text fields across the web</p>
             </div>
           </label>
+          <label class="flex items-start p-4 rounded-lg border-2 card cursor-pointer hover:opacity-80 transition">
+            <input type="checkbox" class="custom-toggle w-5 h-5 mt-1" data-custom="boldActiveTab">
+            <div class="ml-4 flex-1">
+              <p class="font-semibold">Bold the active tab's title</p>
+              <p class="text-sm opacity-75">Makes it easier to spot which tab you're on at a glance</p>
+            </div>
+          </label>
+          <label class="flex items-start p-4 rounded-lg border-2 card cursor-pointer hover:opacity-80 transition">
+            <input type="checkbox" class="custom-toggle w-5 h-5 mt-1" data-custom="middleClickCloseTab">
+            <div class="ml-4 flex-1">
+              <p class="font-semibold">Middle-click a tab to close it</p>
+              <p class="text-sm opacity-75">A quick way to close tabs without aiming for the ✕</p>
+            </div>
+          </label>
+          <label class="flex items-start p-4 rounded-lg border-2 card cursor-pointer hover:opacity-80 transition">
+            <input type="checkbox" class="custom-toggle w-5 h-5 mt-1" data-custom="alwaysShowBookmarksBar">
+            <div class="ml-4 flex-1">
+              <p class="font-semibold">Always show the bookmarks bar</p>
+              <p class="text-sm opacity-75">Instead of hiding it when you have no bookmarks yet</p>
+            </div>
+          </label>
+          <label class="flex items-start p-4 rounded-lg border-2 card cursor-pointer hover:opacity-80 transition">
+            <input type="checkbox" class="custom-toggle w-5 h-5 mt-1" data-custom="sharpCorners">
+            <div class="ml-4 flex-1">
+              <p class="font-semibold">Sharp corners</p>
+              <p class="text-sm opacity-75">Swaps rounded toolbar and tab corners for sharp ones</p>
+            </div>
+          </label>
+          <label class="flex items-start p-4 rounded-lg border-2 card cursor-pointer hover:opacity-80 transition">
+            <input type="checkbox" class="custom-toggle w-5 h-5 mt-1" data-custom="reduceMotion">
+            <div class="ml-4 flex-1">
+              <p class="font-semibold">Reduce motion</p>
+              <p class="text-sm opacity-75">Cuts down animations and transitions across the interface</p>
+            </div>
+          </label>
+          <label class="flex items-start p-4 rounded-lg border-2 card cursor-pointer hover:opacity-80 transition">
+            <input type="checkbox" class="custom-toggle w-5 h-5 mt-1" data-custom="underlineLinksOnHover">
+            <div class="ml-4 flex-1">
+              <p class="font-semibold">Underline links on hover</p>
+              <p class="text-sm opacity-75">Applies to the pages you visit, not Mi Browser's own interface</p>
+            </div>
+          </label>
+          <label class="flex items-start p-4 rounded-lg border-2 card cursor-pointer hover:opacity-80 transition">
+            <input type="checkbox" class="custom-toggle w-5 h-5 mt-1" data-custom="pauseAutoplayVideos">
+            <div class="ml-4 flex-1">
+              <p class="font-semibold">Block autoplay videos</p>
+              <p class="text-sm opacity-75">Video only plays after you click it, on newly opened tabs</p>
+            </div>
+          </label>
+          <label class="flex items-start p-4 rounded-lg border-2 card cursor-pointer hover:opacity-80 transition">
+            <input type="checkbox" class="custom-toggle w-5 h-5 mt-1" data-custom="addressBarHistorySuggestions" data-default="on">
+            <div class="ml-4 flex-1">
+              <p class="font-semibold">Suggest history in the address bar</p>
+              <p class="text-sm opacity-75">Matching pages you've visited before show up as you type</p>
+            </div>
+          </label>
+          <label class="flex items-start p-4 rounded-lg border-2 card cursor-pointer hover:opacity-80 transition">
+            <input type="checkbox" class="custom-toggle w-5 h-5 mt-1" data-custom="addressBarBookmarkSuggestions" data-default="on">
+            <div class="ml-4 flex-1">
+              <p class="font-semibold">Suggest bookmarks in the address bar</p>
+              <p class="text-sm opacity-75">Matching bookmarks show up as you type</p>
+            </div>
+          </label>
+          <label class="flex items-start p-4 rounded-lg border-2 card cursor-pointer hover:opacity-80 transition">
+            <input type="checkbox" class="custom-toggle w-5 h-5 mt-1" data-custom="selectAddressBarOnFocus">
+            <div class="ml-4 flex-1">
+              <p class="font-semibold">Select the address bar text on focus</p>
+              <p class="text-sm opacity-75">Type straight away to replace it, instead of clicking to place your cursor</p>
+            </div>
+          </label>
+          <label class="flex items-start p-4 rounded-lg border-2 card cursor-pointer hover:opacity-80 transition">
+            <input type="checkbox" class="custom-toggle w-5 h-5 mt-1" data-custom="warnOnActiveDownloadsClose">
+            <div class="ml-4 flex-1">
+              <p class="font-semibold">Warn before closing with a download in progress</p>
+              <p class="text-sm opacity-75">Gives you a chance to let it finish first</p>
+            </div>
+          </label>
+          <label class="flex items-start p-4 rounded-lg border-2 card cursor-pointer hover:opacity-80 transition">
+            <input type="checkbox" class="custom-toggle w-5 h-5 mt-1" data-custom="autoOpenDownloadsFolder">
+            <div class="ml-4 flex-1">
+              <p class="font-semibold">Reveal downloads in the folder when finished</p>
+              <p class="text-sm opacity-75">Opens the file's folder as soon as a download completes</p>
+            </div>
+          </label>
+          <label class="flex items-start p-4 rounded-lg border-2 card cursor-pointer hover:opacity-80 transition">
+            <input type="checkbox" class="custom-toggle w-5 h-5 mt-1" data-custom="hideWhyButton">
+            <div class="ml-4 flex-1">
+              <p class="font-semibold">Hide "Why Mi Browser" on New Tab</p>
+              <p class="text-sm opacity-75">Removes the button from the New Tab page</p>
+            </div>
+          </label>
+          <label class="flex items-start p-4 rounded-lg border-2 card cursor-pointer hover:opacity-80 transition">
+            <input type="checkbox" class="custom-toggle w-5 h-5 mt-1" data-custom="hideToolsButton">
+            <div class="ml-4 flex-1">
+              <p class="font-semibold">Hide "Tools" on New Tab</p>
+              <p class="text-sm opacity-75">Removes the button from the New Tab page</p>
+            </div>
+          </label>
+          <label class="flex items-start p-4 rounded-lg border-2 card cursor-pointer hover:opacity-80 transition">
+            <input type="checkbox" class="custom-toggle w-5 h-5 mt-1" data-custom="newTabGreeting">
+            <div class="ml-4 flex-1">
+              <p class="font-semibold">Show a greeting on New Tab</p>
+              <p class="text-sm opacity-75">"Good morning" / "Good afternoon" / "Good evening", above the Mi Browser mark</p>
+            </div>
+          </label>
+        </div>
+
+        <div class="card p-5 rounded-lg border-2 mb-3 grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div>
+            <label class="block text-sm font-semibold mb-2" for="toolbar-icon-size-select">Toolbar icon size</label>
+            <select id="toolbar-icon-size-select" class="w-full px-3 py-2 rounded-lg border-2 text-sm settings-select">
+              <option value="comfortable">Comfortable</option>
+              <option value="compact">Compact</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-sm font-semibold mb-2" for="ui-font-style-select">Interface font</label>
+            <select id="ui-font-style-select" class="w-full px-3 py-2 rounded-lg border-2 text-sm settings-select">
+              <option value="system">System default</option>
+              <option value="rounded">Rounded</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="card p-5 rounded-lg border-2 mb-3">
+          <p class="font-semibold mb-1">New Tab background tint</p>
+          <p class="text-sm opacity-75 mb-3">Layers a background colour on the New Tab page, on top of your theme.</p>
+          <input type="color" id="new-tab-bg-tint-input" class="w-12 h-10 rounded border-2 cursor-pointer">
+        </div>
+
+        <div class="card p-5 rounded-lg border-2 mb-3">
+          <p class="font-semibold mb-2">New tab opens</p>
+          <select id="new-tab-destination-select" class="w-full px-3 py-2 rounded-lg border-2 text-sm settings-select mb-2">
+            <option value="newtab">Mi Browser's New Tab page</option>
+            <option value="blank">A blank page</option>
+            <option value="custom">A custom URL</option>
+          </select>
+          <input type="text" id="new-tab-destination-url-input" placeholder="https://example.com" class="hidden w-full px-4 py-2.5 rounded-lg border-2 text-sm settings-select">
         </div>
 
         <div class="card p-5 rounded-lg border-2 mb-3">
@@ -417,7 +590,10 @@
               <option value="quad9">Quad9</option>
               <option value="off">Off</option>
             </select>
-            <p class="text-xs opacity-60 mt-2">Changing this needs a restart of Mi Browser to take effect.</p>
+            <div id="dns-restart-banner" class="hidden mt-3 p-3 rounded-lg border-2 flex items-center justify-between gap-3 text-sm">
+              <span id="dns-restart-text"></span>
+              <button id="dns-restart-btn" class="px-3 py-1.5 rounded-lg font-semibold primary-btn whitespace-nowrap">Restart now</button>
+            </div>
           </div>
 
           <div class="card p-5 rounded-lg border-2">

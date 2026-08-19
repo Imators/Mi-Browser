@@ -346,6 +346,86 @@
       --tool-item-bg: #0f2015;
     }
 
+    body.theme-sakura {
+      --bg: #fdf2f8;
+      --text: #831843;
+      --text-secondary: #db2777;
+      --surface: #ffffff;
+      --border: #f9a8d4;
+      --border-hover: #f472b6;
+      --accent: #db2777;
+      --accent-hover: #be185d;
+      --accent-text: #ffffff;
+      --overlay-bg: #fdf2f8;
+      --overlay-close-bg: #fce7f3;
+      --overlay-close-bg-hover: #fbcfe8;
+      --tool-item-bg: #ffffff;
+    }
+
+    body.theme-arctic {
+      --bg: #f0f9ff;
+      --text: #0c4a6e;
+      --text-secondary: #0284c7;
+      --surface: #ffffff;
+      --border: #bae6fd;
+      --border-hover: #7dd3fc;
+      --accent: #0ea5e9;
+      --accent-hover: #0284c7;
+      --accent-text: #ffffff;
+      --overlay-bg: #f0f9ff;
+      --overlay-close-bg: #e0f2fe;
+      --overlay-close-bg-hover: #bae6fd;
+      --tool-item-bg: #ffffff;
+    }
+
+    body.theme-solar {
+      --bg: #fffbeb;
+      --text: #78350f;
+      --text-secondary: #d97706;
+      --surface: #ffffff;
+      --border: #fde68a;
+      --border-hover: #fcd34d;
+      --accent: #f59e0b;
+      --accent-hover: #d97706;
+      --accent-text: #1c1917;
+      --overlay-bg: #fffbeb;
+      --overlay-close-bg: #fef3c7;
+      --overlay-close-bg-hover: #fde68a;
+      --tool-item-bg: #ffffff;
+    }
+
+    body.theme-sage {
+      --bg: #f4f6f2;
+      --text: #33422f;
+      --text-secondary: #6b8055;
+      --surface: #ffffff;
+      --border: #cdd8c2;
+      --border-hover: #adbf9a;
+      --accent: #7a8f5f;
+      --accent-hover: #667a4d;
+      --accent-text: #ffffff;
+      --overlay-bg: #f4f6f2;
+      --overlay-close-bg: #e6ebe0;
+      --overlay-close-bg-hover: #cdd8c2;
+      --tool-item-bg: #ffffff;
+    }
+
+    body.theme-espresso {
+      --bg: #1e140f;
+      --text: #efe3d8;
+      --text-secondary: #c9a98a;
+      --surface: #2c1e16;
+      --border: #4a3527;
+      --border-hover: #6b4d38;
+      --accent: #c17a4a;
+      --accent-hover: #a8663a;
+      --accent-text: #1e140f;
+      --overlay-bg: #1e140f;
+      --overlay-close-bg: #2c1e16;
+      --overlay-close-bg-hover: #4a3527;
+      --tool-item-bg: #2c1e16;
+    }
+
     body.theme-private {
       --bg: #000000;
       --text: #f5f5f5;
@@ -373,6 +453,33 @@
       min-height: 100vh;
       padding: 40px;
       transition: background 0.2s ease, color 0.2s ease;
+    }
+
+    .google-redirect-banner {
+      position: fixed;
+      top: 16px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 18px;
+      background: var(--surface);
+      border: 1.5px solid var(--border);
+      border-radius: 14px;
+      font-size: 13px;
+      color: var(--text);
+      max-width: 90vw;
+      z-index: 10;
+    }
+
+    .google-redirect-banner button {
+      border: none;
+      background: transparent;
+      color: var(--text-secondary);
+      cursor: pointer;
+      font-size: 16px;
+      line-height: 1;
     }
 
     .logo-text {
@@ -491,6 +598,186 @@
       border-color: var(--border-hover);
       box-shadow: 0 4px 24px rgba(0, 0, 0, 0.12);
       transform: translateY(-2px);
+    }
+
+    .shortcuts-panel {
+      width: 100%;
+      max-width: 560px;
+      margin-top: 28px;
+      padding: 18px 20px 20px;
+      background: var(--tool-item-bg);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+    }
+
+    .shortcuts-panel-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 14px;
+    }
+
+    .shortcuts-panel-title {
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      color: var(--text-secondary);
+    }
+
+    .shortcuts-add-icon-btn {
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      border: 1.5px solid var(--border);
+      background: transparent;
+      color: var(--text-secondary);
+      font-size: 15px;
+      line-height: 1;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.15s ease;
+    }
+
+    .shortcuts-add-icon-btn:hover {
+      border-color: var(--border-hover);
+      color: var(--text);
+    }
+
+    .shortcuts-empty {
+      font-size: 13px;
+      color: var(--text-secondary);
+      text-align: center;
+      padding: 8px 0 2px;
+    }
+
+    .shortcuts-row {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, 76px);
+      gap: 14px;
+      justify-content: start;
+    }
+
+    .shortcut-tile {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      padding: 14px 6px 10px;
+      width: 76px;
+      background: var(--surface);
+      border: 1.5px solid var(--border);
+      border-radius: 14px;
+      cursor: pointer;
+      position: relative;
+      transition: all 0.2s ease;
+    }
+
+    .shortcut-tile:hover {
+      border-color: var(--border-hover);
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+      transform: translateY(-2px);
+    }
+
+    .shortcut-avatar {
+      width: 34px;
+      height: 34px;
+      border-radius: 10px;
+      background: var(--accent);
+      color: var(--accent-text);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 600;
+      font-size: 14px;
+      flex-shrink: 0;
+    }
+
+    .shortcut-name {
+      font-size: 11px;
+      font-weight: 500;
+      color: var(--text);
+      text-align: center;
+      max-width: 100%;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .shortcut-tile .shortcut-remove {
+      position: absolute;
+      top: 4px;
+      right: 4px;
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--overlay-close-bg);
+      font-size: 9px;
+      opacity: 0;
+      transition: opacity 0.15s ease;
+    }
+
+    .shortcut-tile:hover .shortcut-remove {
+      opacity: 1;
+    }
+
+    .shortcut-tile .shortcut-remove:hover {
+      background: var(--overlay-close-bg-hover);
+    }
+
+    .shortcut-add-form {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      padding: 12px;
+      background: var(--surface);
+      border: 1.5px solid var(--border);
+      border-radius: 14px;
+    }
+
+    .shortcut-add-form .shortcut-add-inputs {
+      display: flex;
+      gap: 6px;
+    }
+
+    .shortcut-add-form input {
+      flex: 1;
+      min-width: 0;
+      padding: 6px 10px;
+      font-size: 13px;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      background: var(--bg);
+      color: var(--text);
+    }
+
+    .shortcut-add-form .shortcut-add-actions {
+      display: flex;
+      gap: 6px;
+      justify-content: flex-end;
+    }
+
+    .shortcut-add-form button {
+      padding: 6px 12px;
+      font-size: 13px;
+      font-weight: 600;
+      border: none;
+      border-radius: 8px;
+      background: var(--accent);
+      color: var(--accent-text);
+      cursor: pointer;
+    }
+
+    .shortcut-add-form .shortcut-add-cancel {
+      background: transparent;
+      color: var(--text-secondary);
+      font-weight: 400;
     }
 
     .overlay {
@@ -632,6 +919,12 @@
 </head>
 <body>
 
+  <div class="google-redirect-banner" id="google-redirect-banner" style="display:none;">
+    <span>Google blocks sign-in inside embedded browsers, so Mi Browser opened it in your default browser instead.</span>
+    <button id="google-redirect-banner-close" type="button">✕</button>
+  </div>
+
+  <p id="greeting-text" class="logo-tagline" style="display:none;"></p>
   <h1 class="logo-text">Mi Browser</h1>
   <p class="logo-tagline">They don’t know your name anymore</p>
 
@@ -652,6 +945,15 @@
   <div class="buttons-container">
     <button class="action-button" id="why-btn">Why Mi Browser</button>
     <button class="action-button" id="tools-btn">Tools</button>
+  </div>
+
+  <div class="shortcuts-panel" id="shortcuts-panel">
+    <div class="shortcuts-panel-header">
+      <span class="shortcuts-panel-title">Shortcuts</span>
+      <button type="button" class="shortcuts-add-icon-btn" id="shortcuts-add-btn" title="Add a shortcut">+</button>
+    </div>
+    <p class="shortcuts-empty" id="shortcuts-empty">No shortcuts yet — add your favourite pages here.</p>
+    <div class="shortcuts-row" id="shortcuts-row"></div>
   </div>
 
   <div class="overlay" id="why-overlay">
@@ -743,6 +1045,138 @@
     };
     var searchEngine = 'google';
 
+    function applyNewTabCustomization(c) {
+      c = c || {};
+      document.body.style.setProperty('--bg', c.newTabBackgroundTint || '');
+
+      document.getElementById('why-btn').style.display = c.hideWhyButton ? 'none' : '';
+      document.getElementById('tools-btn').style.display = c.hideToolsButton ? 'none' : '';
+
+      var greeting = document.getElementById('greeting-text');
+      if (c.newTabGreeting) {
+        var hour = new Date().getHours();
+        var text = hour < 12 ? 'Good morning' : hour < 18 ? 'Good afternoon' : 'Good evening';
+        greeting.textContent = text;
+        greeting.style.display = '';
+      } else {
+        greeting.style.display = 'none';
+      }
+
+      renderShortcuts(c.customShortcuts || []);
+    }
+
+    function shortcutInitial(name) {
+      var trimmed = (name || '').trim();
+      return trimmed ? trimmed.charAt(0).toUpperCase() : '?';
+    }
+
+    function renderShortcuts(shortcuts) {
+      var row = document.getElementById('shortcuts-row');
+      var empty = document.getElementById('shortcuts-empty');
+      var addBtn = document.getElementById('shortcuts-add-btn');
+      row.innerHTML = '';
+
+      empty.style.display = shortcuts.length === 0 ? '' : 'none';
+      row.style.display = shortcuts.length === 0 ? 'none' : 'grid';
+      addBtn.style.display = shortcuts.length < 6 ? '' : 'none';
+
+      shortcuts.forEach(function(s, index) {
+        var tile = document.createElement('div');
+        tile.className = 'shortcut-tile';
+        tile.title = s.name;
+        tile.innerHTML =
+          '<div class="shortcut-avatar"></div>' +
+          '<span class="shortcut-name"></span>' +
+          '<span class="shortcut-remove">✕</span>';
+        tile.querySelector('.shortcut-avatar').textContent = shortcutInitial(s.name);
+        tile.querySelector('.shortcut-name').textContent = s.name;
+        tile.addEventListener('click', function(e) {
+          if (e.target.classList.contains('shortcut-remove')) {
+            e.stopPropagation();
+            shortcuts.splice(index, 1);
+            window.electron.store.get('customization').then(function(c) {
+              c = c || {};
+              c.customShortcuts = shortcuts;
+              window.electron.store.set('customization', c);
+              renderShortcuts(shortcuts);
+            });
+            return;
+          }
+          window.location.href = s.url;
+        });
+        row.appendChild(tile);
+      });
+    }
+
+    function openAddShortcutForm(shortcuts) {
+      var panel = document.getElementById('shortcuts-panel');
+      var row = document.getElementById('shortcuts-row');
+      var empty = document.getElementById('shortcuts-empty');
+      var addBtn = document.getElementById('shortcuts-add-btn');
+
+      row.style.display = 'none';
+      empty.style.display = 'none';
+      addBtn.style.display = 'none';
+
+      var form = document.createElement('div');
+      form.className = 'shortcut-add-form';
+      form.innerHTML =
+        '<div class="shortcut-add-inputs">' +
+          '<input type="text" class="shortcut-name-input" placeholder="Name" autocomplete="off">' +
+          '<input type="text" class="shortcut-url-input" placeholder="https://example.com" autocomplete="off">' +
+        '</div>' +
+        '<div class="shortcut-add-actions">' +
+          '<button type="button" class="shortcut-add-cancel">Cancel</button>' +
+          '<button type="button" class="shortcut-add-save">Add</button>' +
+        '</div>';
+
+      var nameInput = form.querySelector('.shortcut-name-input');
+      var urlInput = form.querySelector('.shortcut-url-input');
+
+      function save() {
+        var name = nameInput.value.trim();
+        var url = urlInput.value.trim();
+        if (!name || !url) return;
+        if (!/^https?:\/\//.test(url)) url = 'https://' + url;
+        window.electron.store.get('customization').then(function(c) {
+          c = c || {};
+          c.customShortcuts = (c.customShortcuts || []).concat([{ name: name, url: url }]);
+          window.electron.store.set('customization', c);
+          applyNewTabCustomization(c);
+        });
+      }
+
+      form.querySelector('.shortcut-add-save').addEventListener('click', save);
+      form.querySelector('.shortcut-add-cancel').addEventListener('click', function() {
+        form.remove();
+        renderShortcuts(shortcuts);
+      });
+      urlInput.addEventListener('keydown', function(e) {
+        if (e.key === 'Enter') save();
+      });
+      nameInput.addEventListener('keydown', function(e) {
+        if (e.key === 'Enter') urlInput.focus();
+      });
+
+      panel.appendChild(form);
+      setTimeout(function() { nameInput.focus(); }, 0);
+    }
+
+    document.getElementById('shortcuts-add-btn').addEventListener('click', function() {
+      window.electron.store.get('customization').then(function(c) {
+        openAddShortcutForm((c && c.customShortcuts) || []);
+      });
+    });
+
+    if (new URLSearchParams(window.location.search).get('googleRedirect') === '1') {
+      var banner = document.getElementById('google-redirect-banner');
+      banner.style.display = 'flex';
+      document.getElementById('google-redirect-banner-close').addEventListener('click', function() {
+        banner.style.display = 'none';
+      });
+      history.replaceState(null, '', window.location.pathname);
+    }
+
     if (window.electron) {
       window.electron.store.get('theme').then(function(theme) {
         document.body.className = 'theme-' + (theme || 'light');
@@ -750,9 +1184,11 @@
       window.electron.store.get('search-engine').then(function(engine) {
         searchEngine = engine || 'google';
       });
+      window.electron.store.get('customization').then(applyNewTabCustomization);
       window.electron.store.onChange(function(key, value) {
         if (key === 'theme') document.body.className = 'theme-' + value;
         if (key === 'search-engine') searchEngine = value;
+        if (key === 'customization') applyNewTabCustomization(value);
       });
     }
 

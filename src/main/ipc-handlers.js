@@ -175,6 +175,7 @@ function register(mainWindow) {
     const stored = storage.get('security') || {};
     return {
       dnsProvider: securityManager.getDnsProvider(),
+      activeDnsProvider: securityManager.getActiveDnsProvider(),
       httpsOnly: stored.httpsOnly === true
     };
   });
@@ -182,6 +183,11 @@ function register(mainWindow) {
   ipcMain.handle('security-set', (event, patch) => {
     const current = storage.get('security') || {};
     storage.set('security', { ...current, ...patch });
+  });
+
+  ipcMain.handle('app-restart', () => {
+    app.relaunch();
+    app.exit();
   });
 
   ipcMain.handle('update-check', () => updateManager.checkForUpdate());

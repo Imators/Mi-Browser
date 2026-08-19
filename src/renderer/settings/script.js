@@ -49,10 +49,17 @@ async function loadState() {
   document.getElementById('ui-zoom-slider').value = zoomPercent;
   document.getElementById('ui-zoom-value').textContent = `${zoomPercent}%`;
   document.querySelectorAll('.custom-toggle').forEach((toggle) => {
-    toggle.checked = !!custom[toggle.dataset.custom];
+    toggle.checked = toggle.dataset.default === 'on' ? custom[toggle.dataset.custom] !== false : !!custom[toggle.dataset.custom];
   });
   renderCustomEngines(custom.customSearchEngines || []);
   populateSearchEngineOptions(custom.customSearchEngines || [], searchEngine);
+
+  document.getElementById('toolbar-icon-size-select').value = custom.toolbarIconSize || 'comfortable';
+  document.getElementById('ui-font-style-select').value = custom.uiFontStyle || 'system';
+  document.getElementById('new-tab-bg-tint-input').value = custom.newTabBackgroundTint || '#ffffff';
+  document.getElementById('new-tab-destination-select').value = custom.newTabDestination || 'newtab';
+  document.getElementById('new-tab-destination-url-input').value = custom.newTabDestinationUrl || '';
+  document.getElementById('new-tab-destination-url-input').classList.toggle('hidden', (custom.newTabDestination || 'newtab') !== 'custom');
 
   await loadStats();
   await loadPasswords();
@@ -61,18 +68,29 @@ async function loadState() {
   await loadUpdateStatus();
 }
 
+const DNS_PROVIDER_LABELS = { cloudflare: 'Cloudflare', google: 'Google', quad9: 'Quad9', off: 'Off' };
+
 async function loadSecurityStatus() {
   const security = await window.electron.security.get();
 
   const dnsSelect = document.getElementById('dns-provider-select');
   dnsSelect.value = security.dnsProvider;
   const dnsBadge = document.getElementById('dns-badge');
-  if (security.dnsProvider === 'off') {
-    dnsBadge.textContent = 'Off';
-    dnsBadge.className = 'security-badge security-badge-off';
+  if (security.activeDnsProvider === 'off' || security.activeDnsProvider == null) {
+    dnsBadge.textContent = security.activeDnsProvider === 'off' ? 'Off' : 'Active';
+    dnsBadge.className = security.activeDnsProvider === 'off' ? 'security-badge security-badge-off' : 'security-badge security-badge-on';
   } else {
     dnsBadge.textContent = 'Active';
     dnsBadge.className = 'security-badge security-badge-on';
+  }
+
+  const restartBanner = document.getElementById('dns-restart-banner');
+  const restartText = document.getElementById('dns-restart-text');
+  if (security.activeDnsProvider != null && security.activeDnsProvider !== security.dnsProvider) {
+    restartBanner.classList.remove('hidden');
+    restartText.textContent = `${DNS_PROVIDER_LABELS[security.dnsProvider] || security.dnsProvider} is saved, but Mi Browser is still running with ${DNS_PROVIDER_LABELS[security.activeDnsProvider] || security.activeDnsProvider}.`;
+  } else {
+    restartBanner.classList.add('hidden');
   }
 
   document.getElementById('https-only-toggle').checked = security.httpsOnly;
@@ -511,6 +529,27 @@ document.getElementById('ui-zoom-slider').addEventListener('input', (e) => {
   saveCustomization({ uiZoom: percent / 100 });
 });
 
+document.getElementById('toolbar-icon-size-select').addEventListener('change', (e) => {
+  saveCustomization({ toolbarIconSize: e.target.value });
+});
+
+document.getElementById('ui-font-style-select').addEventListener('change', (e) => {
+  saveCustomization({ uiFontStyle: e.target.value });
+});
+
+document.getElementById('new-tab-bg-tint-input').addEventListener('input', (e) => {
+  saveCustomization({ newTabBackgroundTint: e.target.value });
+});
+
+document.getElementById('new-tab-destination-select').addEventListener('change', (e) => {
+  document.getElementById('new-tab-destination-url-input').classList.toggle('hidden', e.target.value !== 'custom');
+  saveCustomization({ newTabDestination: e.target.value });
+});
+
+document.getElementById('new-tab-destination-url-input').addEventListener('change', (e) => {
+  saveCustomization({ newTabDestinationUrl: e.target.value.trim() });
+});
+
 document.querySelectorAll('.custom-toggle').forEach((toggle) => {
   toggle.addEventListener('change', () => {
     saveCustomization({ [toggle.dataset.custom]: toggle.checked });
@@ -535,6 +574,10 @@ document.getElementById('add-search-engine-form').addEventListener('submit', asy
 document.getElementById('dns-provider-select').addEventListener('change', async (e) => {
   await window.electron.security.set({ dnsProvider: e.target.value });
   loadSecurityStatus();
+});
+
+document.getElementById('dns-restart-btn').addEventListener('click', () => {
+  window.electron.app.restart();
 });
 
 document.getElementById('https-only-toggle').addEventListener('change', async (e) => {

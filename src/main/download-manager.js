@@ -155,6 +155,10 @@ function setupSession(targetSession, ownerWindow) {
     function settle(state) {
       if (settled) return;
       settled = true;
+      if (state === 'completed') {
+        const customization = storage.get('customization') || {};
+        if (customization.autoOpenDownloadsFolder) shell.showItemInFolder(item.getSavePath());
+      }
       updateRecord(id, {
         state,
         receivedBytes: item.getReceivedBytes(),

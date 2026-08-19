@@ -2,6 +2,8 @@ let tabs = [];
 let activeTabId = null;
 let tabIdCounter = 0;
 let closedTabsStack = [];
+let splitLeftTabId = null;
+let splitRightTabId = null;
 
 const SEARCH_ENGINES = {
   google: 'https://www.google.com/search?q=',
@@ -27,11 +29,38 @@ const state = {
   showClock: false,
   compactTabs: false,
   alwaysShowTabClose: false,
-  autoHideToolbar: false
+  autoHideToolbar: false,
+  hideWhyButton: false,
+  hideToolsButton: false,
+  newTabGreeting: false,
+  customShortcuts: [],
+  newTabBackgroundTint: '',
+  toolbarIconSize: 'comfortable',
+  boldActiveTab: false,
+  alwaysShowBookmarksBar: false,
+  newTabDestination: 'newtab',
+  newTabDestinationUrl: '',
+  underlineLinksOnHover: false,
+  sharpCorners: false,
+  addressBarHistorySuggestions: true,
+  addressBarBookmarkSuggestions: true,
+  selectAddressBarOnFocus: false,
+  uiFontStyle: 'system',
+  warnOnActiveDownloadsClose: false,
+  autoOpenDownloadsFolder: false,
+  pauseAutoplayVideos: false,
+  reduceMotion: false,
+  middleClickCloseTab: false
 };
 
 function getHomepageUrl() {
   return state.homepage && state.homepage.trim() ? state.homepage.trim() : 'mi://newtab';
+}
+
+function getNewTabUrl() {
+  if (state.newTabDestination === 'blank') return 'about:blank';
+  if (state.newTabDestination === 'custom' && state.newTabDestinationUrl.trim()) return state.newTabDestinationUrl.trim();
+  return 'mi://newtab';
 }
 
 async function loadState() {
@@ -44,18 +73,7 @@ async function loadState() {
   state.autoHideToolbar = !!(await window.electron.store.get('autoHideToolbar'));
 
   const custom = (await window.electron.store.get('customization')) || {};
-  state.homepage = custom.homepage || '';
-  state.accentColor = custom.accentColor || '';
-  state.uiZoom = custom.uiZoom || 1;
-  state.confirmCloseMultiTab = !!custom.confirmCloseMultiTab;
-  state.openTabsInBackground = !!custom.openTabsInBackground;
-  state.autoMuteBackgroundTabs = !!custom.autoMuteBackgroundTabs;
-  state.customSearchEngines = custom.customSearchEngines || [];
-  state.smoothScrolling = !!custom.smoothScrolling;
-  state.showClock = !!custom.showClock;
-  state.compactTabs = !!custom.compactTabs;
-  state.alwaysShowTabClose = !!custom.alwaysShowTabClose;
-  applyCustomizations();
+  applyCustomizationData(custom);
 
   const restoreSession = await window.electron.store.get('restore-session');
   const shouldRestore = restoreSession !== false;
@@ -86,21 +104,45 @@ async function loadState() {
       applyCustomizations();
     }
     if (key === 'customization') {
-      const c = value || {};
-      state.homepage = c.homepage || '';
-      state.accentColor = c.accentColor || '';
-      state.uiZoom = c.uiZoom || 1;
-      state.confirmCloseMultiTab = !!c.confirmCloseMultiTab;
-      state.openTabsInBackground = !!c.openTabsInBackground;
-      state.autoMuteBackgroundTabs = !!c.autoMuteBackgroundTabs;
-      state.customSearchEngines = c.customSearchEngines || [];
-      state.smoothScrolling = !!c.smoothScrolling;
-      state.showClock = !!c.showClock;
-      state.compactTabs = !!c.compactTabs;
-      state.alwaysShowTabClose = !!c.alwaysShowTabClose;
-      applyCustomizations();
+      applyCustomizationData(value || {});
     }
   });
+}
+
+function applyCustomizationData(c) {
+  state.homepage = c.homepage || '';
+  state.accentColor = c.accentColor || '';
+  state.uiZoom = c.uiZoom || 1;
+  state.confirmCloseMultiTab = !!c.confirmCloseMultiTab;
+  state.openTabsInBackground = !!c.openTabsInBackground;
+  state.autoMuteBackgroundTabs = !!c.autoMuteBackgroundTabs;
+  state.customSearchEngines = c.customSearchEngines || [];
+  state.smoothScrolling = !!c.smoothScrolling;
+  state.showClock = !!c.showClock;
+  state.compactTabs = !!c.compactTabs;
+  state.alwaysShowTabClose = !!c.alwaysShowTabClose;
+  state.hideWhyButton = !!c.hideWhyButton;
+  state.hideToolsButton = !!c.hideToolsButton;
+  state.newTabGreeting = !!c.newTabGreeting;
+  state.customShortcuts = c.customShortcuts || [];
+  state.newTabBackgroundTint = c.newTabBackgroundTint || '';
+  state.toolbarIconSize = c.toolbarIconSize || 'comfortable';
+  state.boldActiveTab = !!c.boldActiveTab;
+  state.alwaysShowBookmarksBar = !!c.alwaysShowBookmarksBar;
+  state.newTabDestination = c.newTabDestination || 'newtab';
+  state.newTabDestinationUrl = c.newTabDestinationUrl || '';
+  state.underlineLinksOnHover = !!c.underlineLinksOnHover;
+  state.sharpCorners = !!c.sharpCorners;
+  state.addressBarHistorySuggestions = c.addressBarHistorySuggestions !== false;
+  state.addressBarBookmarkSuggestions = c.addressBarBookmarkSuggestions !== false;
+  state.selectAddressBarOnFocus = !!c.selectAddressBarOnFocus;
+  state.uiFontStyle = c.uiFontStyle || 'system';
+  state.warnOnActiveDownloadsClose = !!c.warnOnActiveDownloadsClose;
+  state.autoOpenDownloadsFolder = !!c.autoOpenDownloadsFolder;
+  state.pauseAutoplayVideos = !!c.pauseAutoplayVideos;
+  state.reduceMotion = !!c.reduceMotion;
+  state.middleClickCloseTab = !!c.middleClickCloseTab;
+  applyCustomizations();
 }
 
 function applyCustomizations() {
@@ -110,6 +152,14 @@ function applyCustomizations() {
   document.body.classList.toggle('always-show-tab-close', state.alwaysShowTabClose);
   document.body.classList.toggle('auto-hide-toolbar', state.autoHideToolbar);
   if (!state.autoHideToolbar) document.body.classList.remove('toolbar-revealed');
+  document.body.classList.toggle('bold-active-tab', state.boldActiveTab);
+  document.body.classList.toggle('always-show-bookmarks-bar', state.alwaysShowBookmarksBar);
+  document.body.classList.toggle('underline-links-hover', state.underlineLinksOnHover);
+  document.body.classList.toggle('sharp-corners', state.sharpCorners);
+  document.body.classList.toggle('font-style-rounded', state.uiFontStyle === 'rounded');
+  document.body.classList.toggle('reduce-motion', state.reduceMotion);
+  document.body.classList.toggle('toolbar-icon-size-compact', state.toolbarIconSize === 'compact');
+  renderBookmarksBar();
   updateClockVisibility();
 }
 
@@ -149,21 +199,47 @@ function createTab(url = 'mi://newtab', { isPrivate = false, background = false 
   }
 }
 
-function switchTab(tabId) {
-  activeTabId = tabId;
+function isSplitActive() {
+  return splitLeftTabId !== null && splitRightTabId !== null;
+}
 
+function layoutWebviews() {
   document.querySelectorAll('#webview-container webview').forEach((el) => {
-    const isActive = el.id === `webview-${tabId}`;
-    el.style.visibility = isActive ? 'visible' : 'hidden';
-    el.style.zIndex = isActive ? '1' : '0';
-    el.style.pointerEvents = isActive ? 'auto' : 'none';
+    const id = parseInt(el.id.slice('webview-'.length), 10);
+    let visible = false;
+    let left = '0';
+    let width = '100%';
+
+    if (isSplitActive() && id === splitLeftTabId) {
+      visible = true;
+      left = '0';
+      width = 'calc(50% - 1.5px)';
+    } else if (isSplitActive() && id === splitRightTabId) {
+      visible = true;
+      left = 'calc(50% + 1.5px)';
+      width = 'calc(50% - 1.5px)';
+    } else if (!isSplitActive() && id === activeTabId) {
+      visible = true;
+    }
+
+    el.style.left = left;
+    el.style.width = width;
+    el.style.visibility = visible ? 'visible' : 'hidden';
+    el.style.zIndex = visible ? '1' : '0';
+    el.style.pointerEvents = visible ? 'auto' : 'none';
+
     if (el.dataset.miReady === 'true') {
-      if (isActive) el.setAudioMuted(false);
+      if (visible) el.setAudioMuted(false);
       else if (state.autoMuteBackgroundTabs) el.setAudioMuted(true);
     }
   });
 
-  const tab = tabs.find(t => t.id === tabId);
+  document.getElementById('split-divider').classList.toggle('hidden', !isSplitActive());
+  document.getElementById('split-view-btn').classList.toggle('active', isSplitActive());
+}
+
+function refreshToolbarForActiveTab() {
+  const tab = tabs.find(t => t.id === activeTabId);
   if (tab) document.getElementById('address-bar').value = tab.url;
 
   applyChromeTheme(tab);
@@ -176,6 +252,37 @@ function switchTab(tabId) {
   hideAddressSuggestions();
 
   renderTabs();
+}
+
+function switchTab(tabId) {
+  if (isSplitActive() && tabId !== splitLeftTabId && tabId !== splitRightTabId) {
+    exitSplitView();
+  }
+
+  activeTabId = tabId;
+  layoutWebviews();
+  refreshToolbarForActiveTab();
+}
+
+function enterSplitView(leftTabId, rightTabId) {
+  splitLeftTabId = leftTabId;
+  splitRightTabId = rightTabId;
+  activeTabId = leftTabId;
+  layoutWebviews();
+  refreshToolbarForActiveTab();
+}
+
+function exitSplitView() {
+  splitLeftTabId = null;
+  splitRightTabId = null;
+  layoutWebviews();
+}
+
+function focusSplitPane(tabId) {
+  if (!isSplitActive() || tabId === activeTabId) return;
+  if (tabId !== splitLeftTabId && tabId !== splitRightTabId) return;
+  activeTabId = tabId;
+  refreshToolbarForActiveTab();
 }
 
 function applyChromeTheme(tab) {
@@ -192,6 +299,10 @@ function destroyWebview(tabId) {
 }
 
 function closeTab(tabId) {
+  const wasSplitLeft = tabId === splitLeftTabId;
+  const wasSplitRight = tabId === splitRightTabId;
+  const splitRemainingId = wasSplitLeft ? splitRightTabId : wasSplitRight ? splitLeftTabId : null;
+
   const index = tabs.findIndex(t => t.id === tabId);
   if (index !== -1) {
     const [closed] = tabs.splice(index, 1);
@@ -202,8 +313,15 @@ function closeTab(tabId) {
   }
   destroyWebview(tabId);
 
+  if (wasSplitLeft || wasSplitRight) {
+    splitLeftTabId = null;
+    splitRightTabId = null;
+  }
+
   if (tabs.length === 0) {
     createTab('mi://newtab');
+  } else if (splitRemainingId !== null) {
+    switchTab(splitRemainingId);
   } else if (tabId === activeTabId) {
     const nextTab = tabs[Math.max(0, index - 1)];
     switchTab(nextTab.id);
@@ -221,9 +339,11 @@ function renderTabs() {
   tabs.forEach(tab => {
     const tabEl = document.createElement('div');
     tabEl.className = `tab ${tab.id === activeTabId ? 'active' : ''} ${tab.isPrivate ? 'tab-private' : ''}`;
+    const inSplit = tab.id === splitLeftTabId || tab.id === splitRightTabId;
     tabEl.innerHTML = `
       ${tab.loading ? '<span class="tab-spinner"></span>' : ''}
       ${tab.isPrivate ? '<span class="tab-private-badge" title="Private tab"><svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="7" cy="12" r="3.2"></circle><circle cx="17" cy="12" r="3.2"></circle><line x1="10.2" y1="12" x2="13.8" y2="12"></line><path d="M3.5 8 6 6h2l1.5 2"></path><path d="M20.5 8 18 6h-2l-1.5 2"></path></svg></span>' : ''}
+      ${inSplit ? '<span class="tab-split-badge" title="In split view"><svg viewBox="0 0 24 24" width="11" height="11" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><line x1="12" y1="4" x2="12" y2="20"/></svg></span>' : ''}
       <span class="tab-title">${escapeHtmlAddr(tab.title)}</span>
       <button class="tab-close" data-tab-id="${tab.id}">✕</button>
     `;
@@ -239,6 +359,13 @@ function renderTabs() {
       closeTab(tab.id);
     });
 
+    tabEl.addEventListener('auxclick', (e) => {
+      if (state.middleClickCloseTab && e.button === 1) {
+        e.preventDefault();
+        closeTab(tab.id);
+      }
+    });
+
     tabEl.addEventListener('contextmenu', async (e) => {
       e.preventDefault();
       e.stopPropagation();
@@ -251,7 +378,11 @@ function renderTabs() {
         { type: 'separator' },
         { id: 'close', label: 'Close Tab' },
         { id: 'close-others', label: 'Close Other Tabs', enabled: tabs.length > 1 },
-        { id: 'close-right', label: 'Close Tabs to the Right', enabled: tabs.indexOf(tab) < tabs.length - 1 }
+        { id: 'close-right', label: 'Close Tabs to the Right', enabled: tabs.indexOf(tab) < tabs.length - 1 },
+        { type: 'separator' },
+        inSplit
+          ? { id: 'exit-split', label: 'Exit Split View' }
+          : { id: 'split-with-this', label: 'Split View with Active Tab', enabled: tab.id !== activeTabId }
       ]);
 
       if (selected === 'new-tab') {
@@ -275,6 +406,13 @@ function renderTabs() {
         toClose.forEach(t => destroyWebview(t.id));
         tabs = tabs.slice(0, cutIndex + 1);
         renderTabs();
+      } else if (selected === 'split-with-this') {
+        enterSplitView(activeTabId, tab.id);
+      } else if (selected === 'exit-split') {
+        const remainingId = tab.id === splitLeftTabId ? splitRightTabId : splitLeftTabId;
+        splitLeftTabId = null;
+        splitRightTabId = null;
+        switchTab(remainingId);
       }
     });
 
@@ -291,6 +429,7 @@ function createWebview(tabId, url, isPrivate = false) {
   const webview = document.createElement('webview');
   webview.id = `webview-${tabId}`;
   webview.setAttribute('allowpopups', 'true');
+  if (state.pauseAutoplayVideos) webview.setAttribute('webpreferences', 'autoplayPolicy=user-gesture-required');
   if (isPrivate) webview.partition = PRIVATE_PARTITION;
   webview.src = url;
   webview.style.position = 'absolute';
@@ -301,6 +440,8 @@ function createWebview(tabId, url, isPrivate = false) {
   webview.style.visibility = 'hidden';
   webview.style.zIndex = '0';
   webview.style.pointerEvents = 'none';
+
+  webview.addEventListener('focus', () => focusSplitPane(tabId));
 
   webview.addEventListener('page-title-updated', (e) => {
     const tab = tabs.find(t => t.id === tabId);
@@ -329,6 +470,7 @@ function createWebview(tabId, url, isPrivate = false) {
 
   webview.addEventListener('dom-ready', () => {
     if (state.smoothScrolling) webview.insertCSS('html { scroll-behavior: smooth !important; }').catch(() => {});
+    if (state.underlineLinksOnHover) webview.insertCSS('a:hover { text-decoration: underline !important; }').catch(() => {});
     setTimeout(() => {
       webview.dataset.miReady = 'true';
       if (tabId === activeTabId) webview.setAudioMuted(false);
@@ -341,6 +483,11 @@ function createWebview(tabId, url, isPrivate = false) {
     if (tab) {
       tab.url = e.url;
       if (tabId === activeTabId) document.getElementById('address-bar').value = e.url;
+
+      if (tab.pendingPasswordCapture && Date.now() - tab.pendingPasswordCapture.capturedAt < 8000) {
+        maybeOfferPasswordSave(tab, tab.pendingPasswordCapture);
+      }
+      tab.pendingPasswordCapture = null;
     }
   });
 
@@ -378,6 +525,9 @@ function createWebview(tabId, url, isPrivate = false) {
       window.electron.passwords.reveal(e.args[0]).then((value) => {
         webview.send('mi-password-fill-value', value);
       });
+    } else if (e.channel === 'mi-password-capture') {
+      const tab = tabs.find(t => t.id === tabId);
+      if (tab) tab.pendingPasswordCapture = { ...e.args[0], capturedAt: Date.now() };
     }
   });
 
@@ -465,7 +615,7 @@ function navigateTab(tabId, url) {
 }
 
 document.getElementById('new-tab-btn').addEventListener('click', () => {
-  createTab('mi://newtab');
+  createTab(getNewTabUrl());
 });
 
 function getSearchEngineUrlPrefix(key) {
@@ -569,7 +719,10 @@ async function updateAddressSuggestions() {
     .map((e) => ({ title: e.title, url: e.url, source }));
 
   const seen = new Set();
-  const combined = [...matchesOf(bookmarks, 'bookmark'), ...matchesOf(history, 'history')]
+  const combined = [
+    ...(state.addressBarBookmarkSuggestions ? matchesOf(bookmarks, 'bookmark') : []),
+    ...(state.addressBarHistorySuggestions ? matchesOf(history, 'history') : [])
+  ]
     .filter((m) => {
       if (seen.has(m.url)) return false;
       seen.add(m.url);
@@ -604,6 +757,7 @@ addressBar.addEventListener('input', () => {
 
 addressBar.addEventListener('focus', () => {
   if (addressBar.value.trim()) updateAddressSuggestions();
+  if (state.selectAddressBarOnFocus) addressBar.select();
 });
 
 addressBar.addEventListener('keydown', (e) => {
@@ -733,6 +887,170 @@ document.addEventListener('click', (e) => {
   siteMenuPopover.classList.add('hidden');
 });
 
+const networkMonitorBtn = document.getElementById('network-monitor-btn');
+const networkMonitorPopover = document.getElementById('network-monitor-popover');
+const netConnection = navigator.connection || navigator.mozConnection || navigator.webkitConnection || null;
+
+const NET_HISTORY_MAX = 30;
+let netHistory = [];
+let netSampleInterval = null;
+
+function formatMbps(value) {
+  return typeof value === 'number' && !Number.isNaN(value) ? value.toFixed(1) : '—';
+}
+
+function sampleNetwork() {
+  const value = netConnection && typeof netConnection.downlink === 'number' ? netConnection.downlink : null;
+  netHistory.push(value);
+  if (netHistory.length > NET_HISTORY_MAX) netHistory.shift();
+}
+
+function drawSparkline() {
+  const svg = document.getElementById('net-sparkline');
+  const points = netHistory.filter((v) => v !== null);
+  if (points.length < 2) {
+    svg.innerHTML = '';
+    return;
+  }
+
+  const w = 240;
+  const h = 48;
+  const max = Math.max(...points, 1);
+  const step = w / (netHistory.length - 1);
+
+  let d = '';
+  let filled = '';
+  netHistory.forEach((v, i) => {
+    if (v === null) return;
+    const x = i * step;
+    const y = h - (v / max) * (h - 6) - 3;
+    d += (d ? ' L ' : 'M ') + x + ' ' + y;
+  });
+  filled = d + ` L ${(netHistory.length - 1) * step} ${h} L 0 ${h} Z`;
+
+  svg.innerHTML = `<path class="net-sparkline-fill" d="${filled}"></path><path d="${d}"></path>`;
+}
+
+function refreshNetworkStatus() {
+  const online = navigator.onLine;
+  document.getElementById('net-status').textContent = online ? 'Online' : 'Offline';
+  document.getElementById('net-status-dot').className = 'net-status-dot ' + (online ? 'online' : 'offline');
+
+  const latest = netHistory.length ? netHistory[netHistory.length - 1] : (netConnection ? netConnection.downlink : null);
+  document.getElementById('net-headline-value').textContent = formatMbps(latest);
+
+  if (!netConnection) {
+    document.getElementById('net-type').textContent = '';
+    document.getElementById('net-rtt').textContent = '';
+    document.getElementById('net-savedata').textContent = '';
+    drawSparkline();
+    return;
+  }
+
+  document.getElementById('net-type').textContent = netConnection.effectiveType ? netConnection.effectiveType.toUpperCase() : '';
+  document.getElementById('net-rtt').textContent = typeof netConnection.rtt === 'number' ? `${netConnection.rtt} ms RTT` : '';
+  document.getElementById('net-savedata').textContent = netConnection.saveData ? 'Data saver on' : '';
+
+  drawSparkline();
+}
+
+function tickNetworkMonitor() {
+  sampleNetwork();
+  refreshNetworkStatus();
+}
+
+window.addEventListener('online', refreshNetworkStatus);
+window.addEventListener('offline', refreshNetworkStatus);
+if (netConnection) netConnection.addEventListener('change', tickNetworkMonitor);
+
+networkMonitorBtn.addEventListener('click', () => {
+  if (!networkMonitorPopover.classList.contains('hidden')) {
+    networkMonitorPopover.classList.add('hidden');
+    clearInterval(netSampleInterval);
+    netSampleInterval = null;
+    return;
+  }
+  document.getElementById('net-speedtest-result').textContent = '';
+  netHistory = [];
+  tickNetworkMonitor();
+  netSampleInterval = setInterval(tickNetworkMonitor, 2000);
+  networkMonitorPopover.classList.remove('hidden');
+});
+
+document.getElementById('net-speedtest-btn').addEventListener('click', async () => {
+  const btn = document.getElementById('net-speedtest-btn');
+  const result = document.getElementById('net-speedtest-result');
+  btn.disabled = true;
+  btn.textContent = 'Testing…';
+  result.textContent = '';
+
+  try {
+    const bytes = 5000000;
+    const started = performance.now();
+    const response = await fetch(`https://speed.cloudflare.com/__down?bytes=${bytes}`, { cache: 'no-store' });
+    await response.arrayBuffer();
+    const seconds = (performance.now() - started) / 1000;
+    const mbps = (bytes * 8) / seconds / 1_000_000;
+    netHistory.push(mbps);
+    if (netHistory.length > NET_HISTORY_MAX) netHistory.shift();
+    refreshNetworkStatus();
+    result.textContent = `Measured ${mbps.toFixed(1)} Mbps just now (downloaded ${(bytes / 1_000_000).toFixed(0)} MB from Cloudflare's speed test service).`;
+  } catch (err) {
+    result.textContent = 'Could not run the test — check your connection.';
+  } finally {
+    btn.disabled = false;
+    btn.textContent = 'Run a quick download test';
+  }
+});
+
+document.addEventListener('click', (e) => {
+  if (networkMonitorPopover.classList.contains('hidden')) return;
+  if (networkMonitorPopover.contains(e.target) || networkMonitorBtn.contains(e.target)) return;
+  networkMonitorPopover.classList.add('hidden');
+  clearInterval(netSampleInterval);
+  netSampleInterval = null;
+});
+
+const passwordSavePopover = document.getElementById('password-save-popover');
+
+async function maybeOfferPasswordSave(tab, capture) {
+  if (tab.isPrivate || !capture.origin || !capture.username || !capture.password) return;
+
+  let hostname;
+  try { hostname = new URL(capture.origin).hostname; } catch (err) { return; }
+
+  const existing = await window.electron.passwords.findForOrigin(hostname);
+  const match = existing.find(p => p.origin === capture.origin && p.username === capture.username);
+
+  if (match) {
+    const current = await window.electron.passwords.reveal(match.id);
+    if (current === capture.password) return;
+  }
+
+  showPasswordSavePrompt(capture, !!match);
+}
+
+function showPasswordSavePrompt(capture, isUpdate) {
+  document.getElementById('password-save-title').textContent = isUpdate ? 'Update saved password?' : 'Save password?';
+  document.getElementById('password-save-host').textContent = capture.origin;
+  document.getElementById('password-save-username').textContent = capture.username;
+  passwordSavePopover.classList.remove('hidden');
+
+  document.getElementById('password-save-confirm-btn').onclick = () => {
+    window.electron.passwords.add(capture.origin, capture.username, capture.password);
+    passwordSavePopover.classList.add('hidden');
+  };
+  document.getElementById('password-save-dismiss-btn').onclick = () => {
+    passwordSavePopover.classList.add('hidden');
+  };
+}
+
+document.addEventListener('click', (e) => {
+  if (passwordSavePopover.classList.contains('hidden')) return;
+  if (passwordSavePopover.contains(e.target)) return;
+  passwordSavePopover.classList.add('hidden');
+});
+
 document.getElementById('minimize-btn').addEventListener('click', () => {
   window.electron.window.minimize();
 });
@@ -745,6 +1063,13 @@ async function saveSessionAndClose() {
   if (state.confirmCloseMultiTab && tabs.length > 1) {
     const ok = confirm(`Close Mi Browser with ${tabs.length} tabs open?`);
     if (!ok) return;
+  }
+  if (state.warnOnActiveDownloadsClose) {
+    const downloads = await window.electron.downloads.getAll();
+    if (downloads.some((d) => d.state === 'progressing')) {
+      const ok = confirm('A download is still in progress. Close Mi Browser anyway?');
+      if (!ok) return;
+    }
   }
   const tabsData = tabs
     .filter(t => !t.isPrivate)
@@ -769,6 +1094,24 @@ pipBtn.addEventListener('click', () => {
   if (webview) webview.executeJavaScript('window.__miEnterPip && window.__miEnterPip()', true).catch(() => {});
 });
 
+document.getElementById('split-view-btn').addEventListener('click', async () => {
+  if (isSplitActive()) {
+    const remainingId = activeTabId;
+    splitLeftTabId = null;
+    splitRightTabId = null;
+    switchTab(remainingId);
+    return;
+  }
+
+  const otherTabs = tabs.filter(t => t.id !== activeTabId);
+  if (otherTabs.length === 0) return;
+
+  const selected = await window.electron.contextMenu.show(
+    otherTabs.map(t => ({ id: String(t.id), label: t.title || t.url }))
+  );
+  if (selected !== null) enterSplitView(activeTabId, parseInt(selected, 10));
+});
+
 document.getElementById('pin-btn').addEventListener('click', () => {
   const tab = tabs.find(t => t.id === activeTabId);
   if (tab) window.electron.bookmarks.add({ url: tab.url, title: tab.title });
@@ -779,7 +1122,7 @@ const bookmarksBar = document.getElementById('bookmarks-bar');
 async function renderBookmarksBar() {
   const bookmarks = await window.electron.bookmarks.getAll();
   bookmarksBar.innerHTML = '';
-  bookmarksBar.classList.toggle('hidden', bookmarks.length === 0);
+  bookmarksBar.classList.toggle('hidden', bookmarks.length === 0 && !state.alwaysShowBookmarksBar);
 
   bookmarks.forEach((b, index) => {
     let hostname = '';
@@ -857,7 +1200,7 @@ document.getElementById('tabs-container').addEventListener('contextmenu', async 
     { id: 'settings', label: 'Settings' }
   ]);
 
-  if (selected === 'new-tab') createTab('mi://newtab');
+  if (selected === 'new-tab') createTab(getNewTabUrl());
   else if (selected === 'new-private-tab') createTab('mi://private', { isPrivate: true });
   else if (selected === 'settings') createTab('mi://settings');
 });
@@ -888,7 +1231,7 @@ function performShortcut({ key, mod, shift, alt }) {
   const k = key.toLowerCase();
 
   if (mod && k === 't' && !shift) {
-    createTab('mi://newtab');
+    createTab(getNewTabUrl());
   } else if (mod && k === 't' && shift) {
     if (closedTabsStack.length > 0) createTab(closedTabsStack.pop().url);
   } else if (mod && k === 'n' && shift) {
@@ -1012,7 +1355,7 @@ function resetZoom() {
 window.electron.app.onMenuEvent((channel) => {
   const wv = activeWebview();
   switch (channel) {
-    case 'menu-new-tab': createTab('mi://newtab'); break;
+    case 'menu-new-tab': createTab(getNewTabUrl()); break;
     case 'menu-new-private-tab': createTab('mi://private', { isPrivate: true }); break;
     case 'menu-reopen-tab': if (closedTabsStack.length > 0) createTab(closedTabsStack.pop().url); break;
     case 'menu-close-tab': if (activeTabId !== null) closeTab(activeTabId); break;
@@ -1058,13 +1401,13 @@ function scheduleToolbarHide() {
   }, 500);
 }
 
+const browserChromeEl = document.getElementById('browser-chrome');
+
 document.getElementById('toolbar-reveal-strip').addEventListener('mousemove', revealToolbar);
 document.getElementById('toolbar-reveal-strip').addEventListener('mouseleave', scheduleToolbarHide);
 
-document.addEventListener('mousemove', (e) => {
-  if (!state.autoHideToolbar) return;
-  if (e.clientY > 36) scheduleToolbarHide();
-});
+browserChromeEl.addEventListener('mouseenter', revealToolbar);
+browserChromeEl.addEventListener('mouseleave', scheduleToolbarHide);
 
 addressBar.addEventListener('focus', revealToolbar);
 addressBar.addEventListener('blur', scheduleToolbarHide);

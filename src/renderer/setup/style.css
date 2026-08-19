@@ -895,6 +895,206 @@ body.theme-toxic label > div:first-child {
   background-color: #0f2015;
 }
 
+body.theme-sakura {
+  background: linear-gradient(to bottom, #fdf2f8, #f9a8d4);
+  color: #831843;
+}
+
+body.theme-sakura .window-btn {
+  color: #831843;
+}
+
+body.theme-sakura .window-btn:not(.window-btn-close):hover {
+  background-color: rgba(131,24,67,0.1);
+}
+
+body.theme-sakura .primary-btn {
+  background-color: #db2777;
+  color: white;
+}
+
+body.theme-sakura .primary-btn:hover {
+  background-color: #be185d;
+}
+
+body.theme-sakura .privacy-box {
+  background-color: #fce7f3;
+}
+
+body.theme-sakura .theme-option {
+  background-color: #fce7f3;
+  border-color: #f9a8d4;
+}
+
+body.theme-sakura .theme-option input[type="radio"]:checked + .theme-option {
+  border-color: #db2777;
+}
+
+body.theme-sakura label > div:first-child {
+  border-color: #f9a8d4;
+  background-color: #fce7f3;
+}
+
+body.theme-arctic {
+  background: linear-gradient(to bottom, #f0f9ff, #bae6fd);
+  color: #0c4a6e;
+}
+
+body.theme-arctic .window-btn {
+  color: #0c4a6e;
+}
+
+body.theme-arctic .window-btn:not(.window-btn-close):hover {
+  background-color: rgba(12,74,110,0.1);
+}
+
+body.theme-arctic .primary-btn {
+  background-color: #0ea5e9;
+  color: white;
+}
+
+body.theme-arctic .primary-btn:hover {
+  background-color: #0284c7;
+}
+
+body.theme-arctic .privacy-box {
+  background-color: #e0f2fe;
+}
+
+body.theme-arctic .theme-option {
+  background-color: #e0f2fe;
+  border-color: #bae6fd;
+}
+
+body.theme-arctic .theme-option input[type="radio"]:checked + .theme-option {
+  border-color: #0ea5e9;
+}
+
+body.theme-arctic label > div:first-child {
+  border-color: #bae6fd;
+  background-color: #e0f2fe;
+}
+
+body.theme-solar {
+  background: linear-gradient(to bottom, #fffbeb, #fde68a);
+  color: #78350f;
+}
+
+body.theme-solar .window-btn {
+  color: #78350f;
+}
+
+body.theme-solar .window-btn:not(.window-btn-close):hover {
+  background-color: rgba(120,53,15,0.1);
+}
+
+body.theme-solar .primary-btn {
+  background-color: #f59e0b;
+  color: #1c1917;
+}
+
+body.theme-solar .primary-btn:hover {
+  background-color: #d97706;
+}
+
+body.theme-solar .privacy-box {
+  background-color: #fef3c7;
+}
+
+body.theme-solar .theme-option {
+  background-color: #fef3c7;
+  border-color: #fde68a;
+}
+
+body.theme-solar .theme-option input[type="radio"]:checked + .theme-option {
+  border-color: #f59e0b;
+}
+
+body.theme-solar label > div:first-child {
+  border-color: #fde68a;
+  background-color: #fef3c7;
+}
+
+body.theme-sage {
+  background: linear-gradient(to bottom, #f4f6f2, #cdd8c2);
+  color: #33422f;
+}
+
+body.theme-sage .window-btn {
+  color: #33422f;
+}
+
+body.theme-sage .window-btn:not(.window-btn-close):hover {
+  background-color: rgba(51,66,47,0.1);
+}
+
+body.theme-sage .primary-btn {
+  background-color: #7a8f5f;
+  color: white;
+}
+
+body.theme-sage .primary-btn:hover {
+  background-color: #667a4d;
+}
+
+body.theme-sage .privacy-box {
+  background-color: #e6ebe0;
+}
+
+body.theme-sage .theme-option {
+  background-color: #e6ebe0;
+  border-color: #cdd8c2;
+}
+
+body.theme-sage .theme-option input[type="radio"]:checked + .theme-option {
+  border-color: #7a8f5f;
+}
+
+body.theme-sage label > div:first-child {
+  border-color: #cdd8c2;
+  background-color: #e6ebe0;
+}
+
+body.theme-espresso {
+  background: linear-gradient(to bottom, #1e140f, #4a3527);
+  color: #efe3d8;
+}
+
+body.theme-espresso .window-btn {
+  color: #efe3d8;
+}
+
+body.theme-espresso .window-btn:not(.window-btn-close):hover {
+  background-color: rgba(239,227,216,0.12);
+}
+
+body.theme-espresso .primary-btn {
+  background-color: #c17a4a;
+  color: #1e140f;
+}
+
+body.theme-espresso .primary-btn:hover {
+  background-color: #a8663a;
+}
+
+body.theme-espresso .privacy-box {
+  background-color: #2c1e16;
+}
+
+body.theme-espresso .theme-option {
+  background-color: #2c1e16;
+  border-color: #4a3527;
+}
+
+body.theme-espresso .theme-option input[type="radio"]:checked + .theme-option {
+  border-color: #c17a4a;
+}
+
+body.theme-espresso label > div:first-child {
+  border-color: #4a3527;
+  background-color: #2c1e16;
+}
+
 .setup-progress {
   position: fixed;
   top: 44px;
@@ -948,4 +1148,40 @@ body.theme-toxic label > div:first-child {
   width: 0;
   height: 0;
   background: transparent;
+}
+
+input[type="checkbox"].w-5 {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 40px !important;
+  height: 22px !important;
+  border-radius: 999px;
+  border: 1.5px solid var(--border, #d0d0d0);
+  background: transparent;
+  position: relative;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: background-color 0.2s ease, border-color 0.2s ease;
+}
+
+input[type="checkbox"].w-5::after {
+  content: '';
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 15px;
+  height: 15px;
+  border-radius: 50%;
+  background: var(--text-secondary, #888888);
+  transition: transform 0.2s ease, background-color 0.2s ease;
+}
+
+input[type="checkbox"].w-5:checked {
+  background: var(--accent, #3b82f6);
+  border-color: var(--accent, #3b82f6);
+}
+
+input[type="checkbox"].w-5:checked::after {
+  transform: translateX(18px);
+  background: var(--accent-text, #ffffff);
 }

@@ -62,7 +62,8 @@ contextBridge.exposeInMainWorld('electron', {
   },
   passwords: {
     findForOrigin: (hostname) => ipcRenderer.invoke('passwords-find-for-origin', hostname),
-    reveal: (id) => ipcRenderer.invoke('passwords-reveal', id)
+    reveal: (id) => ipcRenderer.invoke('passwords-reveal', id),
+    add: (origin, username, password) => ipcRenderer.invoke('passwords-add-manual', origin, username, password)
   },
   cookieExceptions: {
     isExcepted: (hostname) => ipcRenderer.invoke('cookie-exceptions-is-excepted', hostname),

@@ -9,6 +9,7 @@ if (location.protocol === 'mi:') {
     },
     app: {
       reset: () => ipcRenderer.invoke('app-reset'),
+      restart: () => ipcRenderer.invoke('app-restart'),
       clearBrowsingData: () => ipcRenderer.invoke('clear-browsing-data'),
       openPrivateTab: () => ipcRenderer.invoke('open-private-tab')
     },
@@ -144,11 +145,34 @@ if (location.protocol === 'mi:') {
     if (activeField && value) setNativeValue(activeField, value);
     removeDropdown();
   });
+
+  function findUsernameField(form, passwordField) {
+    const candidates = Array.from(form.querySelectorAll('input')).filter((el) => el !== passwordField && el.value && el.value.trim());
+    const byAutocomplete = candidates.find((el) => el.autocomplete === 'username' || el.autocomplete === 'email');
+    if (byAutocomplete) return byAutocomplete;
+    const byType = candidates.find((el) => el.type === 'email' || el.type === 'text');
+    return byType || null;
+  }
+
+  document.addEventListener('submit', (e) => {
+    const form = e.target;
+    if (!form || form.tagName !== 'FORM') return;
+
+    const passwordField = form.querySelector('input[type="password"]');
+    if (!passwordField || !passwordField.value) return;
+
+    const usernameField = findUsernameField(form, passwordField);
+    if (!usernameField) return;
+
+    ipcRenderer.sendToHost('mi-password-capture', {
+      origin: location.origin,
+      username: usernameField.value.trim(),
+      password: passwordField.value
+    });
+  }, true);
 })();
 
 (function () {
-  if (location.protocol === 'mi:') return;
-
   let wasNearTop = false;
   document.addEventListener('mousemove', (e) => {
     const nearTop = e.clientY <= 36;
