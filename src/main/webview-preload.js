@@ -68,12 +68,6 @@ if (location.protocol === 'mi:') {
   });
 }
 
-// Password-autofill suggestion content script. Runs on every page (unlike
-// the block above), but never gets direct access to the vault: it can only
-// ask the host "any saved logins for this page?" and "fill in entry X",
-// mediated over ipcRenderer.sendToHost/webview.send. The host (browser/
-// script.js, which does have window.electron.passwords) verifies the real
-// page URL itself rather than trusting anything the guest reports.
 (function () {
   if (location.protocol === 'mi:') return;
 
@@ -152,11 +146,6 @@ if (location.protocol === 'mi:') {
   });
 })();
 
-// Auto-hide toolbar (Settings > Appearance): the host chrome can only ever
-// see mouse movement over its own elements, never over this guest page --
-// which, once the toolbar's collapsed, covers almost the whole window. So
-// "hover near the top to bring the toolbar back" has to be noticed here and
-// reported to the host, not detected host-side.
 (function () {
   if (location.protocol === 'mi:') return;
 
@@ -177,27 +166,9 @@ if (location.protocol === 'mi:') {
   });
 })();
 
-// Mini player (Picture-in-Picture). Confirmed the hard way: Chromium's
-// Document Picture-in-Picture API ("requestWindow()", which is what would
-// let us build a fully custom-skinned floating window) explicitly refuses
-// to run in anything but a top-level browsing context -- and an Electron
-// <webview> guest is *never* top-level, no matter what it looks like to us.
-// Calling it doesn't just reject the promise, it trips a Mojo IPC validation
-// check and Chromium kills the whole renderer process outright ("Only
-// top-most frames can open picture-in-picture windows" / "Terminating
-// renderer for bad IPC message"). That's the actual cause of the tab going
-// blank -- not a bug in the retry/restore logic, a hard platform wall. So a
-// fully custom-styled PiP window is not achievable from inside a <webview>,
-// full stop -- only native video.requestPictureInPicture() is safe here,
-// which never touches the page's DOM and never crosses that top-level-frame
-// restriction. Branding is limited to what MediaSession can add to Chromium's
-// own native overlay (title text, a couple of extra action buttons).
 (function () {
   if (location.protocol === 'mi:') return;
 
-  // Strict on purpose: only a video that is genuinely playing right now
-  // counts. A paused video (e.g. a thumbnail preview, an ad that hasn't
-  // started) never qualifies, even as a fallback.
   function findPlayingVideo() {
     const playing = Array.from(document.querySelectorAll('video'))
       .filter((v) => !v.paused && !v.ended && v.readyState > 2 && v.videoWidth > 0);
@@ -219,8 +190,6 @@ if (location.protocol === 'mi:') {
   document.addEventListener('loadedmetadata', reportVideoPresence, true);
   setInterval(reportVideoPresence, 2000);
 
-  // Visible feedback in the page itself -- without this, a failed PiP
-  // attempt looks identical to "the button did nothing".
   let toastEl = null;
   function showToast(message, isError) {
     if (toastEl) toastEl.remove();
@@ -260,9 +229,6 @@ if (location.protocol === 'mi:') {
     }
 
     try {
-      // The floating window's chrome itself is entirely OS-owned from here
-      // -- this is the only branding lever left that doesn't risk the
-      // renderer (see the note above the IIFE for why).
       if ('mediaSession' in navigator) {
         try {
           navigator.mediaSession.metadata = new MediaMetadata({
@@ -280,9 +246,5 @@ if (location.protocol === 'mi:') {
     }
   }
 
-  // With contextIsolation on, a plain "window.__miEnterPip = ..." here would
-  // only exist in this preload's isolated world -- invisible to
-  // webview.executeJavaScript(), which runs in the page's own main world.
-  // contextBridge is what actually publishes it there.
   contextBridge.exposeInMainWorld('__miEnterPip', enterPip);
 })();

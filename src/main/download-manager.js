@@ -4,13 +4,8 @@ const { EventEmitter } = require('events');
 const { webContents: webContentsModule, shell, app, dialog, BrowserWindow } = require('electron');
 const storage = require('./storage');
 
-// Lets other main-process modules (dock/taskbar progress) react to download
-// activity without polling the storage file on a timer.
 const events = new EventEmitter();
 
-// Heuristic only -- this is not a real antivirus/malware engine, it just
-// flags file types that are commonly used to deliver malware so the user
-// gets a real chance to back out before an executable lands on their disk.
 const RISKY_EXTENSIONS = new Set([
   'exe', 'msi', 'msix', 'bat', 'cmd', 'com', 'scr', 'pif', 'vbs', 'vbe',
   'js', 'jse', 'wsf', 'wsh', 'jar', 'apk', 'sh', 'ps1', 'reg', 'gadget', 'hta'
@@ -20,17 +15,10 @@ function getDownloadSafety() {
   return { malwareCheck: true, massDownloadLimit: 5, ...(storage.get('downloadSafety') || {}) };
 }
 
-// Sliding window of recent download-start timestamps, used to detect a
-// burst of many downloads firing at once (e.g. a page auto-triggering
-// several file saves) and warn before they all land unattended.
 let recentStarts = [];
 let massWarningCooldownUntil = 0;
 const MASS_WINDOW_MS = 8000;
 
-// Pick a save path in the user's chosen downloads folder (Settings >
-// Downloads), falling back to the OS default if they haven't set one or it
-// no longer exists, adding " (2)", " (3)", etc. if a file with that name is
-// already there.
 function uniqueSavePath(filename) {
   const customDir = storage.get('downloadsFolder');
   const dir = (customDir && fs.existsSync(customDir)) ? customDir : app.getPath('downloads');
@@ -94,12 +82,8 @@ function deleteEntry(id) {
   save(getAll().filter((d) => d.id !== id));
 }
 
-// Wire this once, on session.defaultSession, at app start.
 function setupSession(targetSession, ownerWindow) {
   targetSession.on('will-download', (event, item) => {
-    // setSavePath must happen synchronously in this handler, before any
-    // await -- otherwise Electron may start writing to a default temp
-    // location while we're off showing a warning dialog.
     idCounter += 1;
     const id = `dl-${Date.now()}-${idCounter}`;
     const filename = item.getFilename();
@@ -188,10 +172,6 @@ function setupSession(targetSession, ownerWindow) {
         savePath: item.getSavePath() || null
       });
 
-      // For very small/local downloads (blob:, data: URLs) the item can
-      // report 100% received without Electron ever emitting 'done' in this
-      // tick - poll its real state shortly after so the record doesn't get
-      // stuck showing "downloading" forever.
       const total = item.getTotalBytes();
       if (total > 0 && item.getReceivedBytes() >= total) {
         setTimeout(() => {
@@ -203,9 +183,6 @@ function setupSession(targetSession, ownerWindow) {
 
     item.once('done', (e, state) => settle(state));
 
-    // Tiny/local downloads can finish synchronously, before this function
-    // even returns - the 'done' event fires and is missed because nothing
-    // was listening for it yet. Catch that here too.
     const currentState = item.getState();
     if (currentState !== 'progressing') settle(currentState);
   });

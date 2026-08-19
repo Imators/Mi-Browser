@@ -32,8 +32,6 @@ function deleteEntry(index) {
   storage.set('history', history);
 }
 
-// Imported entries are appended (not unshifted to the front) since they
-// reflect another browser's past, not something visited just now here.
 function mergeImported(entries) {
   if (!entries || entries.length === 0) return 0;
 

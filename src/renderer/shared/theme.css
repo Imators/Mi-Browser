@@ -65,7 +65,6 @@ body {
   transition: all 0.15s ease;
 }
 
-/* Light Theme */
 body.theme-light {
   background: linear-gradient(to bottom, #ffffff, #e0f2fe);
   color: #000000;
@@ -89,7 +88,6 @@ body.theme-light .history-search { background-color: #ffffff; border-color: #e5e
 body.theme-light .history-entry, body.theme-light .password-row, body.theme-light .stat-card { background-color: #ffffff; border-color: #e5e7eb; }
 body.theme-light .history-entry:hover { background-color: #f9fafb; border-color: #d1d5db; }
 
-/* Dark Theme */
 body.theme-dark {
   background: linear-gradient(to bottom, #1a1a1a, #0f0f0f);
   color: #e5e5e5;
@@ -113,7 +111,6 @@ body.theme-dark .history-search { background-color: #262626; border-color: #4040
 body.theme-dark .history-entry, body.theme-dark .password-row, body.theme-dark .stat-card { background-color: #262626; border-color: #404040; }
 body.theme-dark .history-entry:hover { background-color: #303030; border-color: #525252; }
 
-/* Blue Theme */
 body.theme-blue {
   background: linear-gradient(to bottom, #dbeafe, #3b82f6);
   color: #1e40af;
@@ -137,7 +134,6 @@ body.theme-blue .history-search { background-color: #ffffff; border-color: #93c5
 body.theme-blue .history-entry, body.theme-blue .password-row, body.theme-blue .stat-card { background-color: #dbeafe; border-color: #93c5fd; }
 body.theme-blue .history-entry:hover { background-color: #bfdbfe; border-color: #60a5fa; }
 
-/* Green Theme */
 body.theme-green {
   background: linear-gradient(to bottom, #ffffff, #86efac);
   color: #14532d;
@@ -161,7 +157,6 @@ body.theme-green .history-search { background-color: #ffffff; border-color: #86e
 body.theme-green .history-entry, body.theme-green .password-row, body.theme-green .stat-card { background-color: #dcfce7; border-color: #86efac; }
 body.theme-green .history-entry:hover { background-color: #bbf7d0; border-color: #4ade80; }
 
-/* Sunset Theme */
 body.theme-sunset {
   background: linear-gradient(to bottom, #ffedd5, #fb923c);
   color: #7c2d12;
@@ -185,7 +180,6 @@ body.theme-sunset .history-search { background-color: #ffffff; border-color: #fd
 body.theme-sunset .history-entry, body.theme-sunset .password-row, body.theme-sunset .stat-card { background-color: #ffedd5; border-color: #fdba74; }
 body.theme-sunset .history-entry:hover { background-color: #fed7aa; border-color: #fb923c; }
 
-/* Desert Theme */
 body.theme-desert {
   background: linear-gradient(to bottom, #fef3c7, #d97706);
   color: #451a03;
@@ -209,7 +203,6 @@ body.theme-desert .history-search { background-color: #fffbeb; border-color: #fc
 body.theme-desert .history-entry, body.theme-desert .password-row, body.theme-desert .stat-card { background-color: #fef3c7; border-color: #fcd34d; }
 body.theme-desert .history-entry:hover { background-color: #fde68a; border-color: #f59e0b; }
 
-/* Midnight Theme */
 body.theme-midnight {
   background: linear-gradient(to bottom, #0f172a, #1e293b);
   color: #e2e8f0;
@@ -233,8 +226,6 @@ body.theme-midnight .history-search { background-color: #1e293b; border-color: #
 body.theme-midnight .history-entry, body.theme-midnight .password-row, body.theme-midnight .stat-card { background-color: #1e293b; border-color: #334155; }
 body.theme-midnight .history-entry:hover { background-color: #334155; border-color: #3b82f6; }
 
-
-/* Charcoal Theme */
 body.theme-charcoal {
   background: linear-gradient(to bottom, #1c1917, #292524);
   color: #e7e5e4;
@@ -258,8 +249,6 @@ body.theme-charcoal .history-search { background-color: #292524; border-color: #
 body.theme-charcoal .history-entry, body.theme-charcoal .password-row, body.theme-charcoal .stat-card { background-color: #292524; border-color: #44403c; }
 body.theme-charcoal .history-entry:hover { background-color: #44403c; border-color: #a8a29e; }
 
-
-/* Crimson Theme */
 body.theme-crimson {
   background: linear-gradient(to bottom, #1f0a0e, #3f1220);
   color: #fecdd3;
@@ -283,8 +272,6 @@ body.theme-crimson .history-search { background-color: #3f1220; border-color: #5
 body.theme-crimson .history-entry, body.theme-crimson .password-row, body.theme-crimson .stat-card { background-color: #3f1220; border-color: #5c1a2e; }
 body.theme-crimson .history-entry:hover { background-color: #5c1a2e; border-color: #e11d48; }
 
-
-/* Rose Theme */
 body.theme-rose {
   background: linear-gradient(to bottom, #fff1f2, #fda4af);
   color: #881337;
@@ -308,8 +295,6 @@ body.theme-rose .history-search { background-color: #ffffff; border-color: #fda4
 body.theme-rose .history-entry, body.theme-rose .password-row, body.theme-rose .stat-card { background-color: #fff1f2; border-color: #fda4af; }
 body.theme-rose .history-entry:hover { background-color: #fecdd3; border-color: #e11d48; }
 
-
-/* Lavender Theme */
 body.theme-lavender {
   background: linear-gradient(to bottom, #f5f3ff, #c4b5fd);
   color: #4c1d95;
@@ -333,8 +318,6 @@ body.theme-lavender .history-search { background-color: #ffffff; border-color: #
 body.theme-lavender .history-entry, body.theme-lavender .password-row, body.theme-lavender .stat-card { background-color: #f5f3ff; border-color: #c4b5fd; }
 body.theme-lavender .history-entry:hover { background-color: #ddd6fe; border-color: #7c3aed; }
 
-
-/* Mint Theme */
 body.theme-mint {
   background: linear-gradient(to bottom, #ecfeff, #67e8f9);
   color: #164e63;
@@ -358,7 +341,6 @@ body.theme-mint .history-search { background-color: #ffffff; border-color: #67e8
 body.theme-mint .history-entry, body.theme-mint .password-row, body.theme-mint .stat-card { background-color: #ecfeff; border-color: #67e8f9; }
 body.theme-mint .history-entry:hover { background-color: #a5f3fc; border-color: #0891b2; }
 
-/* Private Browsing -- fixed black, always overrides the chosen theme */
 body.theme-private {
   background: linear-gradient(to bottom, #000000, #141414);
   color: #f5f5f5;
@@ -382,7 +364,6 @@ body.theme-private .history-search { background-color: #141414; border-color: #2
 body.theme-private .history-entry, body.theme-private .password-row, body.theme-private .stat-card { background-color: #141414; border-color: #2a2a2a; }
 body.theme-private .history-entry:hover { background-color: #1f1f1f; border-color: #7c3aed; }
 
-/* Neon Theme */
 body.theme-neon {
   background: linear-gradient(to bottom, #0a0014, #2d0a4e);
   color: #f0e6ff;
@@ -406,8 +387,6 @@ body.theme-neon .history-search { background-color: #1a0630; border-color: #4a1a
 body.theme-neon .history-entry, body.theme-neon .password-row, body.theme-neon .stat-card { background-color: #1a0630; border-color: #4a1a7a; }
 body.theme-neon .history-entry:hover { background-color: #2d0a4e; border-color: #e879f9; }
 
-
-/* Cyberpunk Theme */
 body.theme-cyberpunk {
   background: linear-gradient(to bottom, #0d0221, #2e1155);
   color: #e0f2fe;
@@ -431,8 +410,6 @@ body.theme-cyberpunk .history-search { background-color: #1b0b3a; border-color: 
 body.theme-cyberpunk .history-entry, body.theme-cyberpunk .password-row, body.theme-cyberpunk .stat-card { background-color: #1b0b3a; border-color: #c026d3; }
 body.theme-cyberpunk .history-entry:hover { background-color: #2e1155; border-color: #38bdf8; }
 
-
-/* Emerald Theme */
 body.theme-emerald {
   background: linear-gradient(to bottom, #001a0f, #00432a);
   color: #d1fae5;
@@ -456,8 +433,6 @@ body.theme-emerald .history-search { background-color: #00301c; border-color: #1
 body.theme-emerald .history-entry, body.theme-emerald .password-row, body.theme-emerald .stat-card { background-color: #00301c; border-color: #10b981; }
 body.theme-emerald .history-entry:hover { background-color: #00432a; border-color: #10b981; }
 
-
-/* Amethyst Theme */
 body.theme-amethyst {
   background: linear-gradient(to bottom, #170025, #3b0a5c);
   color: #f3e8ff;
@@ -481,8 +456,6 @@ body.theme-amethyst .history-search { background-color: #28053f; border-color: #
 body.theme-amethyst .history-entry, body.theme-amethyst .password-row, body.theme-amethyst .stat-card { background-color: #28053f; border-color: #a855f7; }
 body.theme-amethyst .history-entry:hover { background-color: #3b0a5c; border-color: #a855f7; }
 
-
-/* Inferno Theme */
 body.theme-inferno {
   background: linear-gradient(to bottom, #1a0500, #451400);
   color: #ffe4d6;
@@ -506,8 +479,6 @@ body.theme-inferno .history-search { background-color: #2e0900; border-color: #f
 body.theme-inferno .history-entry, body.theme-inferno .password-row, body.theme-inferno .stat-card { background-color: #2e0900; border-color: #f97316; }
 body.theme-inferno .history-entry:hover { background-color: #451400; border-color: #f97316; }
 
-
-/* Ocean Theme */
 body.theme-ocean {
   background: linear-gradient(to bottom, #001220, #003654);
   color: #cffafe;
@@ -531,7 +502,6 @@ body.theme-ocean .history-search { background-color: #00253d; border-color: #2dd
 body.theme-ocean .history-entry, body.theme-ocean .password-row, body.theme-ocean .stat-card { background-color: #00253d; border-color: #2dd4bf; }
 body.theme-ocean .history-entry:hover { background-color: #003654; border-color: #2dd4bf; }
 
-/* Onyx Theme */
 body.theme-onyx {
   background: linear-gradient(to bottom, #050505, #1a1a1a);
   color: #f5f5f5;
@@ -555,8 +525,6 @@ body.theme-onyx .history-search { background-color: #141414; border-color: #3333
 body.theme-onyx .history-entry, body.theme-onyx .password-row, body.theme-onyx .stat-card { background-color: #141414; border-color: #333333; }
 body.theme-onyx .history-entry:hover { background-color: #1f1f1f; border-color: #e5e5e5; }
 
-
-/* Nebula Theme */
 body.theme-nebula {
   background: linear-gradient(to bottom, #0a0620, #2a1a5e);
   color: #f3e8ff;
@@ -580,8 +548,6 @@ body.theme-nebula .history-search { background-color: #1a1040; border-color: #d9
 body.theme-nebula .history-entry, body.theme-nebula .password-row, body.theme-nebula .stat-card { background-color: #1a1040; border-color: #d946ef; }
 body.theme-nebula .history-entry:hover { background-color: #2a1a5e; border-color: #d946ef; }
 
-
-/* Toxic Theme */
 body.theme-toxic {
   background: linear-gradient(to bottom, #05100a, #1a3322);
   color: #e5ffe0;
@@ -605,17 +571,12 @@ body.theme-toxic .history-search { background-color: #0f2015; border-color: #a3e
 body.theme-toxic .history-entry, body.theme-toxic .password-row, body.theme-toxic .stat-card { background-color: #0f2015; border-color: #a3e635; }
 body.theme-toxic .history-entry:hover { background-color: #1a3322; border-color: #a3e635; }
 
-/* No visible scrollbar track on internal pages (settings, history,
-   downloads) -- the page still scrolls fine with the wheel/trackpad, it
-   just doesn't leave a chunky OS-styled bar sitting over the content. */
 ::-webkit-scrollbar {
   width: 0;
   height: 0;
   background: transparent;
 }
 
-/* Security status badges -- deliberately theme-agnostic (green = active,
-   neutral = off) so status is legible at a glance regardless of theme. */
 .security-badge {
   font-size: 11px;
   font-weight: 700;

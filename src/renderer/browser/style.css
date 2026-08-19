@@ -248,7 +248,6 @@ webview {
   height: 100%;
 }
 
-/* Light Theme */
 body.theme-light {
   background: #ffffff;
   color: #000000;
@@ -295,7 +294,7 @@ body.theme-light .address-suggestion-row:hover {
   background-color: #f3f4f6;
 }
 
-body.theme-light body.theme-light .bookmarks-bar {
+body.theme-light .bookmarks-bar {
   background: #ffffff;
   border-color: rgba(0, 0, 0, 0.1);
 }
@@ -337,7 +336,6 @@ body.theme-light .tab.active {
   background: #ffffff;
 }
 
-/* Dark Theme */
 body.theme-dark {
   background: #1a1a1a;
   color: #e5e5e5;
@@ -384,7 +382,7 @@ body.theme-dark .address-suggestion-row:hover {
   background-color: #333333;
 }
 
-body.theme-dark body.theme-dark .bookmarks-bar {
+body.theme-dark .bookmarks-bar {
   background: #1a1a1a;
   border-color: rgba(255, 255, 255, 0.1);
 }
@@ -426,7 +424,6 @@ body.theme-dark .tab.active {
   background: #1a1a1a;
 }
 
-/* Blue Theme */
 body.theme-blue {
   background: #dbeafe;
   color: #1e40af;
@@ -473,7 +470,7 @@ body.theme-blue .address-suggestion-row:hover {
   background-color: #dbeafe;
 }
 
-body.theme-blue body.theme-blue .bookmarks-bar {
+body.theme-blue .bookmarks-bar {
   background: #dbeafe;
   border-color: rgba(96, 165, 250, 0.3);
 }
@@ -515,7 +512,6 @@ body.theme-blue .tab.active {
   background: #dbeafe;
 }
 
-/* Green Theme */
 body.theme-green {
   background: #dcfce7;
   color: #14532d;
@@ -562,7 +558,7 @@ body.theme-green .address-suggestion-row:hover {
   background-color: #dcfce7;
 }
 
-body.theme-green body.theme-green .bookmarks-bar {
+body.theme-green .bookmarks-bar {
   background: #dcfce7;
   border-color: rgba(34, 197, 94, 0.3);
 }
@@ -604,7 +600,6 @@ body.theme-green .tab.active {
   background: #dcfce7;
 }
 
-/* Sunset Theme */
 body.theme-sunset {
   background: #ffedd5;
   color: #7c2d12;
@@ -651,7 +646,7 @@ body.theme-sunset .address-suggestion-row:hover {
   background-color: #ffedd5;
 }
 
-body.theme-sunset body.theme-sunset .bookmarks-bar {
+body.theme-sunset .bookmarks-bar {
   background: #ffedd5;
   border-color: rgba(249, 115, 22, 0.3);
 }
@@ -693,7 +688,6 @@ body.theme-sunset .tab.active {
   background: #ffedd5;
 }
 
-/* Desert Theme */
 body.theme-desert {
   background: #fef3c7;
   color: #451a03;
@@ -740,7 +734,7 @@ body.theme-desert .address-suggestion-row:hover {
   background-color: #fef3c7;
 }
 
-body.theme-desert body.theme-desert .bookmarks-bar {
+body.theme-desert .bookmarks-bar {
   background: #fef3c7;
   border-color: rgba(180, 83, 9, 0.3);
 }
@@ -782,7 +776,6 @@ body.theme-desert .tab.active {
   background: #fef3c7;
 }
 
-/* Midnight Theme */
 body.theme-midnight {
   background: #0f172a;
   color: #e2e8f0;
@@ -829,7 +822,7 @@ body.theme-midnight .address-suggestion-row:hover {
   background-color: #334155;
 }
 
-body.theme-midnight body.theme-midnight .bookmarks-bar {
+body.theme-midnight .bookmarks-bar {
   background: #0f172a;
   border-color: rgba(148,163,184,0.3);
 }
@@ -871,8 +864,6 @@ body.theme-midnight .tab.active {
   background: #0f172a;
 }
 
-
-/* Charcoal Theme */
 body.theme-charcoal {
   background: #1c1917;
   color: #e7e5e4;
@@ -919,7 +910,7 @@ body.theme-charcoal .address-suggestion-row:hover {
   background-color: #44403c;
 }
 
-body.theme-charcoal body.theme-charcoal .bookmarks-bar {
+body.theme-charcoal .bookmarks-bar {
   background: #1c1917;
   border-color: rgba(168,162,158,0.3);
 }
@@ -961,8 +952,6 @@ body.theme-charcoal .tab.active {
   background: #1c1917;
 }
 
-
-/* Crimson Theme */
 body.theme-crimson {
   background: #1f0a0e;
   color: #fecdd3;
@@ -1009,7 +998,7 @@ body.theme-crimson .address-suggestion-row:hover {
   background-color: #5c1a2e;
 }
 
-body.theme-crimson body.theme-crimson .bookmarks-bar {
+body.theme-crimson .bookmarks-bar {
   background: #1f0a0e;
   border-color: rgba(251,113,133,0.3);
 }
@@ -1051,8 +1040,6 @@ body.theme-crimson .tab.active {
   background: #1f0a0e;
 }
 
-
-/* Rose Theme */
 body.theme-rose {
   background: #fff1f2;
   color: #881337;
@@ -1099,7 +1086,7 @@ body.theme-rose .address-suggestion-row:hover {
   background-color: #fda4af;
 }
 
-body.theme-rose body.theme-rose .bookmarks-bar {
+body.theme-rose .bookmarks-bar {
   background: #fff1f2;
   border-color: rgba(244,63,94,0.3);
 }
@@ -1141,8 +1128,6 @@ body.theme-rose .tab.active {
   background: #fff1f2;
 }
 
-
-/* Lavender Theme */
 body.theme-lavender {
   background: #f5f3ff;
   color: #4c1d95;
@@ -1189,7 +1174,7 @@ body.theme-lavender .address-suggestion-row:hover {
   background-color: #c4b5fd;
 }
 
-body.theme-lavender body.theme-lavender .bookmarks-bar {
+body.theme-lavender .bookmarks-bar {
   background: #f5f3ff;
   border-color: rgba(139,92,246,0.3);
 }
@@ -1231,8 +1216,6 @@ body.theme-lavender .tab.active {
   background: #f5f3ff;
 }
 
-
-/* Mint Theme */
 body.theme-mint {
   background: #ecfeff;
   color: #164e63;
@@ -1279,7 +1262,7 @@ body.theme-mint .address-suggestion-row:hover {
   background-color: #67e8f9;
 }
 
-body.theme-mint body.theme-mint .bookmarks-bar {
+body.theme-mint .bookmarks-bar {
   background: #ecfeff;
   border-color: rgba(6,182,212,0.3);
 }
@@ -1321,7 +1304,6 @@ body.theme-mint .tab.active {
   background: #ecfeff;
 }
 
-/* Private Browsing -- fixed, always black regardless of chosen theme */
 body.theme-private {
   background: #000000;
   color: #f5f5f5;
@@ -1347,7 +1329,6 @@ body.theme-private .tab:hover { background: #1f1f1f; }
 body.theme-private .tab.active { background: #000000; border-bottom: 2px solid #7c3aed; }
 body.theme-private .tab-private-badge { margin-right: 2px; }
 
-/* Neon Theme */
 body.theme-neon {
   background: #0a0014;
   color: #f0e6ff;
@@ -1394,7 +1375,7 @@ body.theme-neon .address-suggestion-row:hover {
   background-color: #2d0a4e;
 }
 
-body.theme-neon body.theme-neon .bookmarks-bar {
+body.theme-neon .bookmarks-bar {
   background: #0a0014;
   border-color: rgba(232,121,249,0.35);
 }
@@ -1436,8 +1417,6 @@ body.theme-neon .tab.active {
   background: #0a0014;
 }
 
-
-/* Cyberpunk Theme */
 body.theme-cyberpunk {
   background: #0d0221;
   color: #e0f2fe;
@@ -1484,7 +1463,7 @@ body.theme-cyberpunk .address-suggestion-row:hover {
   background-color: #2e1155;
 }
 
-body.theme-cyberpunk body.theme-cyberpunk .bookmarks-bar {
+body.theme-cyberpunk .bookmarks-bar {
   background: #0d0221;
   border-color: rgba(56,189,248,0.35);
 }
@@ -1526,8 +1505,6 @@ body.theme-cyberpunk .tab.active {
   background: #0d0221;
 }
 
-
-/* Emerald Theme */
 body.theme-emerald {
   background: #001a0f;
   color: #d1fae5;
@@ -1574,7 +1551,7 @@ body.theme-emerald .address-suggestion-row:hover {
   background-color: #00432a;
 }
 
-body.theme-emerald body.theme-emerald .bookmarks-bar {
+body.theme-emerald .bookmarks-bar {
   background: #001a0f;
   border-color: rgba(52,211,153,0.35);
 }
@@ -1616,8 +1593,6 @@ body.theme-emerald .tab.active {
   background: #001a0f;
 }
 
-
-/* Amethyst Theme */
 body.theme-amethyst {
   background: #170025;
   color: #f3e8ff;
@@ -1664,7 +1639,7 @@ body.theme-amethyst .address-suggestion-row:hover {
   background-color: #3b0a5c;
 }
 
-body.theme-amethyst body.theme-amethyst .bookmarks-bar {
+body.theme-amethyst .bookmarks-bar {
   background: #170025;
   border-color: rgba(168,85,247,0.35);
 }
@@ -1706,8 +1681,6 @@ body.theme-amethyst .tab.active {
   background: #170025;
 }
 
-
-/* Inferno Theme */
 body.theme-inferno {
   background: #1a0500;
   color: #ffe4d6;
@@ -1754,7 +1727,7 @@ body.theme-inferno .address-suggestion-row:hover {
   background-color: #451400;
 }
 
-body.theme-inferno body.theme-inferno .bookmarks-bar {
+body.theme-inferno .bookmarks-bar {
   background: #1a0500;
   border-color: rgba(251,146,60,0.35);
 }
@@ -1796,8 +1769,6 @@ body.theme-inferno .tab.active {
   background: #1a0500;
 }
 
-
-/* Ocean Theme */
 body.theme-ocean {
   background: #001220;
   color: #cffafe;
@@ -1844,7 +1815,7 @@ body.theme-ocean .address-suggestion-row:hover {
   background-color: #003654;
 }
 
-body.theme-ocean body.theme-ocean .bookmarks-bar {
+body.theme-ocean .bookmarks-bar {
   background: #001220;
   border-color: rgba(45,212,191,0.35);
 }
@@ -1886,7 +1857,6 @@ body.theme-ocean .tab.active {
   background: #001220;
 }
 
-/* Onyx Theme */
 body.theme-onyx {
   background: #050505;
   color: #f5f5f5;
@@ -1933,7 +1903,7 @@ body.theme-onyx .address-suggestion-row:hover {
   background-color: #1f1f1f;
 }
 
-body.theme-onyx body.theme-onyx .bookmarks-bar {
+body.theme-onyx .bookmarks-bar {
   background: #050505;
   border-color: rgba(255,255,255,0.14);
 }
@@ -1975,8 +1945,6 @@ body.theme-onyx .tab.active {
   background: #050505;
 }
 
-
-/* Nebula Theme */
 body.theme-nebula {
   background: #0a0620;
   color: #f3e8ff;
@@ -2023,7 +1991,7 @@ body.theme-nebula .address-suggestion-row:hover {
   background-color: #2a1a5e;
 }
 
-body.theme-nebula body.theme-nebula .bookmarks-bar {
+body.theme-nebula .bookmarks-bar {
   background: #0a0620;
   border-color: rgba(217,70,239,0.35);
 }
@@ -2065,8 +2033,6 @@ body.theme-nebula .tab.active {
   background: #0a0620;
 }
 
-
-/* Toxic Theme */
 body.theme-toxic {
   background: #05100a;
   color: #e5ffe0;
@@ -2113,7 +2079,7 @@ body.theme-toxic .address-suggestion-row:hover {
   background-color: #1a3322;
 }
 
-body.theme-toxic body.theme-toxic .bookmarks-bar {
+body.theme-toxic .bookmarks-bar {
   background: #05100a;
   border-color: rgba(163,230,53,0.35);
 }
@@ -2155,7 +2121,6 @@ body.theme-toxic .tab.active {
   background: #05100a;
 }
 
-/* Find in page */
 .find-bar {
   position: absolute;
   top: 12px;
@@ -2206,21 +2171,12 @@ body.theme-toxic .tab.active {
   background-color: rgba(128, 128, 128, 0.15);
 }
 
-/* Toolbar auto-hide (Settings > Appearance). Collapses actual layout
-   height (not just a visual offset) so the webview area genuinely expands
-   to fill the freed space, right up under the drag bar -- which stays
-   visible and is what the mouse actually hovers to bring the toolbar back,
-   since mouse movement over the (out-of-process) webview itself never
-   reaches this document at all. */
 body.auto-hide-toolbar #browser-chrome {
   overflow: hidden;
   max-height: 0;
   transition: max-height 0.18s ease;
 }
 
-/* A generous fixed cap rather than a JS-measured height -- the real content
-   is always well under this, and a fixed value can't go stale (e.g. once
-   the bookmarks bar shows up after the height was first measured). */
 body.auto-hide-toolbar.toolbar-revealed #browser-chrome {
   max-height: 600px;
 }
@@ -2239,7 +2195,6 @@ body:not(.auto-hide-toolbar) .toolbar-reveal-strip {
   display: none;
 }
 
-/* Personalisation (Settings > Appearance) */
 .toolbar-clock {
   font-size: 12px;
   font-variant-numeric: tabular-nums;

@@ -1,11 +1,5 @@
 const { Menu, app, shell } = require('electron');
 
-// Frameless windows still benefit from a real native application menu --
-// it's what gives macOS its standard app-name menu (About/Services/Hide/Quit),
-// puts Mi Browser's own Edit menu behind the OS's native copy/paste/undo
-// keyboard shortcuts (so they work in native dialogs, not just inside pages),
-// and is what shows up in the macOS menu bar / Windows Alt-menu at all.
-// Without this, Electron falls back to a generic unbranded default menu.
 function send(mainWindow, channel) {
   if (mainWindow && !mainWindow.isDestroyed()) mainWindow.webContents.send(channel);
 }

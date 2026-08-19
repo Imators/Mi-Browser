@@ -28,8 +28,6 @@ function showStep(stepIndex) {
   updateProgressIndicator();
 }
 
-// The intro video (step 0) has no progress dots or Back button -- it's not
-// really a "step" you can navigate, just an opening beat.
 function updateProgressIndicator() {
   const progressEl = document.getElementById('setup-progress');
   const stepName = steps[currentStep];

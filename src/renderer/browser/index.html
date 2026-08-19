@@ -11,13 +11,9 @@
 
   <div class="flex flex-col h-screen w-screen">
 
-    <!-- Hover target for revealing an auto-hidden toolbar. Explicitly
-         no-drag: the drag bar's -webkit-app-region:drag can itself swallow
-         regular mouse events, so this can't just be "hover the drag bar". -->
-    <div id="toolbar-reveal-strip" class="toolbar-reveal-strip"></div>
+        <div id="toolbar-reveal-strip" class="toolbar-reveal-strip"></div>
 
-    <!-- Drag Bar -->
-    <div id="drag-bar" class="drag-bar h-8 w-full flex items-center justify-between px-3.5">
+        <div id="drag-bar" class="drag-bar h-8 w-full flex items-center justify-between px-3.5">
       <div class="flex gap-2">
         <button id="close-btn" class="window-btn window-btn-close" title="Close">
           <svg viewBox="0 0 12 12" width="10" height="10"><line x1="3" y1="3" x2="9" y2="9" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><line x1="9" y1="3" x2="3" y2="9" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
@@ -32,12 +28,9 @@
       <div class="flex-1"></div>
     </div>
 
-    <!-- Toolbar, bookmarks bar and tabs bar, grouped so they can be
-         auto-hidden together (Settings > Appearance) -->
-    <div id="browser-chrome">
+        <div id="browser-chrome">
 
-    <!-- Toolbar -->
-    <div class="toolbar h-12 flex items-center gap-1 px-4 border-b border-opacity-20">
+        <div class="toolbar h-12 flex items-center gap-1 px-4 border-b border-opacity-20">
       <button id="back-btn" class="toolbar-icon-btn" title="Back">
         <svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
       </button>
@@ -79,8 +72,7 @@
       </button>
     </div>
 
-    <!-- Mi site menu popover -->
-    <div id="site-menu-popover" class="site-menu-popover hidden">
+        <div id="site-menu-popover" class="site-menu-popover hidden">
       <p class="text-xs font-semibold opacity-60 uppercase tracking-wide mb-1">Mi &middot; this site</p>
       <p id="site-menu-host" class="text-sm font-semibold mb-1 truncate"></p>
       <p id="site-menu-cookie-count" class="text-xs opacity-60 mb-3"></p>
@@ -93,18 +85,14 @@
       <button id="site-menu-clear-cookies-btn" class="w-full px-3 py-2 rounded-lg text-sm font-semibold border-2 hover:opacity-80 transition">Clear cookies for this site now</button>
     </div>
 
-    <!-- Bookmarks bar -->
-    <div id="bookmarks-bar" class="bookmarks-bar h-9 flex items-center gap-1 px-2 overflow-x-auto border-b border-opacity-20 hidden"></div>
+        <div id="bookmarks-bar" class="bookmarks-bar h-9 flex items-center gap-1 px-2 overflow-x-auto border-b border-opacity-20 hidden"></div>
 
-    <!-- Tabs Bar -->
-    <div id="tabs-container" class="tabs-bar h-10 flex items-center gap-1 px-2 overflow-x-auto border-b border-opacity-20">
+        <div id="tabs-container" class="tabs-bar h-10 flex items-center gap-1 px-2 overflow-x-auto border-b border-opacity-20">
       <button id="new-tab-btn" class="px-3 h-8 rounded-t text-sm font-semibold hover:opacity-75 transition">+</button>
     </div>
 
-    </div><!-- /#browser-chrome -->
-
-    <!-- Content Area -->
-    <div id="webview-container" class="flex-1 overflow-hidden relative">
+    </div>
+        <div id="webview-container" class="flex-1 overflow-hidden relative">
       <div id="find-bar" class="find-bar site-menu-popover hidden">
         <input type="text" id="find-input" placeholder="Find in page" autocomplete="off">
         <span id="find-matches" class="find-matches"></span>

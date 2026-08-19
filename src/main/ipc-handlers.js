@@ -157,11 +157,6 @@ function register(mainWindow) {
     clipboard.writeText(text);
   });
 
-  // Live Google search suggestions -- explicitly opt-in (default off) and
-  // only ever fires when the user has both picked Google as their search
-  // engine AND turned this on in Settings, since every keystroke here is
-  // sent to Google. Enforced here too, not just in the renderer, so a
-  // compromised/buggy renderer can't quietly turn this back on.
   ipcMain.handle('search-suggest-google', async (event, query) => {
     const features = storage.get('features') || {};
     if (!features.googleSuggest || !query || typeof query !== 'string') return [];
@@ -209,9 +204,6 @@ function register(mainWindow) {
     session.fromPartition('mi-private').setSpellCheckerEnabled(!!enabled);
   });
 
-  // Settings runs as a mi:// page inside a webview tab, which has no access
-  // to the host chrome's tab-creation logic -- routed through the main
-  // window so browser/script.js can open a real private tab.
   ipcMain.handle('open-private-tab', () => {
     mainWindow.webContents.send('open-private-tab');
   });

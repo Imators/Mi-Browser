@@ -6,9 +6,6 @@ let mainWindowRef = null;
 const VERSION_URL = 'https://imators.systems/mi-browser/version-operating/version.json';
 const CHECK_INTERVAL_MS = 6 * 60 * 60 * 1000; // 6 hours
 
-// Plain numeric semver compare (no pre-release/build metadata handling --
-// version.json is ours to control, so it only ever needs to carry plain
-// "major.minor.patch" strings). Returns >0 if a is newer than b.
 function compareVersions(a, b) {
   const partsA = String(a).split('.').map((n) => parseInt(n, 10) || 0);
   const partsB = String(b).split('.').map((n) => parseInt(n, 10) || 0);
@@ -75,13 +72,6 @@ function getCached() {
   return storage.get('lastUpdateCheck') || null;
 }
 
-// Genuinely downloads the installer straight into the user's Downloads
-// folder (through the same will-download pipeline downloadManager already
-// tracks, progress bar and all) rather than just opening a browser tab --
-// as automatic as this can honestly be made without a code-signed,
-// platform-specific auto-update channel (Squirrel.Mac / NSIS differential
-// updates), which needs signing certificates this project doesn't have.
-// Running the finished installer is still a deliberate step the user takes.
 function downloadUpdate(url) {
   if (!url) return false;
   if (mainWindowRef && !mainWindowRef.isDestroyed()) {
@@ -94,8 +84,6 @@ function downloadUpdate(url) {
 
 function setup(mainWindow) {
   mainWindowRef = mainWindow;
-  // Check shortly after launch (not instantly -- no need to compete with
-  // startup work) and then on a steady interval for as long as the app runs.
   setTimeout(checkForUpdate, 5000);
   setInterval(checkForUpdate, CHECK_INTERVAL_MS);
 }

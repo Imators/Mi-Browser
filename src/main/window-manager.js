@@ -3,12 +3,6 @@ const path = require('path');
 const fs = require('fs');
 const storage = require('./storage');
 
-// Runtime window icon (dock/taskbar while running unpackaged via `npm
-// start`). Packaged builds use electron-builder's "icon" config in
-// package.json instead -- this only covers dev. Both point at the same
-// single source file, so dropping one icon.png in here later covers both.
-// Silently has no effect until that file actually exists (Electron just
-// falls back to its default icon), so this is safe to ship ahead of time.
 const APP_ICON_PATH = path.join(__dirname, '../assets/icons/icon.png');
 
 function createMainWindow() {

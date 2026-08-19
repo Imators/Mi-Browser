@@ -108,10 +108,6 @@ function applyCustomizations() {
   document.documentElement.style.fontSize = `${Math.round((state.uiZoom || 1) * 100)}%`;
   document.body.classList.toggle('compact-tabs', state.compactTabs);
   document.body.classList.toggle('always-show-tab-close', state.alwaysShowTabClose);
-  // applyChromeTheme() (called every tab switch) fully reassigns
-  // document.body.className, which would otherwise wipe this class back off
-  // right after setAutoHideToolbar() set it -- so it's reapplied here too,
-  // since applyCustomizations() runs right alongside applyChromeTheme().
   document.body.classList.toggle('auto-hide-toolbar', state.autoHideToolbar);
   if (!state.autoHideToolbar) document.body.classList.remove('toolbar-revealed');
   updateClockVisibility();
@@ -132,10 +128,6 @@ function updateClockVisibility() {
   }
 }
 
-// Must match PRIVATE_SESSION_PARTITION in src/main/main.js exactly -- that's
-// the session the main process registers the mi:// protocol handler and CSP
-// rules on. Not "persist:"-prefixed, so Electron keeps it in-memory only and
-// wipes it on every relaunch regardless of the name being fixed.
 const PRIVATE_PARTITION = 'mi-private';
 
 function createTab(url = 'mi://newtab', { isPrivate = false, background = false } = {}) {
@@ -165,11 +157,6 @@ function switchTab(tabId) {
     el.style.visibility = isActive ? 'visible' : 'hidden';
     el.style.zIndex = isActive ? '1' : '0';
     el.style.pointerEvents = isActive ? 'auto' : 'none';
-    // A webview just created this tick hasn't fired dom-ready yet --
-    // setAudioMuted rejects (asynchronously, outside any try/catch here) if
-    // called before that, so it's gated on the same readiness flag dom-ready
-    // sets below. Muting is a nicety; the correct mute state gets applied
-    // the moment dom-ready does fire instead.
     if (el.dataset.miReady === 'true') {
       if (isActive) el.setAudioMuted(false);
       else if (state.autoMuteBackgroundTabs) el.setAudioMuted(true);
@@ -191,9 +178,6 @@ function switchTab(tabId) {
   renderTabs();
 }
 
-// Private tabs always get a fixed black look regardless of the user's chosen
-// theme, both as a visual "you're in private mode" cue and so nothing about
-// the normal theme (which is persisted/synced) leaks timing information.
 function applyChromeTheme(tab) {
   const base = 'm-0 p-0 overflow-hidden h-screen';
   document.body.className = tab && tab.isPrivate
@@ -211,8 +195,6 @@ function closeTab(tabId) {
   const index = tabs.findIndex(t => t.id === tabId);
   if (index !== -1) {
     const [closed] = tabs.splice(index, 1);
-    // Private tabs never enter the reopen-closed-tab stack -- even the fact
-    // that one existed shouldn't be recoverable after it's closed.
     if (closed.url && !closed.url.startsWith('mi://newtab') && !closed.isPrivate) {
       closedTabsStack.push({ url: closed.url, title: closed.title });
       if (closedTabsStack.length > 20) closedTabsStack.shift();
@@ -308,10 +290,6 @@ function createWebview(tabId, url, isPrivate = false) {
 
   const webview = document.createElement('webview');
   webview.id = `webview-${tabId}`;
-  // Without this, Electron blocks target="_blank" links and window.open()
-  // outright, before it even reaches setWindowOpenHandler or fires
-  // 'new-window' -- silently, with no error and no event to catch. This is
-  // the actual reason "dynamic" links never opened on a real click.
   webview.setAttribute('allowpopups', 'true');
   if (isPrivate) webview.partition = PRIVATE_PARTITION;
   webview.src = url;
@@ -351,11 +329,6 @@ function createWebview(tabId, url, isPrivate = false) {
 
   webview.addEventListener('dom-ready', () => {
     if (state.smoothScrolling) webview.insertCSS('html { scroll-behavior: smooth !important; }').catch(() => {});
-    // Electron's webview can still reject setAudioMuted for a beat even
-    // right at dom-ready -- its internal "attached" bookkeeping finishes
-    // slightly after the event fires. Deferring one tick avoids that race
-    // (this call can't usefully be wrapped in try/catch: the rejection
-    // happens inside Electron's own internal promise, not one we get back).
     setTimeout(() => {
       webview.dataset.miReady = 'true';
       if (tabId === activeTabId) webview.setAudioMuted(false);
@@ -394,11 +367,6 @@ function createWebview(tabId, url, isPrivate = false) {
     }
   });
 
-  // Bridges the page's password-autofill content script (webview-preload.js)
-  // to the real vault. The guest never gets vault access directly -- it can
-  // only ask "any saved logins here?" / "fill entry X", and the hostname
-  // used to look entries up comes from webview.getURL() (trusted, host-side),
-  // never from anything the guest page itself reports.
   webview.addEventListener('ipc-message', (e) => {
     if (e.channel === 'mi-password-lookup') {
       let hostname;
@@ -461,10 +429,6 @@ function createWebview(tabId, url, isPrivate = false) {
     }
   });
 
-  // target="_blank" links / window.open() calls are handled entirely in the
-  // main process (see setWindowOpenHandler in main.js) which is the only
-  // reliable interception point for a <webview> guest; it reaches back here
-  // via 'guest-new-window', matched to this tab through webContentsId.
   webview.addEventListener('dom-ready', () => {
     const tab = tabs.find(t => t.id === tabId);
     if (tab) tab.webContentsId = webview.getWebContentsId();
@@ -510,12 +474,6 @@ function getSearchEngineUrlPrefix(key) {
   return custom ? custom.urlPrefix : SEARCH_ENGINES.google;
 }
 
-// A search engine URL can be given either as a bare prefix ("https://x/?q=",
-// the term gets appended) or with an explicit %s placeholder (the format
-// most sites, e.g. Kagi, actually document/copy-paste). Not substituting %s
-// left it in the URL literally -- which Chromium then can't load, and a
-// failed load of that malformed URL was itself getting fed back in as a new
-// "query" on the next attempt, nesting the mess deeper each time.
 function buildSearchUrl(urlPrefix, query) {
   const encoded = encodeURIComponent(query);
   return urlPrefix.includes('%s') ? urlPrefix.replace(/%s/g, encoded) : `${urlPrefix}${encoded}`;
@@ -534,12 +492,6 @@ function commitAddressBar(url) {
   hideAddressSuggestions();
 }
 
-// --- Address bar suggestions. Local history + bookmarks are always used and
-// never leave the device. Live Google suggestions are the one exception --
-// explicitly opt-in (Settings, off by default) and only when Google is the
-// active search engine -- because using them means every keystroke here is
-// sent to Google as you type, not just the final search. A warning row is
-// always shown alongside them, never silently.
 const addressBar = document.getElementById('address-bar');
 const addressSuggestions = document.getElementById('address-suggestions');
 let suggestionItems = [];
@@ -625,7 +577,6 @@ async function updateAddressSuggestions() {
     })
     .slice(0, 6);
 
-  // Query might be stale if the user kept typing while these promises were in flight
   if (addressBar.value.trim() === query) renderAddressSuggestions(query, combined);
 
   if (state.searchEngine === 'google' && state.googleSuggestEnabled) {
@@ -806,7 +757,6 @@ document.getElementById('close-btn').addEventListener('click', () => {
   saveSessionAndClose();
 });
 
-// --- Mini player (Picture-in-Picture) ---
 const pipBtn = document.getElementById('pip-btn');
 
 function updatePipButton() {
@@ -814,25 +764,16 @@ function updatePipButton() {
   pipBtn.classList.toggle('hidden', !(tab && tab.hasPlayingVideo));
 }
 
-// Only ever triggered by an explicit click on the toolbar button -- an
-// earlier version also fired this automatically on every tab switch and
-// window blur, which meant ripping a page's <video> node out into a
-// separate PiP document behind its back. Sites with their own complex
-// player (YouTube's SPA player chrome, ad logic, etc.) don't expect their
-// video to vanish from under them and can end up in a broken/blank state.
-// A manual click is a much smaller, safer surface.
 pipBtn.addEventListener('click', () => {
   const webview = document.getElementById(`webview-${activeTabId}`);
   if (webview) webview.executeJavaScript('window.__miEnterPip && window.__miEnterPip()', true).catch(() => {});
 });
 
-// --- Pin current page ---
 document.getElementById('pin-btn').addEventListener('click', () => {
   const tab = tabs.find(t => t.id === activeTabId);
   if (tab) window.electron.bookmarks.add({ url: tab.url, title: tab.title });
 });
 
-// --- Bookmarks bar ---
 const bookmarksBar = document.getElementById('bookmarks-bar');
 
 async function renderBookmarksBar() {
@@ -906,7 +847,6 @@ function updateUpdateIndicator(result) {
 window.electron.updates.getCached().then(updateUpdateIndicator);
 window.electron.updates.onStatusChanged(updateUpdateIndicator);
 
-// Right-click on empty tab-bar space (not on a tab itself, that has its own menu)
 document.getElementById('tabs-container').addEventListener('contextmenu', async (e) => {
   if (e.target.closest('.tab')) return;
   e.preventDefault();
@@ -922,7 +862,6 @@ document.getElementById('tabs-container').addEventListener('contextmenu', async 
   else if (selected === 'settings') createTab('mi://settings');
 });
 
-// Right-click on the drag bar / window chrome
 document.getElementById('drag-bar').addEventListener('contextmenu', async (e) => {
   e.preventDefault();
 
@@ -945,9 +884,6 @@ function switchToRelativeTab(direction) {
   switchTab(tabs[nextIndex].id);
 }
 
-// Central shortcut handler, called both from the host chrome's keydown and
-// from each webview's before-input-event -- keyboard focus can land inside
-// guest page content, which never bubbles a DOM keydown up to this document.
 function performShortcut({ key, mod, shift, alt }) {
   const k = key.toLowerCase();
 
@@ -1015,7 +951,6 @@ window.electron.app.onGuestNewWindow((webContentsId, url) => {
   createTab(url, { isPrivate: sourceTab && sourceTab.isPrivate, background: state.openTabsInBackground });
 });
 
-// --- Find in page ---
 const findBar = document.getElementById('find-bar');
 const findInput = document.getElementById('find-input');
 const findMatches = document.getElementById('find-matches');
@@ -1036,10 +971,6 @@ function openFindBar() {
 
 function closeFindBar() {
   const wv = activeWebview();
-  // switchTab() calls this after already pointing activeTabId at the tab
-  // being switched TO -- which, for a brand new tab, hasn't attached/fired
-  // dom-ready yet. stopFindInPage rejects (unrecoverably, outside any
-  // try/catch here) if called before that.
   if (wv && wv.dataset.miReady === 'true') wv.stopFindInPage('clearSelection');
   findBar.classList.add('hidden');
   findMatches.textContent = '';
@@ -1066,7 +997,6 @@ document.getElementById('find-prev-btn').addEventListener('click', () => runFind
 document.getElementById('find-next-btn').addEventListener('click', () => runFind(true, true));
 document.getElementById('find-close-btn').addEventListener('click', closeFindBar);
 
-// --- Zoom controls ---
 function adjustZoom(delta) {
   const wv = activeWebview();
   if (!wv) return;
@@ -1079,7 +1009,6 @@ function resetZoom() {
   if (wv) wv.setZoomFactor(1);
 }
 
-// --- Native application menu events (src/main/app-menu.js) ---
 window.electron.app.onMenuEvent((channel) => {
   const wv = activeWebview();
   switch (channel) {
@@ -1112,10 +1041,6 @@ document.addEventListener('keydown', (e) => {
   }
 });
 
-// --- Auto-hide toolbar (Settings > Appearance) ---
-// Slides the toolbar/bookmarks bar/tabs bar out of view for a more immersive
-// browsing area, revealed by moving the mouse to the top of the window --
-// same pattern as fullscreen video players' controls.
 let toolbarHideTimer = null;
 
 function revealToolbar() {
@@ -1133,13 +1058,6 @@ function scheduleToolbarHide() {
   }, 500);
 }
 
-// The host document only ever sees mouse movement over its own chrome (the
-// drag bar strip, which -webkit-app-region:drag can itself swallow regular
-// mouse events for) -- never over the <webview>, which is a separate
-// process and covers almost the entire window once the toolbar collapses.
-// So "hover the top of the window to reveal" needs the guest page itself to
-// notice the mouse is near its own top edge and tell the host, via the same
-// content-script-in-webview-preload.js pattern used for PiP/autofill.
 document.getElementById('toolbar-reveal-strip').addEventListener('mousemove', revealToolbar);
 document.getElementById('toolbar-reveal-strip').addEventListener('mouseleave', scheduleToolbarHide);
 

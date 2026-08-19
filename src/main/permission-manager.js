@@ -1,11 +1,6 @@
 const { session, dialog } = require('electron');
 const storage = require('./storage');
 
-// Notifications are explicitly wanted and low-risk, so they're always
-// granted. Everything else that's sensitive (camera, mic, location) gets a
-// real per-site prompt the first time, remembered afterwards so it doesn't
-// nag on every visit. Anything not in this list (midiSysex, pointerLock,
-// openExternal, etc.) is denied outright.
 const PROMPTED_PERMISSIONS = ['geolocation', 'media', 'camera', 'microphone'];
 
 const PERMISSION_LABELS = {

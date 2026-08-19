@@ -8,12 +8,6 @@ const Database = require('better-sqlite3');
 const homeDir = os.homedir();
 const platform = process.platform;
 
-// Chrome-family browsers encrypt saved passwords with a key stored in the OS
-// keychain under a per-browser service name. Decryption is currently only
-// implemented for macOS (Keychain); Windows (DPAPI) and Linux (libsecret/
-// kwallet, inconsistent across distros) are out of scope for now, so those
-// platforms still get an accurate password *count* during detection, just
-// not the ability to actually import the values.
 const SAFE_STORAGE_ACCOUNTS = {
   chrome: { service: 'Chrome Safe Storage', account: 'Chrome' },
   brave: { service: 'Brave Safe Storage', account: 'Brave' },
@@ -35,7 +29,6 @@ function getMacSafeStorageKey(browserName) {
     ).trim();
     return crypto.pbkdf2Sync(password, 'saltysalt', 1003, 16, 'sha1');
   } catch (err) {
-    // Keychain entry missing, or the user declined the access prompt
     return null;
   }
 }
@@ -83,7 +76,6 @@ function getChromiumRoots() {
     };
   }
 
-  // Linux and other platforms
   return {
     chrome: path.join(homeDir, '.config/google-chrome'),
     brave: path.join(homeDir, '.config/BraveSoftware/Brave-Browser'),
@@ -100,9 +92,6 @@ function getFirefoxProfilesPath() {
   return path.join(homeDir, '.mozilla/firefox');
 }
 
-// Find every real profile folder under a Chromium user-data root: the root
-// itself (Opera keeps its profile files directly there), plus "Default" and
-// any "Profile N" folders (multi-profile Chrome/Brave/Edge users are common).
 function findProfileDirs(root) {
   if (!fs.existsSync(root)) return [];
 
@@ -119,17 +108,11 @@ function findProfileDirs(root) {
       }
     });
   } catch (err) {
-    // unreadable directory, nothing to add
   }
 
   return dirs;
 }
 
-// Chrome (and Firefox) keep their live database in WAL mode and lock it
-// while the browser is running. Reading the live file directly regularly
-// fails with "database is locked" if that browser is still open. Copying
-// the db (and its -wal/-shm siblings, so recent unflushed rows aren't
-// missed) to a scratch location and reading the copy sidesteps that.
 function readSqliteSafely(dbPath, query) {
   if (!fs.existsSync(dbPath)) return [];
 
@@ -192,7 +175,6 @@ async function getChromiumData(profileDirs) {
         const bookmarksData = JSON.parse(fs.readFileSync(bookmarksPath, 'utf8'));
         bookmarks = bookmarks.concat(extractBookmarks(bookmarksData.roots));
       } catch (err) {
-        // malformed or unreadable Bookmarks file for this profile, skip it
       }
     }
 

@@ -55,7 +55,6 @@ input[type="checkbox"]:checked {
   accent-color: #3b82f6;
 }
 
-/* Light Theme */
 body.theme-light {
   background: linear-gradient(to bottom, #ffffff, #e0f2fe);
   color: #000000;
@@ -96,7 +95,6 @@ body.theme-light label > div:first-child {
   background-color: #ffffff;
 }
 
-/* Dark Theme */
 body.theme-dark {
   background: linear-gradient(to bottom, #1a1a1a, #0f0f0f);
   color: #e5e5e5;
@@ -137,7 +135,6 @@ body.theme-dark label > div:first-child {
   background-color: #262626;
 }
 
-/* Blue Theme */
 body.theme-blue {
   background: linear-gradient(to bottom, #dbeafe, #3b82f6);
   color: #1e40af;
@@ -178,7 +175,6 @@ body.theme-blue label > div:first-child {
   background-color: #dbeafe;
 }
 
-/* Green Theme */
 body.theme-green {
   background: linear-gradient(to bottom, #dcfce7, #22c55e);
   color: #14532d;
@@ -219,7 +215,6 @@ body.theme-green label > div:first-child {
   background-color: #dcfce7;
 }
 
-/* Sunset Theme */
 body.theme-sunset {
   background: linear-gradient(to bottom, #ffedd5, #fb923c);
   color: #7c2d12;
@@ -260,7 +255,6 @@ body.theme-sunset label > div:first-child {
   background-color: #ffedd5;
 }
 
-/* Desert Theme */
 body.theme-desert {
   background: linear-gradient(to bottom, #fef3c7, #d97706);
   color: #451a03;
@@ -301,7 +295,6 @@ body.theme-desert label > div:first-child {
   background-color: #fef3c7;
 }
 
-/* Midnight Theme */
 body.theme-midnight {
   background: linear-gradient(to bottom, #0f172a, #1e293b);
   color: #e2e8f0;
@@ -342,8 +335,6 @@ body.theme-midnight label > div:first-child {
   background-color: #1e293b;
 }
 
-
-/* Charcoal Theme */
 body.theme-charcoal {
   background: linear-gradient(to bottom, #1c1917, #292524);
   color: #e7e5e4;
@@ -384,8 +375,6 @@ body.theme-charcoal label > div:first-child {
   background-color: #292524;
 }
 
-
-/* Crimson Theme */
 body.theme-crimson {
   background: linear-gradient(to bottom, #1f0a0e, #3f1220);
   color: #fecdd3;
@@ -426,8 +415,6 @@ body.theme-crimson label > div:first-child {
   background-color: #3f1220;
 }
 
-
-/* Rose Theme */
 body.theme-rose {
   background: linear-gradient(to bottom, #fff1f2, #fda4af);
   color: #881337;
@@ -468,8 +455,6 @@ body.theme-rose label > div:first-child {
   background-color: #fff1f2;
 }
 
-
-/* Lavender Theme */
 body.theme-lavender {
   background: linear-gradient(to bottom, #f5f3ff, #c4b5fd);
   color: #4c1d95;
@@ -510,8 +495,6 @@ body.theme-lavender label > div:first-child {
   background-color: #f5f3ff;
 }
 
-
-/* Mint Theme */
 body.theme-mint {
   background: linear-gradient(to bottom, #ecfeff, #67e8f9);
   color: #164e63;
@@ -552,7 +535,6 @@ body.theme-mint label > div:first-child {
   background-color: #ecfeff;
 }
 
-/* Neon Theme */
 body.theme-neon {
   background: linear-gradient(to bottom, #0a0014, #2d0a4e);
   color: #f0e6ff;
@@ -593,8 +575,6 @@ body.theme-neon label > div:first-child {
   background-color: #1a0630;
 }
 
-
-/* Cyberpunk Theme */
 body.theme-cyberpunk {
   background: linear-gradient(to bottom, #0d0221, #2e1155);
   color: #e0f2fe;
@@ -635,8 +615,6 @@ body.theme-cyberpunk label > div:first-child {
   background-color: #1b0b3a;
 }
 
-
-/* Emerald Theme */
 body.theme-emerald {
   background: linear-gradient(to bottom, #001a0f, #00432a);
   color: #d1fae5;
@@ -677,8 +655,6 @@ body.theme-emerald label > div:first-child {
   background-color: #00301c;
 }
 
-
-/* Amethyst Theme */
 body.theme-amethyst {
   background: linear-gradient(to bottom, #170025, #3b0a5c);
   color: #f3e8ff;
@@ -719,8 +695,6 @@ body.theme-amethyst label > div:first-child {
   background-color: #28053f;
 }
 
-
-/* Inferno Theme */
 body.theme-inferno {
   background: linear-gradient(to bottom, #1a0500, #451400);
   color: #ffe4d6;
@@ -761,8 +735,6 @@ body.theme-inferno label > div:first-child {
   background-color: #2e0900;
 }
 
-
-/* Ocean Theme */
 body.theme-ocean {
   background: linear-gradient(to bottom, #001220, #003654);
   color: #cffafe;
@@ -803,7 +775,6 @@ body.theme-ocean label > div:first-child {
   background-color: #00253d;
 }
 
-/* Onyx Theme */
 body.theme-onyx {
   background: linear-gradient(to bottom, #050505, #1a1a1a);
   color: #f5f5f5;
@@ -844,8 +815,6 @@ body.theme-onyx label > div:first-child {
   background-color: #141414;
 }
 
-
-/* Nebula Theme */
 body.theme-nebula {
   background: linear-gradient(to bottom, #0a0620, #2a1a5e);
   color: #f3e8ff;
@@ -886,8 +855,6 @@ body.theme-nebula label > div:first-child {
   background-color: #1a1040;
 }
 
-
-/* Toxic Theme */
 body.theme-toxic {
   background: linear-gradient(to bottom, #05100a, #1a3322);
   color: #e5ffe0;
@@ -928,7 +895,6 @@ body.theme-toxic label > div:first-child {
   background-color: #0f2015;
 }
 
-/* Step progress indicator */
 .setup-progress {
   position: fixed;
   top: 44px;
@@ -978,8 +944,6 @@ body.theme-toxic label > div:first-child {
   opacity: 1;
 }
 
-/* No visible scrollbar on the theme step -- still scrolls with the wheel/
-   trackpad, just no chunky OS-styled bar over the tiles. */
 ::-webkit-scrollbar {
   width: 0;
   height: 0;

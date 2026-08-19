@@ -28,7 +28,6 @@ function mergeImported(entries) {
   return fresh.length;
 }
 
-// Pinning a single page, e.g. via the page's right-click menu.
 function add(entry) {
   if (!entry || !entry.url) return false;
 

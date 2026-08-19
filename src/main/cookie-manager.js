@@ -27,17 +27,12 @@ function matchesHostname(cookieHostname, hostname) {
   return cookieHostname === hostname || cookieHostname.endsWith(`.${hostname}`);
 }
 
-// Lets the site menu show real proof the feature is doing something for the
-// site you're actually looking at, rather than a silent "trust us" toggle.
 async function countForSite(hostname) {
   if (!hostname) return 0;
   const cookies = await session.defaultSession.cookies.get({});
   return cookies.filter((cookie) => matchesHostname(cookie.domain.replace(/^\./, ''), hostname)).length;
 }
 
-// Sweeps every cookie EXCEPT those belonging to a hostname on the exceptions
-// list, so a user can trust a specific site (banking, an account they stay
-// logged into) while everything else still gets eaten on schedule.
 async function sweepCookies({ onlyHostname } = {}) {
   const exceptions = getExceptions();
   const cookies = await session.defaultSession.cookies.get({});
@@ -58,7 +53,6 @@ async function sweepCookies({ onlyHostname } = {}) {
       await session.defaultSession.cookies.remove(url, cookie.name);
       removed++;
     } catch (err) {
-      // cookie already gone or URL didn't resolve cleanly, skip it
     }
   }
 

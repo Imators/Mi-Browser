@@ -1,0 +1,22 @@
+{
+  "version": "1.2.0",
+  "releaseDate": "2026-08-19",
+  "releaseTime": "18:00",
+  "changelog": [
+    "Added native encrypted DNS (DNS-over-HTTPS) and an optional HTTPS-Only Mode",
+    "New Security section in Settings showing what protections are active",
+    "Fixed target=\"_blank\" links and window.open() popups never opening (a missing allowpopups attribute was silently blocking them)",
+    "Fixed the Google sign-in page being blocked by presenting a proper desktop browser identity",
+    "Fixed custom search engines that use a %s placeholder (e.g. Kagi) producing a broken, endlessly-retried URL",
+    "Removed the extensions system entirely",
+    "Fixed Auto-hide toolbar not reliably showing or staying hidden",
+    "Hid the scrollbar track on Settings and the setup wizard's theme step",
+    "Added this auto-update checker"
+  ],
+  "downloads": {
+    "mac": "https://imators.systems/mi-browser/downloads/Mi-Browser-1.2.0-arm64.dmg",
+    "win": "https://imators.systems/mi-browser/downloads/Mi-Browser-Setup-1.2.0.exe",
+    "linux": "https://imators.systems/mi-browser/downloads/Mi-Browser-1.2.0.AppImage"
+  },
+  "minimumSupportedVersion": "1.0.0"
+}
