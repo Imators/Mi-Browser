@@ -1,5 +1,6 @@
-const { app, session } = require('electron');
+const { app, session, webContents } = require('electron');
 const storage = require('./storage');
+const getOutManager = require('./get-out-manager');
 
 const DNS_PROVIDERS = {
   cloudflare: 'https://cloudflare-dns.com/dns-query',
@@ -44,6 +45,14 @@ function applyRealisticUserAgent(targetSession) {
   targetSession.setUserAgent(realisticChromeUserAgent());
 }
 
+function setupWebRtcProtection(contents) {
+  try {
+    contents.setWebRTCIPHandlingPolicy('default_public_interface_only');
+  } catch (err) {
+    console.error('setupWebRtcProtection failed:', err);
+  }
+}
+
 function applyUserAgentClientHints() {
   const chromeVersion = process.versions.chrome;
   const majorVersion = chromeVersion.split('.')[0];
@@ -82,30 +91,45 @@ function isGoogleSignInUrl(urlString) {
   }
 }
 
-function setupRequestInterception(targetSession, onGoogleRedirect) {
-  targetSession.webRequest.onBeforeRequest(
-    { urls: ['http://*/*', 'https://accounts.google.com/*', 'https://accounts.youtube.com/*'] },
-    (details, callback) => {
-      if (details.resourceType !== 'mainFrame') {
-        callback({});
-        return;
-      }
+function topFrameHostname(details) {
+  try {
+    if (details.resourceType === 'mainFrame') return new URL(details.url).hostname;
+    const contents = webContents.fromId(details.webContentsId);
+    if (!contents || contents.isDestroyed()) return null;
+    return new URL(contents.getURL()).hostname;
+  } catch (err) {
+    return null;
+  }
+}
 
-      if (isGoogleSignInUrl(details.url)) {
-        onGoogleRedirect(details.url);
-        callback({ redirectURL: 'mi://newtab?googleRedirect=1' });
-        return;
-      }
+function setupGpcSignal(targetSession) {
+  targetSession.webRequest.onBeforeSendHeaders((details, callback) => {
+    details.requestHeaders['Sec-GPC'] = '1';
+    details.requestHeaders['DNT'] = '1';
+    callback({ requestHeaders: details.requestHeaders });
+  });
+}
 
-      const settings = storage.get('security') || {};
-      if (settings.httpsOnly === true && details.url.startsWith('http://')) {
-        callback({ redirectURL: 'https://' + details.url.slice('http://'.length) });
-        return;
-      }
-
-      callback({});
+function setupRequestInterception(targetSession) {
+  targetSession.webRequest.onBeforeRequest({ urls: ['<all_urls>'] }, (details, callback) => {
+    if (getOutManager.isBlocked(details.url, topFrameHostname(details))) {
+      callback({ cancel: true });
+      return;
     }
-  );
+
+    if (details.resourceType !== 'mainFrame') {
+      callback({});
+      return;
+    }
+
+    const settings = storage.get('security') || {};
+    if (settings.httpsOnly === true && details.url.startsWith('http://')) {
+      callback({ redirectURL: 'https://' + details.url.slice('http://'.length) });
+      return;
+    }
+
+    callback({});
+  });
 }
 
 module.exports = {
@@ -116,5 +140,7 @@ module.exports = {
   applyRealisticUserAgent,
   applyUserAgentClientHints,
   isGoogleSignInUrl,
-  setupRequestInterception
+  setupRequestInterception,
+  setupGpcSignal,
+  setupWebRtcProtection
 };

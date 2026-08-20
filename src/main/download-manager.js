@@ -217,4 +217,4 @@ function showInFolder(id) {
   if (entry && entry.savePath) shell.showItemInFolder(entry.savePath);
 }
 
-module.exports = { getAll, setupSession, clear, deleteEntry, pause, resumeItem, cancel, openFile, showInFolder, events };
+module.exports = { getAll, setupSession, clear, deleteEntry, pause, resumeItem, cancel, openFile, showInFolder, events, uniqueSavePath };

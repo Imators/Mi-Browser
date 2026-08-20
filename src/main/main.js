@@ -1,5 +1,6 @@
-const { app, BrowserWindow, ipcMain, protocol, session, net, shell, Notification } = require('electron');
+const { app, BrowserWindow, ipcMain, protocol, session, net, shell } = require('electron');
 const path = require('path');
+const { execFile } = require('child_process');
 const windowManager = require('./window-manager');
 const ipcHandlers = require('./ipc-handlers');
 const cookieManager = require('./cookie-manager');
@@ -83,6 +84,8 @@ const MI_PAGES = {
   offline: path.join(RENDERER_DIR, 'errors/offline.html')
 };
 
+const NEWTAB_BG_DIR = path.join(app.getPath('userData'), 'newtab-background');
+
 function registerMiProtocol(targetSession) {
   targetSession.protocol.handle('mi', (request) => {
     const url = new URL(request.url);
@@ -91,10 +94,12 @@ function registerMiProtocol(targetSession) {
 
     const filePath = host === 'static'
       ? path.join(SRC_DIR, subPath)
-      : (() => {
-        const pageFile = MI_PAGES[host] || MI_PAGES[404];
-        return subPath ? path.join(path.dirname(pageFile), subPath) : pageFile;
-      })();
+      : host === 'background'
+        ? path.join(NEWTAB_BG_DIR, subPath)
+        : (() => {
+          const pageFile = MI_PAGES[host] || MI_PAGES[404];
+          return subPath ? path.join(path.dirname(pageFile), subPath) : pageFile;
+        })();
 
     return net.fetch(`file://${filePath}`);
   });
@@ -132,10 +137,12 @@ app.on('ready', () => {
 
   securityManager.applyRealisticUserAgent(session.defaultSession);
   securityManager.applyRealisticUserAgent(privateSession);
-  securityManager.setupRequestInterception(session.defaultSession, openGoogleSignInExternally);
-  securityManager.setupRequestInterception(privateSession, openGoogleSignInExternally);
-
+  securityManager.setupRequestInterception(session.defaultSession);
+  securityManager.setupRequestInterception(privateSession);
+  securityManager.setupGpcSignal(session.defaultSession);
+  securityManager.setupGpcSignal(privateSession);
   mainWindow = windowManager.createMainWindow();
+  securityManager.setupWebRtcProtection(mainWindow.webContents);
   ipcHandlers.register(mainWindow);
   cookieManager.start();
   permissionManager.setup(mainWindow);
@@ -157,33 +164,52 @@ app.on('ready', () => {
     webPreferences.backgroundThrottling = false;
   });
 
-  function openGoogleSignInExternally(targetUrl) {
-    shell.openExternal(targetUrl);
-    if (Notification.isSupported()) {
-      new Notification({
-        title: 'Opened in your default browser',
-        body: 'Google blocks sign-in inside embedded browsers like Mi Browser, so this opened in your system browser instead.'
-      }).show();
+  ipcMain.handle('open-in-other-browser', (event, targetUrl) => {
+    let parsed;
+    try {
+      parsed = new URL(targetUrl);
+    } catch (err) {
+      return;
+    }
+    if (parsed.protocol !== 'https:' && parsed.protocol !== 'http:') return;
+    openInAnotherBrowser(parsed.href);
+  });
+
+  function openInAnotherBrowser(url) {
+    if (process.platform === 'darwin') {
+      execFile('open', ['-a', 'Safari', url], (err) => {
+        if (err) shell.openExternal(url);
+      });
+    } else if (process.platform === 'win32') {
+      execFile('cmd.exe', ['/c', 'start', '', 'microsoft-edge:' + url], (err) => {
+        if (err) shell.openExternal(url);
+      });
+    } else {
+      tryLinuxBrowsers(['firefox', 'google-chrome', 'chromium-browser', 'chromium'], url);
     }
   }
 
+  function tryLinuxBrowsers(candidates, url) {
+    if (candidates.length === 0) {
+      shell.openExternal(url);
+      return;
+    }
+    const [bin, ...rest] = candidates;
+    execFile(bin, [url], (err) => {
+      if (err) tryLinuxBrowsers(rest, url);
+    });
+  }
+
   mainWindow.webContents.on('did-attach-webview', (event, guestContents) => {
+    securityManager.setupWebRtcProtection(guestContents);
+
     guestContents.on('will-navigate', (navEvent, targetUrl) => {
-      if (securityManager.isGoogleSignInUrl(targetUrl)) {
-        navEvent.preventDefault();
-        openGoogleSignInExternally(targetUrl);
-        return;
-      }
       let protocol;
       try { protocol = new URL(targetUrl).protocol; } catch (err) { navEvent.preventDefault(); return; }
       if (!ALLOWED_PROTOCOLS.has(protocol)) navEvent.preventDefault();
     });
 
     guestContents.setWindowOpenHandler(({ url }) => {
-      if (securityManager.isGoogleSignInUrl(url)) {
-        openGoogleSignInExternally(url);
-        return { action: 'deny' };
-      }
       mainWindow.webContents.send('guest-new-window', guestContents.id, url);
       return { action: 'deny' };
     });

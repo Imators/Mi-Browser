@@ -1,4 +1,6 @@
-const { ipcMain, app, webContents, session, Menu, BrowserWindow, clipboard, dialog, net } = require('electron');
+const { ipcMain, app, webContents, session, Menu, BrowserWindow, clipboard, dialog, net, shell } = require('electron');
+const fs = require('fs');
+const path = require('path');
 const storage = require('./storage');
 const importManager = require('./import-manager');
 const historyManager = require('./history-manager');
@@ -9,6 +11,7 @@ const downloadManager = require('./download-manager');
 const nativeIntegration = require('./native-integration');
 const securityManager = require('./security-manager');
 const updateManager = require('./update-manager');
+const getOutManager = require('./get-out-manager');
 
 function register(mainWindow) {
   ipcMain.handle('store-get', (event, key) => {
@@ -74,6 +77,17 @@ function register(mainWindow) {
 
   ipcMain.handle('cookie-exceptions-is-excepted', (event, hostname) => cookieManager.isExcepted(hostname));
   ipcMain.handle('cookie-exceptions-set', (event, hostname, excepted) => cookieManager.setExcepted(hostname, excepted));
+
+  ipcMain.handle('get-out-is-excepted', (event, hostname) => getOutManager.isExcepted(hostname));
+  ipcMain.handle('get-out-set-excepted', (event, hostname, excepted) => getOutManager.setExcepted(hostname, excepted));
+  ipcMain.handle('get-out-is-enabled', () => getOutManager.isGloballyEnabled());
+  ipcMain.handle('get-out-get-exceptions', () => getOutManager.getExceptions());
+  ipcMain.handle('get-out-get-stats', () => getOutManager.getStats());
+  ipcMain.handle('get-out-get-blocklist-info', () => ({
+    size: getOutManager.getBlocklistSize(),
+    categorySizes: getOutManager.getCategorySizes(),
+    enabledCategories: getOutManager.getEnabledCategories()
+  }));
   ipcMain.handle('cookies-clear-for-site', (event, hostname) => cookieManager.sweepCookies({ onlyHostname: hostname }));
   ipcMain.handle('cookies-count-for-site', (event, hostname) => cookieManager.countForSite(hostname));
 
@@ -111,6 +125,11 @@ function register(mainWindow) {
 
   ipcMain.on('window-close', () => {
     mainWindow.close();
+  });
+
+  ipcMain.on('get-air-tab-key-sync', (event) => {
+    const customization = storage.get('customization') || {};
+    event.returnValue = customization.airTabKey || 'Control';
   });
 
   ipcMain.handle('app-reset', () => {
@@ -176,7 +195,9 @@ function register(mainWindow) {
     return {
       dnsProvider: securityManager.getDnsProvider(),
       activeDnsProvider: securityManager.getActiveDnsProvider(),
-      httpsOnly: stored.httpsOnly === true
+      httpsOnly: stored.httpsOnly === true,
+      getOutEnabled: stored.getOutEnabled !== false,
+      getOutCategories: getOutManager.getEnabledCategories()
     };
   });
 
@@ -192,7 +213,19 @@ function register(mainWindow) {
 
   ipcMain.handle('update-check', () => updateManager.checkForUpdate());
   ipcMain.handle('update-get-cached', () => updateManager.getCached());
-  ipcMain.handle('update-download', (event, url) => updateManager.downloadUpdate(url));
+  ipcMain.handle('update-start-auto', () => updateManager.startAutoUpdate());
+  ipcMain.handle('update-get-install-state', () => updateManager.getInstallState());
+
+  ipcMain.handle('capture-webview', async (event, webContentsId) => {
+    const target = webContents.fromId(webContentsId);
+    if (!target || target.isDestroyed()) return { success: false };
+
+    const image = await target.capturePage();
+    const savePath = downloadManager.uniqueSavePath('Mi Browser Screenshot.png');
+    fs.writeFileSync(savePath, image.toPNG());
+    shell.showItemInFolder(savePath);
+    return { success: true, path: savePath };
+  });
 
   ipcMain.handle('choose-downloads-folder', async (event) => {
     const win = BrowserWindow.fromWebContents(event.sender);
@@ -203,6 +236,53 @@ function register(mainWindow) {
     if (canceled || filePaths.length === 0) return null;
     storage.set('downloadsFolder', filePaths[0]);
     return filePaths[0];
+  });
+
+  ipcMain.handle('newtab-bg-choose', async (event) => {
+    const win = BrowserWindow.fromWebContents(event.sender);
+    const { canceled, filePaths } = await dialog.showOpenDialog(win, {
+      title: 'Choose an image or video for the New Tab background',
+      properties: ['openFile'],
+      filters: [
+        { name: 'Images and videos', extensions: ['png', 'jpg', 'jpeg', 'gif', 'webp', 'mp4'] },
+        { name: 'Images', extensions: ['png', 'jpg', 'jpeg', 'gif', 'webp'] },
+        { name: 'Video', extensions: ['mp4'] }
+      ]
+    });
+    if (canceled || filePaths.length === 0) return null;
+
+    const sourcePath = filePaths[0];
+    const ext = path.extname(sourcePath).toLowerCase();
+    const type = ext === '.mp4' ? 'video' : 'image';
+
+    const bgDir = path.join(app.getPath('userData'), 'newtab-background');
+    if (!fs.existsSync(bgDir)) fs.mkdirSync(bgDir, { recursive: true });
+
+    fs.readdirSync(bgDir).forEach((f) => fs.unlinkSync(path.join(bgDir, f)));
+    const filename = `bg${ext}`;
+    fs.copyFileSync(sourcePath, path.join(bgDir, filename));
+
+    const current = storage.get('customization') || {};
+    const updated = { ...current, newTabBackgroundMedia: { type, filename, addedAt: Date.now() } };
+    storage.set('customization', updated);
+    webContents.getAllWebContents().forEach((wc) => {
+      if (!wc.isDestroyed()) wc.send('store-changed', 'customization', updated);
+    });
+
+    return { type, filename };
+  });
+
+  ipcMain.handle('newtab-bg-clear', () => {
+    const bgDir = path.join(app.getPath('userData'), 'newtab-background');
+    if (fs.existsSync(bgDir)) {
+      fs.readdirSync(bgDir).forEach((f) => fs.unlinkSync(path.join(bgDir, f)));
+    }
+    const current = storage.get('customization') || {};
+    const updated = { ...current, newTabBackgroundMedia: null };
+    storage.set('customization', updated);
+    webContents.getAllWebContents().forEach((wc) => {
+      if (!wc.isDestroyed()) wc.send('store-changed', 'customization', updated);
+    });
   });
 
   ipcMain.handle('set-spellcheck-enabled', (event, enabled) => {

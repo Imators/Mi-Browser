@@ -59,6 +59,12 @@
       <button id="split-view-btn" class="toolbar-icon-btn" title="Split view">
         <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><line x1="12" y1="4" x2="12" y2="20"/></svg>
       </button>
+      <button id="reader-mode-btn" class="toolbar-icon-btn" title="Reader mode">
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/><line x1="9" y1="7" x2="15" y2="7"/><line x1="9" y1="11" x2="15" y2="11"/></svg>
+      </button>
+      <button id="force-dark-btn" class="toolbar-icon-btn" title="Force dark mode on this page">
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a9 9 0 1 0 9 9a7 7 0 0 1 -9 -9z"/></svg>
+      </button>
       <button id="pip-btn" class="toolbar-icon-btn hidden" title="Mini player">
         <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="18" rx="2"/><rect x="11" y="12" width="9" height="7" rx="1.5" fill="currentColor" stroke="none"/></svg>
       </button>
@@ -82,11 +88,18 @@
       <p class="text-xs font-semibold opacity-60 uppercase tracking-wide mb-1">Mi &middot; this site</p>
       <p id="site-menu-host" class="text-sm font-semibold mb-1 truncate"></p>
       <p id="site-menu-cookie-count" class="text-xs opacity-60 mb-3"></p>
+      <p id="site-menu-reading-time" class="text-xs opacity-60 mb-3"></p>
 
       <label class="flex items-start gap-3 cursor-pointer mb-3">
         <input type="checkbox" id="site-menu-eat-cookies-toggle" class="w-4 h-4 mt-0.5">
         <span class="text-sm">Let Eat My Cookies sweep this site</span>
       </label>
+
+      <label class="flex items-start gap-3 cursor-pointer mb-3">
+        <input type="checkbox" id="site-menu-get-out-toggle" class="w-4 h-4 mt-0.5">
+        <span class="text-sm">Get Out Systems active on this site</span>
+      </label>
+      <p id="site-menu-get-out-count" class="text-xs opacity-60 mb-3"></p>
 
       <button id="site-menu-clear-cookies-btn" class="w-full px-3 py-2 rounded-lg text-sm font-semibold border-2 hover:opacity-80 transition">Clear cookies for this site now</button>
     </div>
@@ -132,7 +145,30 @@
     </div>
 
     </div>
+        <div id="update-installing-overlay" class="update-installing-overlay hidden">
+      <div class="update-installing-spinner"></div>
+      <p class="update-installing-text">Installing the update…</p>
+      <p class="update-installing-subtext">Mi Browser will restart in a moment.</p>
+    </div>
+
+        <div id="air-tab-overlay" class="air-tab-overlay hidden">
+      <div class="air-tab-label">Air Tab <span class="air-tab-beta">Beta</span></div>
+      <div id="air-tab-grid" class="air-tab-grid"></div>
+    </div>
+
+        <div id="tab-search-overlay" class="tab-search-overlay hidden">
+      <div class="tab-search-box">
+        <input type="text" id="tab-search-input" placeholder="Search open tabs" autocomplete="off">
+        <div id="tab-search-results" class="tab-search-results"></div>
+      </div>
+    </div>
+
         <div id="webview-container" class="flex-1 overflow-hidden relative">
+      <div id="google-blocked-banner" class="google-blocked-banner hidden">
+        <span>Google is blocking sign-in inside Mi Browser.</span>
+        <button id="google-blocked-open-btn" type="button" class="google-blocked-open-btn"></button>
+        <button id="google-blocked-close-btn" type="button" class="google-blocked-close-btn">✕</button>
+      </div>
       <div id="split-divider" class="split-divider hidden"></div>
       <div id="find-bar" class="find-bar site-menu-popover hidden">
         <input type="text" id="find-input" placeholder="Find in page" autocomplete="off">

@@ -21,15 +21,29 @@ if (location.protocol === 'mi:') {
       chooseDownloadsFolder: () => ipcRenderer.invoke('choose-downloads-folder'),
       setSpellcheckEnabled: (enabled) => ipcRenderer.invoke('set-spellcheck-enabled', enabled)
     },
+    newtabBg: {
+      choose: () => ipcRenderer.invoke('newtab-bg-choose'),
+      clear: () => ipcRenderer.invoke('newtab-bg-clear')
+    },
     security: {
       get: () => ipcRenderer.invoke('security-get'),
       set: (patch) => ipcRenderer.invoke('security-set', patch)
     },
+    getOut: {
+      isExcepted: (hostname) => ipcRenderer.invoke('get-out-is-excepted', hostname),
+      setExcepted: (hostname, excepted) => ipcRenderer.invoke('get-out-set-excepted', hostname, excepted),
+      isEnabled: () => ipcRenderer.invoke('get-out-is-enabled'),
+      getExceptions: () => ipcRenderer.invoke('get-out-get-exceptions'),
+      getStats: () => ipcRenderer.invoke('get-out-get-stats'),
+      getBlocklistInfo: () => ipcRenderer.invoke('get-out-get-blocklist-info')
+    },
     updates: {
       check: () => ipcRenderer.invoke('update-check'),
       getCached: () => ipcRenderer.invoke('update-get-cached'),
-      download: (url) => ipcRenderer.invoke('update-download', url),
-      onStatusChanged: (callback) => ipcRenderer.on('update-status-changed', (event, result) => callback(result))
+      startAutoUpdate: () => ipcRenderer.invoke('update-start-auto'),
+      getInstallState: () => ipcRenderer.invoke('update-get-install-state'),
+      onStatusChanged: (callback) => ipcRenderer.on('update-status-changed', (event, result) => callback(result)),
+      onInstallProgress: (callback) => ipcRenderer.on('update-install-progress', (event, progress) => callback(progress))
     },
     import: {
       detectBrowsers: () => ipcRenderer.invoke('detect-browsers'),
@@ -188,6 +202,19 @@ if (location.protocol === 'mi:') {
       ipcRenderer.sendToHost('mi-near-top', false);
     }
   });
+})();
+
+(function () {
+  const airTabKey = ipcRenderer.sendSync('get-air-tab-key-sync');
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key === airTabKey && !e.repeat) ipcRenderer.sendToHost('mi-ctrl-down');
+    else if (e.key !== airTabKey) ipcRenderer.sendToHost('mi-ctrl-cancel');
+  }, true);
+
+  document.addEventListener('keyup', (e) => {
+    if (e.key === airTabKey) ipcRenderer.sendToHost('mi-ctrl-up');
+  }, true);
 })();
 
 (function () {

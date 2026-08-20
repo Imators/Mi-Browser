@@ -57,9 +57,17 @@ async function loadState() {
   document.getElementById('toolbar-icon-size-select').value = custom.toolbarIconSize || 'comfortable';
   document.getElementById('ui-font-style-select').value = custom.uiFontStyle || 'system';
   document.getElementById('new-tab-bg-tint-input').value = custom.newTabBackgroundTint || '#ffffff';
+  document.getElementById('new-tab-bg-opacity-slider').value = custom.newTabBackgroundOpacity || 15;
+  renderNewTabBgMediaStatus(custom.newTabBackgroundMedia || null);
   document.getElementById('new-tab-destination-select').value = custom.newTabDestination || 'newtab';
   document.getElementById('new-tab-destination-url-input').value = custom.newTabDestinationUrl || '';
   document.getElementById('new-tab-destination-url-input').classList.toggle('hidden', (custom.newTabDestination || 'newtab') !== 'custom');
+
+  populateAirTabKeyOptions();
+  document.getElementById('air-tab-key-select').value = custom.airTabKey || 'Control';
+  document.getElementById('air-tab-hold-select').value = String(custom.airTabHoldMs || 350);
+  document.getElementById('air-tab-layout-select').value = custom.airTabLayout || 'grid';
+  document.getElementById('air-tab-size-select').value = custom.airTabTileSize || 'comfortable';
 
   await loadStats();
   await loadPasswords();
@@ -94,6 +102,11 @@ async function loadSecurityStatus() {
   }
 
   document.getElementById('https-only-toggle').checked = security.httpsOnly;
+  document.getElementById('get-out-toggle').checked = security.getOutEnabled;
+  document.querySelectorAll('.get-out-category-toggle').forEach((toggle) => {
+    toggle.checked = security.getOutCategories ? security.getOutCategories[toggle.dataset.category] !== false : true;
+  });
+  loadGetOutPanel();
 
   const downloadSafety = { malwareCheck: true, ...(await window.electron.store.get('downloadSafety') || {}) };
   const malwareBadge = document.getElementById('malware-check-badge');
@@ -158,11 +171,16 @@ function populateSearchEngineOptions(customEngines, selectedValue) {
   select.value = selectedValue;
 }
 
-async function saveCustomization(patch) {
-  const current = (await window.electron.store.get('customization')) || {};
-  const updated = { ...current, ...patch };
-  window.electron.store.set('customization', updated);
-  return updated;
+let customizationSaveChain = Promise.resolve();
+
+function saveCustomization(patch) {
+  customizationSaveChain = customizationSaveChain.then(async () => {
+    const current = (await window.electron.store.get('customization')) || {};
+    const updated = { ...current, ...patch };
+    await window.electron.store.set('customization', updated);
+    return updated;
+  });
+  return customizationSaveChain;
 }
 
 function renderCustomEngines(engines) {
@@ -541,6 +559,35 @@ document.getElementById('new-tab-bg-tint-input').addEventListener('input', (e) =
   saveCustomization({ newTabBackgroundTint: e.target.value });
 });
 
+function renderNewTabBgMediaStatus(media) {
+  const status = document.getElementById('new-tab-bg-media-status');
+  const clearBtn = document.getElementById('new-tab-bg-clear-btn');
+  if (media && media.filename) {
+    status.textContent = media.type === 'video' ? 'A video is set as the background.' : 'An image is set as the background.';
+    clearBtn.classList.remove('hidden');
+  } else {
+    status.textContent = 'No image or video set.';
+    clearBtn.classList.add('hidden');
+  }
+}
+
+document.getElementById('new-tab-bg-choose-btn').addEventListener('click', async () => {
+  const btn = document.getElementById('new-tab-bg-choose-btn');
+  btn.disabled = true;
+  const result = await window.electron.newtabBg.choose();
+  btn.disabled = false;
+  if (result) renderNewTabBgMediaStatus(result);
+});
+
+document.getElementById('new-tab-bg-clear-btn').addEventListener('click', async () => {
+  await window.electron.newtabBg.clear();
+  renderNewTabBgMediaStatus(null);
+});
+
+document.getElementById('new-tab-bg-opacity-slider').addEventListener('input', (e) => {
+  saveCustomization({ newTabBackgroundOpacity: parseInt(e.target.value, 10) });
+});
+
 document.getElementById('new-tab-destination-select').addEventListener('change', (e) => {
   document.getElementById('new-tab-destination-url-input').classList.toggle('hidden', e.target.value !== 'custom');
   saveCustomization({ newTabDestination: e.target.value });
@@ -548,6 +595,45 @@ document.getElementById('new-tab-destination-select').addEventListener('change',
 
 document.getElementById('new-tab-destination-url-input').addEventListener('change', (e) => {
   saveCustomization({ newTabDestinationUrl: e.target.value.trim() });
+});
+
+const AIR_TAB_KEY_OPTIONS = [
+  { id: 'Control', label: 'Control' },
+  { id: 'Alt', label: navigator.userAgent.includes('Mac') ? 'Option' : 'Alt' },
+  { id: 'Shift', label: 'Shift' },
+  { id: 'CapsLock', label: 'Caps Lock' },
+  ...(!navigator.userAgent.includes('Mac') ? [
+    { id: 'ContextMenu', label: 'Menu key' },
+    { id: 'ScrollLock', label: 'Scroll Lock' },
+    { id: 'Pause', label: 'Pause / Break' }
+  ] : [])
+];
+
+function populateAirTabKeyOptions() {
+  const select = document.getElementById('air-tab-key-select');
+  if (select.children.length) return;
+  AIR_TAB_KEY_OPTIONS.forEach((opt) => {
+    const option = document.createElement('option');
+    option.value = opt.id;
+    option.textContent = opt.label;
+    select.appendChild(option);
+  });
+}
+
+document.getElementById('air-tab-key-select').addEventListener('change', (e) => {
+  saveCustomization({ airTabKey: e.target.value });
+});
+
+document.getElementById('air-tab-hold-select').addEventListener('change', (e) => {
+  saveCustomization({ airTabHoldMs: parseInt(e.target.value, 10) });
+});
+
+document.getElementById('air-tab-layout-select').addEventListener('change', (e) => {
+  saveCustomization({ airTabLayout: e.target.value });
+});
+
+document.getElementById('air-tab-size-select').addEventListener('change', (e) => {
+  saveCustomization({ airTabTileSize: e.target.value });
 });
 
 document.querySelectorAll('.custom-toggle').forEach((toggle) => {
@@ -584,6 +670,52 @@ document.getElementById('https-only-toggle').addEventListener('change', async (e
   await window.electron.security.set({ httpsOnly: e.target.checked });
 });
 
+document.getElementById('get-out-toggle').addEventListener('change', async (e) => {
+  await window.electron.security.set({ getOutEnabled: e.target.checked });
+});
+
+document.querySelectorAll('.get-out-category-toggle').forEach((toggle) => {
+  toggle.addEventListener('change', async () => {
+    const security = await window.electron.security.get();
+    const categories = { ...(security.getOutCategories || {}), [toggle.dataset.category]: toggle.checked };
+    await window.electron.security.set({ getOutCategories: categories });
+  });
+});
+
+async function loadGetOutPanel() {
+  const [stats, blocklistInfo, exceptions] = await Promise.all([
+    window.electron.getOut.getStats(),
+    window.electron.getOut.getBlocklistInfo(),
+    window.electron.getOut.getExceptions()
+  ]);
+
+  document.getElementById('get-out-total-blocked').textContent = (stats.total || 0).toLocaleString();
+  document.getElementById('get-out-blocklist-size').textContent = blocklistInfo.size.toLocaleString();
+  document.getElementById('get-out-exceptions-count').textContent = exceptions.length;
+
+  Object.entries(blocklistInfo.categorySizes || {}).forEach(([category, size]) => {
+    const el = document.getElementById(`get-out-cat-size-${category}`);
+    if (el) el.textContent = `${size} domains`;
+  });
+
+  const list = document.getElementById('get-out-exceptions-list');
+  const empty = document.getElementById('get-out-exceptions-empty');
+  list.innerHTML = '';
+  empty.classList.toggle('hidden', exceptions.length > 0);
+
+  exceptions.forEach((hostname) => {
+    const row = document.createElement('div');
+    row.className = 'flex items-center justify-between gap-4 p-3 rounded-lg border-2';
+    row.innerHTML = `<span class="text-sm font-medium truncate"></span><button type="button" class="shrink-0 px-3 py-1.5 rounded-lg text-xs font-semibold border-2 hover:opacity-80 transition">Turn back on</button>`;
+    row.querySelector('span').textContent = hostname;
+    row.querySelector('button').addEventListener('click', async () => {
+      await window.electron.getOut.setExcepted(hostname, false);
+      loadGetOutPanel();
+    });
+    list.appendChild(row);
+  });
+}
+
 document.getElementById('check-updates-btn').addEventListener('click', async () => {
   const btn = document.getElementById('check-updates-btn');
   const status = document.getElementById('update-check-status');
@@ -596,14 +728,39 @@ document.getElementById('check-updates-btn').addEventListener('click', async () 
   setTimeout(() => { status.textContent = ''; }, 2000);
 });
 
-document.getElementById('update-download-btn').addEventListener('click', async () => {
-  const cached = await window.electron.updates.getCached();
-  if (cached && cached.downloadUrl) {
-    await window.electron.updates.download(cached.downloadUrl);
-    document.getElementById('update-check-status').textContent = 'Downloading… check your Downloads folder.';
-    setTimeout(() => { document.getElementById('update-check-status').textContent = ''; }, 4000);
-  }
+document.getElementById('update-download-btn').addEventListener('click', () => {
+  const btn = document.getElementById('update-download-btn');
+  btn.disabled = true;
+  btn.textContent = 'Starting…';
+  window.electron.updates.startAutoUpdate();
 });
+
+const UPDATE_INSTALL_MESSAGES = {
+  checking: 'Checking for the update…',
+  downloading: 'Downloading the update…',
+  installing: 'Installing — Mi Browser will restart shortly.',
+  'not-available': '',
+  error: 'Something went wrong applying the update.'
+};
+
+if (window.electron.updates.onInstallProgress) {
+  window.electron.updates.onInstallProgress((progress) => {
+    const statusEl = document.getElementById('update-install-status');
+    const btn = document.getElementById('update-download-btn');
+
+    if (progress.state === 'downloading' && typeof progress.percent === 'number') {
+      statusEl.textContent = `Downloading the update… ${progress.percent}%`;
+    } else {
+      statusEl.textContent = UPDATE_INSTALL_MESSAGES[progress.state] || '';
+    }
+
+    if (progress.state === 'error') {
+      statusEl.textContent = progress.message ? `${UPDATE_INSTALL_MESSAGES.error} (${progress.message})` : UPDATE_INSTALL_MESSAGES.error;
+      btn.disabled = false;
+      btn.textContent = 'Update now';
+    }
+  });
+}
 
 if (window.electron.updates.onStatusChanged) {
   window.electron.updates.onStatusChanged(renderUpdateStatus);

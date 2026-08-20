@@ -23,6 +23,7 @@ contextBridge.exposeInMainWorld('electron', {
   },
   app: {
     reset: () => ipcRenderer.invoke('app-reset'),
+    openInOtherBrowser: (url) => ipcRenderer.invoke('open-in-other-browser', url),
     onOpenPrivateTab: (callback) => ipcRenderer.on('open-private-tab', () => callback()),
     onOpenExternalUrl: (callback) => ipcRenderer.on('open-external-url', (event, url) => callback(url)),
     onGuestNewWindow: (callback) => ipcRenderer.on('guest-new-window', (event, webContentsId, url) => callback(webContentsId, url)),
@@ -38,7 +39,8 @@ contextBridge.exposeInMainWorld('electron', {
   },
   updates: {
     getCached: () => ipcRenderer.invoke('update-get-cached'),
-    onStatusChanged: (callback) => ipcRenderer.on('update-status-changed', (event, result) => callback(result))
+    onStatusChanged: (callback) => ipcRenderer.on('update-status-changed', (event, result) => callback(result)),
+    onInstallProgress: (callback) => ipcRenderer.on('update-install-progress', (event, progress) => callback(progress))
   },
   defaultBrowser: {
     getStatus: () => ipcRenderer.invoke('default-browser-status'),
@@ -50,6 +52,7 @@ contextBridge.exposeInMainWorld('electron', {
   clipboard: {
     writeText: (text) => ipcRenderer.invoke('clipboard-write-text', text)
   },
+  captureWebview: (webContentsId) => ipcRenderer.invoke('capture-webview', webContentsId),
   history: {
     add: (entry) => ipcRenderer.invoke('history-add', entry),
     getAll: () => ipcRenderer.invoke('history-get')
@@ -70,6 +73,14 @@ contextBridge.exposeInMainWorld('electron', {
     setExcepted: (hostname, excepted) => ipcRenderer.invoke('cookie-exceptions-set', hostname, excepted),
     clearForSite: (hostname) => ipcRenderer.invoke('cookies-clear-for-site', hostname),
     countForSite: (hostname) => ipcRenderer.invoke('cookies-count-for-site', hostname)
+  },
+  getOut: {
+    isExcepted: (hostname) => ipcRenderer.invoke('get-out-is-excepted', hostname),
+    setExcepted: (hostname, excepted) => ipcRenderer.invoke('get-out-set-excepted', hostname, excepted),
+    isEnabled: () => ipcRenderer.invoke('get-out-is-enabled'),
+    getExceptions: () => ipcRenderer.invoke('get-out-get-exceptions'),
+    getStats: () => ipcRenderer.invoke('get-out-get-stats'),
+    getBlocklistInfo: () => ipcRenderer.invoke('get-out-get-blocklist-info')
   },
   downloads: {
     getAll: () => ipcRenderer.invoke('downloads-get'),

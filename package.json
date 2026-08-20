@@ -1,6 +1,6 @@
 {
   "name": "mi-browser",
-  "version": "1.2.2",
+  "version": "1.2.3",
   "description": "A privacy-respecting desktop web browser with no tracking and no intrusive adverts.",
   "author": "Imators LLC",
   "license": "MIT",
@@ -30,10 +30,17 @@
       "package.json"
     ],
     "icon": "src/assets/icons/icon.png",
+    "publish": {
+      "provider": "generic",
+      "url": "https://imators.systems/mi-browser/version-operating/"
+    },
     "protocols": [
       {
         "name": "Web link",
-        "schemes": ["http", "https"]
+        "schemes": [
+          "http",
+          "https"
+        ]
       }
     ],
     "mac": {
@@ -64,6 +71,7 @@
   },
   "dependencies": {
     "better-sqlite3": "^12.4.1",
+    "electron-updater": "^6.8.9",
     "plist": "^3.1.0"
   }
 }
