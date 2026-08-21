@@ -11,7 +11,6 @@ const nativeIntegration = require('./native-integration');
 const securityManager = require('./security-manager');
 const updateManager = require('./update-manager');
 
-securityManager.applyDnsSettings();
 securityManager.applyUserAgentClientHints();
 
 protocol.registerSchemesAsPrivileged([
@@ -145,6 +144,7 @@ function registerMiCsp(targetSession) {
 }
 
 app.on('ready', () => {
+  securityManager.applyDnsSettings();
   registerAsBrowserCandidate();
 
   registerMiCsp(session.defaultSession);

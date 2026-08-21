@@ -25,14 +25,19 @@ function writeCache(cache) {
   fs.writeFileSync(cacheFile(), JSON.stringify(cache, null, 2));
 }
 
+// themes.php/theme.php send Cache-Control: public, max-age=300 (for casual
+// browser hits), but that means Electron's own HTTP cache would silently
+// serve a stale response for up to 5 minutes after any edit in the DB,
+// even though we intentionally re-fetch on every open — cache: 'no-store'
+// forces past that cache entirely so DB edits show up immediately.
 async function fetchJson(url) {
-  const response = await net.fetch(url, { headers: { 'X-Mi-Key': config.MI_API_KEY } });
+  const response = await net.fetch(url, { headers: { 'X-Mi-Key': config.MI_API_KEY }, cache: 'no-store' });
   if (!response.ok) throw new Error(`HTTP ${response.status} for ${url}`);
   return response.json();
 }
 
 async function downloadAsset(remoteUrl, destPath) {
-  const response = await net.fetch(remoteUrl);
+  const response = await net.fetch(remoteUrl, { cache: 'no-store' });
   if (!response.ok) throw new Error(`HTTP ${response.status} for ${remoteUrl}`);
   const buffer = Buffer.from(await response.arrayBuffer());
   ensureDir(path.dirname(destPath));

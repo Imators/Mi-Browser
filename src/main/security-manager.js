@@ -20,14 +20,25 @@ function getActiveDnsProvider() {
   return activeDnsProvider;
 }
 
+// Electron does NOT read the `--dns-over-https-mode`/`--dns-over-https-templates`
+// Chromium command-line switches — that config-reading code lives in Chrome's
+// own browser layer, which Electron doesn't include. Those switches were
+// silently doing nothing. `app.configureHostResolver()` is Electron's actual
+// supported API for this, and — unlike the switches — it can be called at
+// any time after the app is ready, so changes apply live, no restart needed.
 function applyDnsSettings() {
   const provider = getDnsProvider();
   activeDnsProvider = provider;
-  if (provider === 'off') return;
 
-  const template = DNS_PROVIDERS[provider];
-  app.commandLine.appendSwitch('dns-over-https-mode', 'secure');
-  app.commandLine.appendSwitch('dns-over-https-templates', template);
+  if (provider === 'off') {
+    app.configureHostResolver({ secureDnsMode: 'off' });
+    return;
+  }
+
+  app.configureHostResolver({
+    secureDnsMode: 'secure',
+    secureDnsServers: [DNS_PROVIDERS[provider]]
+  });
 }
 
 

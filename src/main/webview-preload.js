@@ -19,6 +19,9 @@ if (location.protocol === 'mi:') {
       detail: (slug) => ipcRenderer.invoke('partner-themes-detail', slug),
       refreshApplied: () => ipcRenderer.invoke('partner-themes-refresh-applied')
     },
+    page: {
+      onActivated: (callback) => ipcRenderer.on('mi-tab-activated', () => callback())
+    },
     defaultBrowser: {
       getStatus: () => ipcRenderer.invoke('default-browser-status'),
       set: () => ipcRenderer.invoke('default-browser-set')

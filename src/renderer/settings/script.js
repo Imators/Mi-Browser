@@ -969,3 +969,9 @@ window.electron.store.onChange((key, value) => {
 
 loadState();
 loadPartnerThemes();
+
+if (window.electron.page && window.electron.page.onActivated) {
+  window.electron.page.onActivated(() => {
+    loadPartnerThemes();
+  });
+}

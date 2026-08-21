@@ -339,6 +339,18 @@ function switchTab(tabId) {
   activeTabId = tabId;
   layoutWebviews();
   refreshToolbarForActiveTab();
+  notifyTabActivated(tabId);
+}
+
+// A settings tab left open in the background can go stale (partner theme
+// list changed in the DB, etc. since it was last loaded) — the page itself
+// never reloads just from switching tabs, so tell it explicitly each time
+// it becomes the active tab, and let it decide what to refresh.
+function notifyTabActivated(tabId) {
+  const tab = tabs.find((t) => t.id === tabId);
+  if (!tab || !tab.url || !tab.url.startsWith('mi://settings')) return;
+  const webview = document.getElementById(`webview-${tabId}`);
+  if (webview && webview.dataset.miReady === 'true') webview.send('mi-tab-activated');
 }
 
 function enterSplitView(leftTabId, rightTabId) {
@@ -1319,18 +1331,12 @@ const networkMonitorBtn = document.getElementById('network-monitor-btn');
 const networkMonitorPopover = document.getElementById('network-monitor-popover');
 const netConnection = navigator.connection || navigator.mozConnection || navigator.webkitConnection || null;
 
-const NET_HISTORY_MAX = 30;
-let netHistory = [];
-let netSampleInterval = null;
+const NET_HISTORY_MAX = 60;
+let netHistory = []; // real Mbps samples of actual bytes moving over the wire, oldest first
+let netPopoverOpen = false;
 
 function formatMbps(value) {
   return typeof value === 'number' && !Number.isNaN(value) ? value.toFixed(1) : '—';
-}
-
-function sampleNetwork() {
-  const value = netConnection && typeof netConnection.downlink === 'number' ? netConnection.downlink : null;
-  netHistory.push(value);
-  if (netHistory.length > NET_HISTORY_MAX) netHistory.shift();
 }
 
 function drawSparkline() {
@@ -1382,27 +1388,61 @@ function refreshNetworkStatus() {
   drawSparkline();
 }
 
-function tickNetworkMonitor() {
-  sampleNetwork();
-  refreshNetworkStatus();
-}
-
 window.addEventListener('online', refreshNetworkStatus);
 window.addEventListener('offline', refreshNetworkStatus);
-if (netConnection) netConnection.addEventListener('change', tickNetworkMonitor);
+if (netConnection) netConnection.addEventListener('change', refreshNetworkStatus);
+
+// Passively observing real browsing traffic (via the main process) turned
+// out to be unreliable in practice, in ways that didn't reproduce the same
+// way everywhere. This instead runs small, repeated probes automatically —
+// the exact same fetch()-and-measure technique as the manual burst test
+// below (which is known to work), just smaller and on a timer, so the
+// graph updates on its own without needing a click.
+const NET_PROBE_BYTES = 300_000;
+const NET_PROBE_INTERVAL_MS = 2500;
+let netProbeTimer = null;
+let netProbeAbort = null;
+
+async function runNetProbe() {
+  netProbeAbort = new AbortController();
+  try {
+    const started = performance.now();
+    const response = await fetch(`https://speed.cloudflare.com/__down?bytes=${NET_PROBE_BYTES}`, { cache: 'no-store', signal: netProbeAbort.signal });
+    await response.arrayBuffer();
+    const seconds = (performance.now() - started) / 1000;
+    const mbps = (NET_PROBE_BYTES * 8) / seconds / 1_000_000;
+    netHistory.push(mbps);
+    if (netHistory.length > NET_HISTORY_MAX) netHistory.shift();
+    if (netPopoverOpen) refreshNetworkStatus();
+  } catch (err) {
+    // aborted (popover closed) or offline — just skip this tick
+  }
+}
+
+function startNetProbing() {
+  if (netProbeTimer) return;
+  runNetProbe();
+  netProbeTimer = setInterval(runNetProbe, NET_PROBE_INTERVAL_MS);
+}
+
+function stopNetProbing() {
+  clearInterval(netProbeTimer);
+  netProbeTimer = null;
+  if (netProbeAbort) netProbeAbort.abort();
+}
 
 networkMonitorBtn.addEventListener('click', () => {
   if (!networkMonitorPopover.classList.contains('hidden')) {
     networkMonitorPopover.classList.add('hidden');
-    clearInterval(netSampleInterval);
-    netSampleInterval = null;
+    netPopoverOpen = false;
+    stopNetProbing();
     return;
   }
   document.getElementById('net-speedtest-result').textContent = '';
-  netHistory = [];
-  tickNetworkMonitor();
-  netSampleInterval = setInterval(tickNetworkMonitor, 2000);
+  netPopoverOpen = true;
+  refreshNetworkStatus();
   networkMonitorPopover.classList.remove('hidden');
+  startNetProbing();
 });
 
 document.getElementById('net-speedtest-btn').addEventListener('click', async () => {
@@ -1427,7 +1467,7 @@ document.getElementById('net-speedtest-btn').addEventListener('click', async () 
     result.textContent = 'Could not run the test — check your connection.';
   } finally {
     btn.disabled = false;
-    btn.textContent = 'Run a quick download test';
+    btn.textContent = 'Run a burst test (max speed)';
   }
 });
 
@@ -1435,8 +1475,8 @@ document.addEventListener('click', (e) => {
   if (networkMonitorPopover.classList.contains('hidden')) return;
   if (networkMonitorPopover.contains(e.target) || networkMonitorBtn.contains(e.target)) return;
   networkMonitorPopover.classList.add('hidden');
-  clearInterval(netSampleInterval);
-  netSampleInterval = null;
+  netPopoverOpen = false;
+  stopNetProbing();
 });
 
 const passwordSavePopover = document.getElementById('password-save-popover');

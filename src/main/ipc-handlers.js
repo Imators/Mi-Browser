@@ -205,6 +205,7 @@ function register(mainWindow) {
   ipcMain.handle('security-set', (event, patch) => {
     const current = storage.get('security') || {};
     storage.set('security', { ...current, ...patch });
+    if ('dnsProvider' in patch) securityManager.applyDnsSettings();
   });
 
   ipcMain.handle('partner-themes-list', () => partnerThemesManager.list());
