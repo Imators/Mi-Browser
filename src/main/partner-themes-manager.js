@@ -25,19 +25,16 @@ function writeCache(cache) {
   fs.writeFileSync(cacheFile(), JSON.stringify(cache, null, 2));
 }
 
-// themes.php/theme.php send Cache-Control: public, max-age=300 (for casual
-// browser hits), but that means Electron's own HTTP cache would silently
-// serve a stale response for up to 5 minutes after any edit in the DB,
-// even though we intentionally re-fetch on every open — cache: 'no-store'
-// forces past that cache entirely so DB edits show up immediately.
+// Respects the Cache-Control: public, max-age=300 that themes.php/theme.php
+// send, same as before — a normal HTTP cache for 5 minutes.
 async function fetchJson(url) {
-  const response = await net.fetch(url, { headers: { 'X-Mi-Key': config.MI_API_KEY }, cache: 'no-store' });
+  const response = await net.fetch(url, { headers: { 'X-Mi-Key': config.MI_API_KEY } });
   if (!response.ok) throw new Error(`HTTP ${response.status} for ${url}`);
   return response.json();
 }
 
 async function downloadAsset(remoteUrl, destPath) {
-  const response = await net.fetch(remoteUrl, { cache: 'no-store' });
+  const response = await net.fetch(remoteUrl);
   if (!response.ok) throw new Error(`HTTP ${response.status} for ${remoteUrl}`);
   const buffer = Buffer.from(await response.arrayBuffer());
   ensureDir(path.dirname(destPath));
@@ -88,6 +85,7 @@ async function list() {
 
     return themes.map((theme) => ({ ...theme, logoMiUrl: miUrlFor(localLogoPath(theme.slug, theme.logo_url)) }));
   } catch (err) {
+    console.error('Mi Browser: partner theme list refresh failed, falling back to local cache —', err.message);
     const cache = readCache();
     return (cache.themes || []).map((theme) => ({
       ...theme,
@@ -121,6 +119,7 @@ async function detail(slug) {
 
     return resolvedTheme;
   } catch (err) {
+    console.error(`Mi Browser: partner theme "${slug}" refresh failed, falling back to local cache —`, err.message);
     const cache = readCache();
     return (cache.details && cache.details[slug]) || null;
   }
