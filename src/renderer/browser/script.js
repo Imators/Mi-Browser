@@ -53,7 +53,9 @@ const state = {
   airTabKey: 'Control',
   airTabHoldMs: 350,
   airTabLayout: 'grid',
-  airTabTileSize: 'comfortable'
+  airTabTileSize: 'comfortable',
+  tabBarStyle: 'top',
+  confirmBeforeQuit: false
 };
 
 function getHomepageUrl() {
@@ -77,6 +79,7 @@ async function loadState() {
 
   const custom = (await window.electron.store.get('customization')) || {};
   applyCustomizationData(custom);
+  if (custom.partnerTheme) window.electron.partnerThemes.refreshApplied();
 
   const restoreSession = await window.electron.store.get('restore-session');
   const shouldRestore = restoreSession !== false;
@@ -149,6 +152,9 @@ function applyCustomizationData(c) {
   state.airTabHoldMs = c.airTabHoldMs || 350;
   state.airTabLayout = c.airTabLayout || 'grid';
   state.airTabTileSize = c.airTabTileSize || 'comfortable';
+  state.tabBarStyle = c.tabBarStyle || 'top';
+  state.confirmBeforeQuit = !!c.confirmBeforeQuit;
+  state.partnerTheme = c.partnerTheme || null;
   applyCustomizations();
 }
 
@@ -174,8 +180,41 @@ function readableTextColor(hex) {
   return relativeLuminance(hex) > 0.5 ? '#000000' : '#ffffff';
 }
 
+function shadeColor(hex, percent) {
+  try {
+    const f = parseInt(hex.replace('#', ''), 16);
+    const t = percent < 0 ? 0 : 255;
+    const p = Math.abs(percent) / 100;
+    const R = f >> 16, G = (f >> 8) & 0x00FF, B = f & 0x0000FF;
+    return '#' + (0x1000000 + (Math.round((t - R) * p) + R) * 0x10000 + (Math.round((t - G) * p) + G) * 0x100 + (Math.round((t - B) * p) + B)).toString(16).slice(1);
+  } catch (err) {
+    return hex;
+  }
+}
+
+const PARTNER_CHROME_VAR_NAMES = ['--pt-bg', '--pt-surface', '--pt-surface-hover', '--pt-text', '--pt-border', '--pt-border-strong'];
+
+function applyPartnerThemeChromeVars() {
+  const isPrivateTab = document.body.classList.contains('is-private');
+  const pt = state.partnerTheme;
+  const active = !!pt && !isPrivateTab;
+  document.body.classList.toggle('partner-theme-active', active);
+
+  if (!active) {
+    PARTNER_CHROME_VAR_NAMES.forEach((name) => document.body.style.removeProperty(name));
+    return;
+  }
+
+  document.body.style.setProperty('--pt-bg', pt.bgColor);
+  document.body.style.setProperty('--pt-surface', pt.surfaceColor);
+  document.body.style.setProperty('--pt-surface-hover', shadeColor(pt.surfaceColor, -12));
+  document.body.style.setProperty('--pt-text', pt.textColor);
+  document.body.style.setProperty('--pt-border', pt.borderColor);
+  document.body.style.setProperty('--pt-border-strong', shadeColor(pt.borderColor, 20));
+}
+
 function applyCustomizations() {
-  const resolvedAccent = state.accentColor || THEME_ACCENTS[state.theme] || '#3b82f6';
+  const resolvedAccent = state.accentColor || (state.partnerTheme && state.partnerTheme.accentColor) || THEME_ACCENTS[state.theme] || '#3b82f6';
   document.documentElement.style.setProperty('--user-accent', resolvedAccent);
   document.documentElement.style.setProperty('--user-accent-text', readableTextColor(resolvedAccent));
   document.documentElement.style.fontSize = `${Math.round((state.uiZoom || 1) * 100)}%`;
@@ -190,6 +229,8 @@ function applyCustomizations() {
   document.body.classList.toggle('font-style-rounded', state.uiFontStyle === 'rounded');
   document.body.classList.toggle('reduce-motion', state.reduceMotion);
   document.body.classList.toggle('toolbar-icon-size-compact', state.toolbarIconSize === 'compact');
+  document.body.classList.toggle('tab-bar-sidebar', state.tabBarStyle === 'sidebar');
+  applyPartnerThemeChromeVars();
   renderBookmarksBar();
   updateClockVisibility();
 }
@@ -421,8 +462,12 @@ function renderTabs() {
     const tabEl = document.createElement('div');
     tabEl.className = `tab ${tab.id === activeTabId ? 'active' : ''} ${tab.isPrivate ? 'tab-private' : ''}`;
     const inSplit = tab.id === splitLeftTabId || tab.id === splitRightTabId;
+    let tabHostname = '';
+    if (!tab.isPrivate) { try { tabHostname = new URL(tab.url).hostname; } catch (err) { /* mi:// pages etc have no favicon */ } }
+    const faviconHtml = (!tab.loading && !tab.isPrivate) ? faviconMarkup(tab.favicon, tabHostname, 'tab-favicon') : '';
     tabEl.innerHTML = `
       ${tab.loading ? '<span class="tab-spinner"></span>' : ''}
+      ${faviconHtml}
       ${tab.isPrivate ? '<span class="tab-private-badge" title="Private tab"><svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="7" cy="12" r="3.2"></circle><circle cx="17" cy="12" r="3.2"></circle><line x1="10.2" y1="12" x2="13.8" y2="12"></line><path d="M3.5 8 6 6h2l1.5 2"></path><path d="M20.5 8 18 6h-2l-1.5 2"></path></svg></span>' : ''}
       ${inSplit ? '<span class="tab-split-badge" title="In split view"><svg viewBox="0 0 24 24" width="11" height="11" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><line x1="12" y1="4" x2="12" y2="20"/></svg></span>' : ''}
       <span class="tab-title">${escapeHtmlAddr(tab.title)}</span>
@@ -718,6 +763,17 @@ function createWebview(tabId, url, isPrivate = false) {
     }
   });
 
+  // Chromium resolves whatever icon format the site actually declares
+  // (ico/png/svg/webp/...), so this is more reliable than guessing a
+  // /favicon.ico path ourselves.
+  webview.addEventListener('page-favicon-updated', (e) => {
+    const tab = tabs.find(t => t.id === tabId);
+    if (tab && e.favicons && e.favicons.length > 0) {
+      tab.favicon = e.favicons[0];
+      renderTabs();
+    }
+  });
+
   webview.addEventListener('did-start-loading', () => {
     const tab = tabs.find(t => t.id === tabId);
     if (tab) {
@@ -857,7 +913,7 @@ function createWebview(tabId, url, isPrivate = false) {
     else if (selected === 'inspect') webview.inspectElement(p.x, p.y);
     else if (selected === 'pin-page') {
       const tab = tabs.find(t => t.id === tabId);
-      if (tab) window.electron.bookmarks.add({ url: tab.url, title: tab.title });
+      if (tab) window.electron.bookmarks.add({ url: tab.url, title: tab.title, favicon: tab.favicon || null });
     }
     else if (selected === 'search-selection') {
       const url = buildSearchUrl(getSearchEngineUrlPrefix(state.searchEngine), p.selectionText.trim());
@@ -982,6 +1038,36 @@ function escapeHtmlAddr(str) {
   const div = document.createElement('div');
   div.textContent = str;
   return div.innerHTML;
+}
+
+function escapeHtmlAttr(str) {
+  return escapeHtmlAddr(str).replace(/"/g, '&quot;');
+}
+
+// Any format Chromium itself resolves for the page (ico/png/svg/webp/...)
+// works here since it's just an <img src>. The one real gap is sites that
+// never declare a <link rel="icon"> at all — page-favicon-updated then
+// never fires — so we chain a /favicon.ico guess as a second attempt
+// before giving up, instead of just failing silently.
+function handleFaviconError(img) {
+  const fallback = img.dataset.fallback;
+  if (fallback) {
+    img.removeAttribute('data-fallback');
+    img.src = fallback;
+  } else {
+    img.remove();
+  }
+}
+
+function faviconMarkup(url, hostname, className) {
+  const candidates = [];
+  if (url) candidates.push(url);
+  const guess = hostname ? `https://${hostname}/favicon.ico` : null;
+  if (guess && guess !== url) candidates.push(guess);
+  if (candidates.length === 0) return '';
+
+  const fallbackAttr = candidates[1] ? ` data-fallback="${escapeHtmlAttr(candidates[1])}"` : '';
+  return `<img src="${escapeHtmlAttr(candidates[0])}" class="${className}"${fallbackAttr} onerror="handleFaviconError(this)" />`;
 }
 
 let googleSuggestDebounce = null;
@@ -1401,7 +1487,31 @@ document.getElementById('maximize-btn').addEventListener('click', () => {
   window.electron.window.maximize();
 });
 
+function showQuitConfirmModal() {
+  return new Promise((resolve) => {
+    const overlay = document.getElementById('quit-confirm-overlay');
+    const okBtn = document.getElementById('quit-confirm-ok-btn');
+    const cancelBtn = document.getElementById('quit-confirm-cancel-btn');
+    overlay.classList.remove('hidden');
+
+    const cleanup = (result) => {
+      overlay.classList.add('hidden');
+      okBtn.removeEventListener('click', onOk);
+      cancelBtn.removeEventListener('click', onCancel);
+      resolve(result);
+    };
+    const onOk = () => cleanup(true);
+    const onCancel = () => cleanup(false);
+    okBtn.addEventListener('click', onOk);
+    cancelBtn.addEventListener('click', onCancel);
+  });
+}
+
 async function saveSessionAndClose() {
+  if (state.confirmBeforeQuit) {
+    const ok = await showQuitConfirmModal();
+    if (!ok) return;
+  }
   if (state.confirmCloseMultiTab && tabs.length > 1) {
     const ok = confirm(`Close Mi Browser with ${tabs.length} tabs open?`);
     if (!ok) return;
@@ -1417,10 +1527,14 @@ async function saveSessionAndClose() {
     .filter(t => !t.isPrivate)
     .map(t => ({ id: t.id, url: t.url, title: t.title }));
   await window.electron.store.set('session-tabs', tabsData);
-  window.electron.window.close();
+  window.electron.app.quitConfirmed();
 }
 
 document.getElementById('close-btn').addEventListener('click', () => {
+  saveSessionAndClose();
+});
+
+window.electron.app.onRequestQuit(() => {
   saveSessionAndClose();
 });
 
@@ -1514,7 +1628,7 @@ document.getElementById('split-view-btn').addEventListener('click', async () => 
 
 document.getElementById('pin-btn').addEventListener('click', () => {
   const tab = tabs.find(t => t.id === activeTabId);
-  if (tab) window.electron.bookmarks.add({ url: tab.url, title: tab.title });
+  if (tab) window.electron.bookmarks.add({ url: tab.url, title: tab.title, favicon: tab.favicon || null });
 });
 
 const bookmarksBar = document.getElementById('bookmarks-bar');
@@ -1531,7 +1645,7 @@ async function renderBookmarksBar() {
     const chip = document.createElement('div');
     chip.className = 'bookmark-chip';
     chip.innerHTML = `
-      ${hostname ? `<img src="https://${hostname}/favicon.ico" class="bookmark-chip-favicon" onerror="this.remove()" />` : ''}
+      ${faviconMarkup(b.favicon, hostname, 'bookmark-chip-favicon')}
       <span class="bookmark-chip-title">${escapeHtmlAddr(b.title)}</span>
     `;
     chip.title = b.url;

@@ -6,6 +6,228 @@
   <title>Mi Browser - Settings</title>
   <link rel="stylesheet" href="mi://static/assets/css/tailwind.css">
   <link rel="stylesheet" href="mi://static/renderer/shared/theme.css">
+  <style>
+    .partner-theme-tile {
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 16px;
+    }
+    .partner-theme-tile-logo-box {
+      width: 100%;
+      height: 64px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(0, 0, 0, 0.04);
+      overflow: hidden;
+    }
+    .partner-theme-tile-logo-box img {
+      max-width: 70%;
+      max-height: 70%;
+      object-fit: contain;
+    }
+
+    .partner-theme-detail-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 500;
+      display: flex;
+      align-items: flex-end;
+      justify-content: center;
+    }
+    .partner-theme-detail-overlay.hidden { display: none; }
+    .partner-theme-detail-wallpaper {
+      position: absolute;
+      inset: 0;
+      background-color: #1a1a1a;
+      overflow: hidden;
+    }
+    .partner-theme-detail-wallpaper-layer {
+      position: absolute;
+      inset: 0;
+      background-size: cover;
+      background-position: center;
+      opacity: 0;
+      transform: scale(1.02);
+      transition: opacity 0.45s ease, transform 0.6s ease;
+    }
+    .partner-theme-detail-wallpaper-layer.active {
+      opacity: 1;
+      transform: scale(1);
+    }
+    .partner-theme-detail-scrim {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to top, rgba(0,0,0,0.82) 10%, rgba(0,0,0,0.15) 60%, rgba(0,0,0,0.05) 100%);
+    }
+    .partner-theme-detail-close-btn {
+      position: absolute;
+      top: 20px;
+      right: 24px;
+      z-index: 2;
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      border: none;
+      background: rgba(255,255,255,0.15);
+      color: #fff;
+      font-size: 15px;
+      cursor: pointer;
+    }
+    .partner-theme-detail-close-btn:hover { background: rgba(255,255,255,0.28); }
+    .partner-theme-detail-content {
+      position: relative;
+      z-index: 1;
+      width: 100%;
+      max-width: 640px;
+      padding: 40px 40px 48px;
+      color: #fff;
+    }
+    .partner-theme-detail-logo {
+      max-width: 120px;
+      max-height: 56px;
+      object-fit: contain;
+      margin-bottom: 14px;
+    }
+    .partner-theme-detail-name {
+      font-size: 28px;
+      font-weight: 800;
+      margin-bottom: 4px;
+    }
+    .partner-theme-detail-tagline {
+      font-size: 14px;
+      opacity: 0.85;
+      margin-bottom: 10px;
+    }
+    .partner-theme-detail-description {
+      font-size: 13px;
+      opacity: 0.75;
+      line-height: 1.5;
+      margin-bottom: 22px;
+      max-width: 480px;
+    }
+    .partner-theme-detail-label {
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      opacity: 0.6;
+      margin-bottom: 8px;
+    }
+    .partner-theme-detail-variations {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-bottom: 26px;
+    }
+    .partner-theme-variation-swatch {
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 14px;
+      border-radius: 999px;
+      border: 1.5px solid rgba(255,255,255,0.25);
+      background: rgba(255,255,255,0.08);
+      color: #fff;
+      font-size: 12px;
+      font-weight: 600;
+      transition: background-color 0.18s ease, border-color 0.18s ease, transform 0.18s ease;
+    }
+    .partner-theme-variation-swatch:hover {
+      background: rgba(255,255,255,0.15);
+    }
+    .partner-theme-variation-swatch.selected {
+      border-color: rgba(255,255,255,0.9);
+      background: rgba(255,255,255,0.22);
+      transform: scale(1.04);
+    }
+    .partner-theme-variation-dot {
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      border: 1px solid rgba(255,255,255,0.4);
+      transition: transform 0.18s ease;
+    }
+    .partner-theme-variation-swatch.selected .partner-theme-variation-dot {
+      transform: scale(1.15);
+    }
+    .partner-theme-detail-actions {
+      display: flex;
+      gap: 12px;
+    }
+    .partner-theme-detail-apply-btn,
+    .partner-theme-detail-remove-btn {
+      padding: 10px 20px;
+      border-radius: 10px;
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+      border: none;
+    }
+    .partner-theme-detail-apply-btn {
+      background: #fff;
+      color: #111;
+    }
+    .partner-theme-detail-apply-btn:hover { opacity: 0.9; }
+    .partner-theme-detail-remove-btn {
+      background: rgba(255,255,255,0.12);
+      color: #fff;
+      border: 1.5px solid rgba(255,255,255,0.3);
+    }
+    .partner-theme-detail-remove-btn.hidden { display: none; }
+
+    .newtab-position-preview {
+      width: 100%;
+      aspect-ratio: 16 / 9;
+      border-radius: 10px;
+      border: 1.5px solid var(--border, rgba(0,0,0,0.15));
+      background: repeating-linear-gradient(45deg, rgba(128,128,128,0.06), rgba(128,128,128,0.06) 8px, rgba(128,128,128,0.02) 8px, rgba(128,128,128,0.02) 16px);
+      display: flex;
+      flex-direction: column;
+      padding: 14px;
+      transition: justify-content 0.25s ease, align-items 0.25s ease;
+    }
+    .newtab-position-preview[data-position="middle"] { justify-content: center; align-items: center; }
+    .newtab-position-preview[data-position="bottom"] { justify-content: flex-end; align-items: center; }
+    .newtab-position-preview[data-position="left"] { justify-content: center; align-items: flex-start; }
+    .newtab-position-preview[data-position="right"] { justify-content: center; align-items: flex-end; }
+
+    .newtab-position-preview-block {
+      background: var(--accent, #3b82f6);
+      color: var(--accent-text, #ffffff);
+      font-size: 11px;
+      font-weight: 700;
+      padding: 8px 14px;
+      border-radius: 999px;
+      white-space: nowrap;
+      transition: transform 0.25s ease;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    }
+
+    .newtab-position-option-tile {
+      text-align: center;
+      font-size: 12px;
+      font-weight: 600;
+      padding: 8px 4px;
+      border-radius: 8px;
+      border: 1.5px solid var(--border, rgba(0,0,0,0.15));
+      transition: background-color 0.15s ease, border-color 0.15s ease;
+    }
+    .newtab-position-option input:checked + .newtab-position-option-tile {
+      border-color: var(--accent, #3b82f6);
+      background-color: var(--accent, #3b82f6);
+      color: var(--accent-text, #ffffff);
+    }
+    .newtab-position-option-tile:hover {
+      opacity: 0.85;
+    }
+  </style>
 </head>
 <body class="m-0 p-0 min-h-screen theme-light">
   <div class="max-w-5xl mx-auto px-8 py-12 flex gap-12">
@@ -17,6 +239,7 @@
         <div>
           <p class="text-xs font-semibold uppercase opacity-50 px-3 mb-1">General</p>
           <a href="#appearance" class="settings-nav-link block px-3 py-2 rounded-lg text-sm font-medium">Appearance &amp; language</a>
+          <a href="#partner-themes" class="settings-nav-link block px-3 py-2 rounded-lg text-sm font-medium">Fan themes</a>
           <a href="#search" class="settings-nav-link block px-3 py-2 rounded-lg text-sm font-medium">Search</a>
           <a href="#startup" class="settings-nav-link block px-3 py-2 rounded-lg text-sm font-medium">Startup</a>
           <a href="#personalisation" class="settings-nav-link block px-3 py-2 rounded-lg text-sm font-medium">Personalisation</a>
@@ -41,6 +264,7 @@
           <a href="#shortcuts" class="settings-nav-link block px-3 py-2 rounded-lg text-sm font-medium">Shortcuts</a>
           <a href="#updates" class="settings-nav-link block px-3 py-2 rounded-lg text-sm font-medium">Updates</a>
           <a href="#about" class="settings-nav-link block px-3 py-2 rounded-lg text-sm font-medium">About</a>
+          <a href="#diagnostics" class="settings-nav-link block px-3 py-2 rounded-lg text-sm font-medium">Diagnostics</a>
           <a href="#reset" class="settings-nav-link block px-3 py-2 rounded-lg text-sm font-medium">Reset</a>
         </div>
       </div>
@@ -266,6 +490,13 @@
         </div>
       </section>
 
+      <section id="partner-themes" class="mb-14 scroll-mt-8">
+        <h2 class="text-xl font-semibold mb-1 flex items-center gap-2">Fan themes<span class="text-xs font-semibold uppercase tracking-wide opacity-50 border-2 rounded-full px-2 py-0.5">New</span></h2>
+        <p class="text-sm opacity-70 mb-4">Themes inspired by everyday things, with a matching New Tab wallpaper and accent colour. Downloaded and cached on your device the first time you open one.</p>
+        <div id="partner-themes-status" class="text-sm opacity-60 mb-3"></div>
+        <div id="partner-themes-grid" class="grid grid-cols-3 gap-4"></div>
+      </section>
+
       <section id="search" class="mb-14 scroll-mt-8">
         <h2 class="text-xl font-semibold mb-1">Search</h2>
         <p class="text-sm opacity-70 mb-4">Used by the address bar and the New Tab search box.</p>
@@ -344,7 +575,42 @@
           <input type="range" id="ui-zoom-slider" min="80" max="130" step="5" class="w-full">
         </div>
 
+        <div class="card p-5 rounded-lg border-2 mb-3">
+          <p class="font-semibold mb-1">New Tab layout</p>
+          <p class="text-sm opacity-75 mb-3">Where the "Mi Browser" block (logo, search bar, buttons) sits on the New Tab page.</p>
+
+          <div id="newtab-position-preview" class="newtab-position-preview">
+            <div id="newtab-position-preview-block" class="newtab-position-preview-block">Mi Browser</div>
+          </div>
+
+          <div class="grid grid-cols-4 gap-2 mt-3">
+            <label class="newtab-position-option cursor-pointer">
+              <input type="radio" name="newtab-block-position" value="middle" class="hidden">
+              <div class="newtab-position-option-tile">Middle</div>
+            </label>
+            <label class="newtab-position-option cursor-pointer">
+              <input type="radio" name="newtab-block-position" value="bottom" class="hidden">
+              <div class="newtab-position-option-tile">Bottom</div>
+            </label>
+            <label class="newtab-position-option cursor-pointer">
+              <input type="radio" name="newtab-block-position" value="left" class="hidden">
+              <div class="newtab-position-option-tile">Left</div>
+            </label>
+            <label class="newtab-position-option cursor-pointer">
+              <input type="radio" name="newtab-block-position" value="right" class="hidden">
+              <div class="newtab-position-option-tile">Right</div>
+            </label>
+          </div>
+        </div>
+
         <div class="space-y-3 mb-3">
+          <label class="flex items-start p-4 rounded-lg border-2 card cursor-pointer hover:opacity-80 transition">
+            <input type="checkbox" class="custom-toggle w-5 h-5 mt-1" data-custom="confirmBeforeQuit">
+            <div class="ml-4 flex-1">
+              <p class="font-semibold">Confirm before quitting Mi Browser</p>
+              <p class="text-sm opacity-75">Shows a warning modal whenever you close the app (Cmd+Q, Alt+F4, or the close button)</p>
+            </div>
+          </label>
           <label class="flex items-start p-4 rounded-lg border-2 card cursor-pointer hover:opacity-80 transition">
             <input type="checkbox" class="custom-toggle w-5 h-5 mt-1" data-custom="confirmCloseMultiTab">
             <div class="ml-4 flex-1">
@@ -551,6 +817,15 @@
             <option value="custom">A custom URL</option>
           </select>
           <input type="text" id="new-tab-destination-url-input" placeholder="https://example.com" class="hidden w-full px-4 py-2.5 rounded-lg border-2 text-sm settings-select">
+        </div>
+
+        <div class="card p-5 rounded-lg border-2 mb-3">
+          <p class="font-semibold mb-1">Tab bar position</p>
+          <p class="text-sm opacity-75 mb-3">Choose where your open tabs are shown.</p>
+          <select id="tab-bar-style-select" class="w-full px-3 py-2 rounded-lg border-2 text-sm settings-select">
+            <option value="top">Top (default)</option>
+            <option value="sidebar">Sidebar</option>
+          </select>
         </div>
 
         <div class="card p-5 rounded-lg border-2 mb-3">
@@ -811,6 +1086,15 @@
 
         <div id="passwords-empty" class="card p-5 rounded-lg border-2 text-sm opacity-70">No passwords saved yet. Import some below, or add one with the button above.</div>
         <div id="passwords-list" class="space-y-2"></div>
+
+        <div class="card p-5 rounded-lg border-2 mt-4">
+          <div class="flex items-center justify-between mb-2">
+            <p class="font-semibold">Passkey diagnostics</p>
+            <button id="passkey-diag-run-btn" class="px-4 py-2 rounded-lg text-sm font-semibold border-2 hover:opacity-80">Run check</button>
+          </div>
+          <p class="text-sm opacity-75 mb-3">Checks what this Mac reports to Mi Browser directly — the same check every site runs before offering you a passkey.</p>
+          <div id="passkey-diag-results" class="space-y-1.5 text-sm"></div>
+        </div>
       </section>
 
       <section id="import" class="mb-14 scroll-mt-8">
@@ -946,6 +1230,17 @@
         </div>
       </section>
 
+      <section id="diagnostics" class="mb-14 scroll-mt-8">
+        <h2 class="text-xl font-semibold mb-1">Diagnostics</h2>
+        <p class="text-sm opacity-70 mb-4">Export a snapshot of your app/session settings to share when reporting a problem.</p>
+        <div class="card p-6 rounded-lg border-2">
+          <p class="font-semibold mb-1">Export diagnostics</p>
+          <p class="text-sm opacity-75 mb-4">Saves a JSON file with your app version, system info, settings and Get Out Systems stats. Saved passwords, bookmarks and browsing history are never included &mdash; only counts.</p>
+          <button id="export-logs-btn" class="px-5 py-2.5 rounded-lg font-semibold transition border-2 hover:opacity-80">Export diagnostics…</button>
+          <p id="export-logs-status" class="text-xs opacity-60 mt-2"></p>
+        </div>
+      </section>
+
       <section id="reset" class="scroll-mt-8">
         <h2 class="text-xl font-semibold mb-1">Reset</h2>
         <p class="text-sm opacity-70 mb-4">Start completely from scratch.</p>
@@ -984,6 +1279,29 @@
     </div>
   </div>
 
+  <div id="partner-theme-detail-overlay" class="partner-theme-detail-overlay hidden">
+    <div class="partner-theme-detail-wallpaper" id="partner-theme-detail-wallpaper">
+      <div class="partner-theme-detail-wallpaper-layer" id="partner-theme-detail-wallpaper-layer-a"></div>
+      <div class="partner-theme-detail-wallpaper-layer" id="partner-theme-detail-wallpaper-layer-b"></div>
+    </div>
+    <div class="partner-theme-detail-scrim"></div>
+    <button id="partner-theme-detail-close-btn" type="button" class="partner-theme-detail-close-btn">✕</button>
+    <div class="partner-theme-detail-content">
+      <img id="partner-theme-detail-logo" class="partner-theme-detail-logo" alt="">
+      <h2 id="partner-theme-detail-name" class="partner-theme-detail-name"></h2>
+      <p id="partner-theme-detail-tagline" class="partner-theme-detail-tagline"></p>
+      <p id="partner-theme-detail-description" class="partner-theme-detail-description"></p>
+
+      <p class="partner-theme-detail-label">Variations</p>
+      <div id="partner-theme-detail-variations" class="partner-theme-detail-variations"></div>
+
+      <div class="partner-theme-detail-actions">
+        <button id="partner-theme-detail-remove-btn" type="button" class="partner-theme-detail-remove-btn hidden">Remove partner theme</button>
+        <button id="partner-theme-detail-apply-btn" type="button" class="partner-theme-detail-apply-btn">Apply theme</button>
+      </div>
+    </div>
+  </div>
+
   <div id="reset-confirm-overlay" class="fixed inset-0 hidden items-center justify-center bg-black bg-opacity-50 p-8">
     <div class="card rounded-lg p-8 max-w-md w-full border-2">
       <h3 class="text-lg font-bold mb-2">Certain about this?</h3>
@@ -995,6 +1313,7 @@
     </div>
   </div>
 
+  <script src="mi://static/renderer/shared/partner-theme.js"></script>
   <script src="script.js"></script>
 </body>
 </html>

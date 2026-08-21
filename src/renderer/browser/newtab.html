@@ -455,6 +455,24 @@
       transition: background 0.2s ease, color 0.2s ease;
     }
 
+    body.newtab-block-bottom { justify-content: flex-end; align-items: center; }
+    body.newtab-block-left { justify-content: center; align-items: flex-start; }
+    body.newtab-block-right { justify-content: center; align-items: flex-end; }
+
+    .hero-block {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      width: 100%;
+      max-width: 820px;
+    }
+
+    body.newtab-block-left .hero-block,
+    body.newtab-block-right .hero-block {
+      align-items: center;
+      text-align: center;
+    }
+
     .newtab-bg-media {
       position: fixed;
       inset: 0;
@@ -487,7 +505,7 @@
 
     .search-container {
       width: 100%;
-      max-width: 700px;
+      max-width: 820px;
       margin-bottom: 32px;
       position: relative;
     }
@@ -565,12 +583,12 @@
       display: flex;
       gap: 16px;
       width: 100%;
-      max-width: 700px;
+      max-width: 820px;
     }
 
     .action-button {
       flex: 1;
-      padding: 16px 32px;
+      padding: 18px 36px;
       background: var(--surface);
       border: 1.5px solid var(--border);
       border-radius: 16px;
@@ -729,27 +747,29 @@
 
   <div id="newtab-bg-media" class="newtab-bg-media"></div>
 
-  <p id="greeting-text" class="logo-tagline" style="display:none;"></p>
-  <h1 class="logo-text">Mi Browser</h1>
-  <p class="logo-tagline">They don’t know your name anymore</p>
+  <div id="hero-block" class="hero-block">
+    <p id="greeting-text" class="logo-tagline" style="display:none;"></p>
+    <h1 class="logo-text">Mi Browser</h1>
+    <p class="logo-tagline">They don’t know your name anymore</p>
 
-  <div class="search-container">
-    <svg class="search-icon icon" viewBox="0 0 24 24">
-      <circle cx="11" cy="11" r="8"></circle>
-      <path d="m21 21-4.35-4.35"></path>
-    </svg>
-    <input type="text" id="search-input" placeholder="Search the web..." autocomplete="off">
-    <div class="enter-button" id="enter-button">
-      <svg viewBox="0 0 24 24">
-        <polyline points="9 10 4 15 9 20"></polyline>
-        <path d="M20 4v7a4 4 0 0 1-4 4H4"></path>
+    <div class="search-container">
+      <svg class="search-icon icon" viewBox="0 0 24 24">
+        <circle cx="11" cy="11" r="8"></circle>
+        <path d="m21 21-4.35-4.35"></path>
       </svg>
+      <input type="text" id="search-input" placeholder="Search the web..." autocomplete="off">
+      <div class="enter-button" id="enter-button">
+        <svg viewBox="0 0 24 24">
+          <polyline points="9 10 4 15 9 20"></polyline>
+          <path d="M20 4v7a4 4 0 0 1-4 4H4"></path>
+        </svg>
+      </div>
     </div>
-  </div>
 
-  <div class="buttons-container">
-    <button class="action-button" id="why-btn">Why Mi Browser</button>
-    <button class="action-button" id="tools-btn">Tools</button>
+    <div class="buttons-container">
+      <button class="action-button" id="why-btn">Why Mi Browser</button>
+      <button class="action-button" id="tools-btn">Tools</button>
+    </div>
   </div>
 
   <div class="overlay" id="why-overlay">
@@ -841,10 +861,69 @@
     };
     var searchEngine = 'google';
 
+    var PARTNER_VAR_NAMES = [
+      '--bg', '--text', '--text-secondary', '--surface', '--border', '--border-hover',
+      '--accent', '--accent-hover', '--accent-text', '--overlay-bg', '--overlay-close-bg',
+      '--overlay-close-bg-hover', '--tool-item-bg'
+    ];
+
+    function shadeColor(hex, percent) {
+      try {
+        var f = parseInt(hex.slice(1), 16);
+        var t = percent < 0 ? 0 : 255;
+        var p = Math.abs(percent) / 100;
+        var R = f >> 16, G = f >> 8 & 0x00FF, B = f & 0x0000FF;
+        return '#' + (0x1000000 + (Math.round((t - R) * p) + R) * 0x10000 + (Math.round((t - G) * p) + G) * 0x100 + (Math.round((t - B) * p) + B)).toString(16).slice(1);
+      } catch (e) {
+        return hex;
+      }
+    }
+
+    function readableOn(hex) {
+      try {
+        var f = parseInt(hex.slice(1), 16);
+        var R = (f >> 16) / 255, G = (f >> 8 & 0x00FF) / 255, B = (f & 0x0000FF) / 255;
+        var lin = function(c) { return c <= 0.03928 ? c / 12.92 : Math.pow((c + 0.055) / 1.055, 2.4); };
+        var lum = 0.2126 * lin(R) + 0.7152 * lin(G) + 0.0722 * lin(B);
+        return lum > 0.5 ? '#000000' : '#ffffff';
+      } catch (e) {
+        return '#ffffff';
+      }
+    }
+
+    function applyPartnerThemeVars(pt) {
+      var body = document.body.style;
+      body.setProperty('--bg', pt.bgColor);
+      body.setProperty('--text', pt.textColor);
+      body.setProperty('--text-secondary', shadeColor(pt.textColor, -25));
+      body.setProperty('--surface', pt.surfaceColor);
+      body.setProperty('--border', pt.borderColor);
+      body.setProperty('--border-hover', shadeColor(pt.borderColor, 20));
+      body.setProperty('--accent', pt.accentColor);
+      body.setProperty('--accent-hover', shadeColor(pt.accentColor, -15));
+      body.setProperty('--accent-text', readableOn(pt.accentColor));
+      body.setProperty('--overlay-bg', pt.surfaceColor);
+      body.setProperty('--overlay-close-bg', shadeColor(pt.surfaceColor, 15));
+      body.setProperty('--overlay-close-bg-hover', shadeColor(pt.surfaceColor, 30));
+      body.setProperty('--tool-item-bg', pt.surfaceColor);
+    }
+
+    function clearPartnerThemeVars() {
+      PARTNER_VAR_NAMES.forEach(function(name) { document.body.style.removeProperty(name); });
+    }
+
+    function applyNewTabBlockPosition(c) {
+      var position = (c && c.newTabBlockPosition) || 'middle';
+      document.body.classList.toggle('newtab-block-bottom', position === 'bottom');
+      document.body.classList.toggle('newtab-block-left', position === 'left');
+      document.body.classList.toggle('newtab-block-right', position === 'right');
+    }
+
     function applyNewTabCustomization(c) {
       c = c || {};
-      document.body.style.setProperty('--bg', c.newTabBackgroundTint || '');
+      var pt = c.partnerTheme || null;
 
+      applyNewTabBlockPosition(c);
       document.getElementById('why-btn').style.display = c.hideWhyButton ? 'none' : '';
       document.getElementById('tools-btn').style.display = c.hideToolsButton ? 'none' : '';
 
@@ -858,32 +937,46 @@
         greeting.style.display = 'none';
       }
 
-      renderNewTabBgMedia(c.newTabBackgroundMedia, c.newTabBackgroundOpacity);
+      if (pt && pt.wallpaperMiUrl) {
+        applyPartnerThemeVars(pt);
+        renderNewTabBg(pt.wallpaperMiUrl, 'image', 100);
+      } else {
+        clearPartnerThemeVars();
+        document.body.style.setProperty('--bg', c.newTabBackgroundTint || '');
+        renderNewTabBg(
+          c.newTabBackgroundMedia ? 'mi://background/' + c.newTabBackgroundMedia.filename : null,
+          c.newTabBackgroundMedia ? c.newTabBackgroundMedia.type : null,
+          c.newTabBackgroundOpacity
+        );
+      }
     }
 
-    var currentBgFilename = null;
+    var currentBgSrc = null;
 
     function renderNewTabBgMedia(media, opacityPercent) {
+      renderNewTabBg(media && media.filename ? 'mi://background/' + media.filename : null, media ? media.type : null, opacityPercent);
+    }
+
+    function renderNewTabBg(src, type, opacityPercent) {
       var container = document.getElementById('newtab-bg-media');
       var opacity = (opacityPercent != null ? opacityPercent : 15) / 100;
 
-      if (!media || !media.filename) {
+      if (!src) {
         container.innerHTML = '';
-        currentBgFilename = null;
+        currentBgSrc = null;
         return;
       }
 
-      if (media.filename === currentBgFilename) {
+      if (src === currentBgSrc) {
         var existing = container.firstElementChild;
         if (existing) existing.style.opacity = opacity;
         return;
       }
 
-      currentBgFilename = media.filename;
+      currentBgSrc = src;
       container.innerHTML = '';
-      var src = 'mi://background/' + media.filename;
       var el;
-      if (media.type === 'video') {
+      if (type === 'video') {
         el = document.createElement('video');
         el.autoplay = true;
         el.loop = true;
@@ -906,7 +999,12 @@
       window.electron.store.get('search-engine').then(function(engine) {
         searchEngine = engine || 'google';
       });
-      window.electron.store.get('customization').then(applyNewTabCustomization);
+      window.electron.store.get('customization').then(function(c) {
+        applyNewTabCustomization(c);
+        if (c && c.partnerTheme && window.electron.partnerThemes) {
+          window.electron.partnerThemes.refreshApplied();
+        }
+      });
       window.electron.store.onChange(function(key, value) {
         if (key === 'theme') document.body.className = 'theme-' + value;
         if (key === 'search-engine') searchEngine = value;

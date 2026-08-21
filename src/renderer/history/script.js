@@ -4,10 +4,15 @@ let entries = [];
 async function loadTheme() {
   const theme = await window.electron.store.get('theme');
   document.body.className = `m-0 p-0 min-h-screen theme-${theme || 'light'}`;
+  applyPartnerThemeVars((await window.electron.store.get('customization')) || {});
 }
 
 window.electron.store.onChange((key, value) => {
-  if (key === 'theme') document.body.className = `m-0 p-0 min-h-screen theme-${value}`;
+  if (key === 'theme') {
+    document.body.className = `m-0 p-0 min-h-screen theme-${value}`;
+    window.electron.store.get('customization').then((c) => applyPartnerThemeVars(c || {}));
+  }
+  if (key === 'customization') applyPartnerThemeVars(value || {});
 });
 
 async function loadEntries() {

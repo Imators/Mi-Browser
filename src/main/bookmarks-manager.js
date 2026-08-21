@@ -34,7 +34,7 @@ function add(entry) {
   const bookmarks = storage.get('bookmarks') || [];
   if (bookmarks.some((b) => b.url === entry.url)) return false;
 
-  bookmarks.unshift({ url: entry.url, title: entry.title || entry.url, timestamp: Date.now() });
+  bookmarks.unshift({ url: entry.url, title: entry.title || entry.url, favicon: entry.favicon || null, timestamp: Date.now() });
   storage.set('bookmarks', bookmarks);
   return true;
 }

@@ -43,6 +43,11 @@ async function loadState() {
   document.getElementById('spellcheck-toggle').checked = (await window.electron.store.get('spellcheckEnabled')) !== false;
 
   const custom = (await window.electron.store.get('customization')) || {};
+  applyPartnerThemeVars(custom);
+
+  const newTabBlockPosition = custom.newTabBlockPosition || 'middle';
+  document.querySelector(`input[name="newtab-block-position"][value="${newTabBlockPosition}"]`).checked = true;
+  document.getElementById('newtab-position-preview').dataset.position = newTabBlockPosition;
   document.getElementById('homepage-input').value = custom.homepage || '';
   document.getElementById('accent-color-input').value = custom.accentColor || '#3b82f6';
   const zoomPercent = Math.round((custom.uiZoom || 1) * 100);
@@ -62,6 +67,8 @@ async function loadState() {
   document.getElementById('new-tab-destination-select').value = custom.newTabDestination || 'newtab';
   document.getElementById('new-tab-destination-url-input').value = custom.newTabDestinationUrl || '';
   document.getElementById('new-tab-destination-url-input').classList.toggle('hidden', (custom.newTabDestination || 'newtab') !== 'custom');
+
+  document.getElementById('tab-bar-style-select').value = custom.tabBarStyle || 'top';
 
   populateAirTabKeyOptions();
   document.getElementById('air-tab-key-select').value = custom.airTabKey || 'Control';
@@ -426,6 +433,17 @@ importConfirmBtn.addEventListener('click', async () => {
   loadPasswords();
 });
 
+document.getElementById('export-logs-btn').addEventListener('click', async () => {
+  const statusEl = document.getElementById('export-logs-status');
+  statusEl.textContent = 'Exporting…';
+  const result = await window.electron.app.exportLogs();
+  if (!result) {
+    statusEl.textContent = '';
+    return;
+  }
+  statusEl.textContent = result.success ? `Saved to ${result.path}` : '';
+});
+
 const resetOverlay = document.getElementById('reset-confirm-overlay');
 
 document.getElementById('reset-btn').addEventListener('click', () => {
@@ -620,6 +638,18 @@ function populateAirTabKeyOptions() {
   });
 }
 
+document.getElementById('tab-bar-style-select').addEventListener('change', (e) => {
+  saveCustomization({ tabBarStyle: e.target.value });
+});
+
+document.querySelectorAll('input[name="newtab-block-position"]').forEach((radio) => {
+  radio.addEventListener('change', (e) => {
+    if (!e.target.checked) return;
+    document.getElementById('newtab-position-preview').dataset.position = e.target.value;
+    saveCustomization({ newTabBlockPosition: e.target.value });
+  });
+});
+
 document.getElementById('air-tab-key-select').addEventListener('change', (e) => {
   saveCustomization({ airTabKey: e.target.value });
 });
@@ -766,4 +796,176 @@ if (window.electron.updates.onStatusChanged) {
   window.electron.updates.onStatusChanged(renderUpdateStatus);
 }
 
+function addPasskeyDiagRow(label, ok, detail) {
+  const row = document.createElement('div');
+  row.className = 'flex items-center justify-between gap-3';
+  row.innerHTML = `<span class="opacity-75"></span><span class="font-semibold"></span>`;
+  row.children[0].textContent = label;
+  row.children[1].textContent = detail || (ok ? 'Yes' : 'No');
+  row.children[1].style.color = ok ? '#16a34a' : '#dc2626';
+  document.getElementById('passkey-diag-results').appendChild(row);
+}
+
+document.getElementById('passkey-diag-run-btn').addEventListener('click', async () => {
+  const results = document.getElementById('passkey-diag-results');
+  results.innerHTML = '';
+  const btn = document.getElementById('passkey-diag-run-btn');
+  btn.disabled = true;
+
+  const hasApi = typeof PublicKeyCredential !== 'undefined';
+  addPasskeyDiagRow('WebAuthn API present', hasApi);
+
+  if (hasApi) {
+    try {
+      const available = await PublicKeyCredential.isUserVerifyingPlatformAuthenticatorAvailable();
+      addPasskeyDiagRow('Touch ID / platform authenticator detected', available);
+      if (!available) {
+        addPasskeyDiagRow(
+          'Note',
+          false,
+          'macOS is not reporting Touch ID as available to Mi Browser. Sites will not offer a passkey option at all until this says Yes.'
+        );
+      }
+    } catch (err) {
+      addPasskeyDiagRow('Touch ID / platform authenticator detected', false, 'Error: ' + err.message);
+    }
+  }
+
+  btn.disabled = false;
+});
+
+let currentPartnerThemeDetail = null;
+let selectedPartnerVariationSlug = null;
+
+async function loadPartnerThemes() {
+  const statusEl = document.getElementById('partner-themes-status');
+  const grid = document.getElementById('partner-themes-grid');
+  statusEl.textContent = 'Loading…';
+
+  const themes = await window.electron.partnerThemes.list();
+  statusEl.textContent = themes.length === 0 ? "Couldn't reach the partner themes service right now." : '';
+  grid.innerHTML = '';
+
+  themes.forEach((theme) => {
+    const label = document.createElement('div');
+    label.className = 'theme-option card partner-theme-tile rounded-lg border-2 shadow-sm hover:shadow-md transition';
+    label.innerHTML = `
+      <div class="partner-theme-tile-logo-box"><img src="${theme.logoMiUrl}" alt="${theme.name}"></div>
+      <p class="font-semibold text-center text-sm">${theme.name}</p>
+    `;
+    label.addEventListener('click', () => openPartnerThemeDetail(theme.slug));
+    grid.appendChild(label);
+  });
+}
+
+async function openPartnerThemeDetail(slug) {
+  const overlay = document.getElementById('partner-theme-detail-overlay');
+  overlay.classList.remove('hidden');
+  document.getElementById('partner-theme-detail-name').textContent = 'Loading…';
+  document.getElementById('partner-theme-detail-tagline').textContent = '';
+  document.getElementById('partner-theme-detail-description').textContent = '';
+  document.getElementById('partner-theme-detail-variations').innerHTML = '';
+
+  ['a', 'b'].forEach((layer) => {
+    const el = document.getElementById(`partner-theme-detail-wallpaper-layer-${layer}`);
+    el.classList.remove('active');
+    el.style.backgroundImage = '';
+  });
+  activePartnerWallpaperLayer = 'a';
+
+  const theme = await window.electron.partnerThemes.detail(slug);
+  if (!theme) {
+    document.getElementById('partner-theme-detail-name').textContent = 'Could not load this theme';
+    document.getElementById('partner-theme-detail-description').textContent = 'Check your connection and try again.';
+    return;
+  }
+
+  currentPartnerThemeDetail = theme;
+  selectedPartnerVariationSlug = (theme.variations && theme.variations[0] && theme.variations[0].slug) || null;
+
+  document.getElementById('partner-theme-detail-logo').src = theme.logoMiUrl;
+  document.getElementById('partner-theme-detail-name').textContent = theme.name;
+  document.getElementById('partner-theme-detail-tagline').textContent = theme.tagline || '';
+  document.getElementById('partner-theme-detail-description').textContent = theme.description || '';
+
+  const custom = (await window.electron.store.get('customization')) || {};
+  document.getElementById('partner-theme-detail-remove-btn').classList.toggle('hidden', !(custom.partnerTheme && custom.partnerTheme.slug === theme.slug));
+
+  renderPartnerVariations(theme);
+  updatePartnerThemeDetailPreview(theme);
+}
+
+function renderPartnerVariations(theme) {
+  const container = document.getElementById('partner-theme-detail-variations');
+  container.innerHTML = '';
+  (theme.variations || []).forEach((variation) => {
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'partner-theme-variation-swatch' + (variation.slug === selectedPartnerVariationSlug ? ' selected' : '');
+    btn.innerHTML = `<span class="partner-theme-variation-dot" style="background:${variation.bg_color || '#888'}"></span>${variation.name}`;
+    btn.addEventListener('click', () => {
+      selectedPartnerVariationSlug = variation.slug;
+      renderPartnerVariations(theme);
+      updatePartnerThemeDetailPreview(theme);
+    });
+    container.appendChild(btn);
+  });
+}
+
+let activePartnerWallpaperLayer = 'a';
+
+function updatePartnerThemeDetailPreview(theme) {
+  const variation = (theme.variations || []).find((v) => v.slug === selectedPartnerVariationSlug) || (theme.variations || [])[0];
+  if (!variation) return;
+
+  const activeEl = document.getElementById(`partner-theme-detail-wallpaper-layer-${activePartnerWallpaperLayer}`);
+  const nextLayer = activePartnerWallpaperLayer === 'a' ? 'b' : 'a';
+  const nextEl = document.getElementById(`partner-theme-detail-wallpaper-layer-${nextLayer}`);
+
+  nextEl.style.backgroundImage = `url("${variation.wallpaperMiUrl}")`;
+  // Force layout so the browser registers the new background before we
+  // animate opacity in, otherwise the crossfade can jump instead of fading.
+  void nextEl.offsetWidth;
+  nextEl.classList.add('active');
+  activeEl.classList.remove('active');
+  activePartnerWallpaperLayer = nextLayer;
+}
+
+document.getElementById('partner-theme-detail-close-btn').addEventListener('click', () => {
+  document.getElementById('partner-theme-detail-overlay').classList.add('hidden');
+});
+
+document.getElementById('partner-theme-detail-apply-btn').addEventListener('click', async () => {
+  if (!currentPartnerThemeDetail) return;
+  const variation = (currentPartnerThemeDetail.variations || []).find((v) => v.slug === selectedPartnerVariationSlug) || (currentPartnerThemeDetail.variations || [])[0];
+  if (!variation) return;
+
+  await saveCustomization({
+    partnerTheme: {
+      slug: currentPartnerThemeDetail.slug,
+      variationSlug: variation.slug,
+      name: currentPartnerThemeDetail.name,
+      wallpaperMiUrl: variation.wallpaperMiUrl,
+      logoMiUrl: currentPartnerThemeDetail.logoMiUrl,
+      accentColor: currentPartnerThemeDetail.accent_color || '#3b82f6',
+      bgColor: variation.bg_color,
+      textColor: variation.text_color,
+      surfaceColor: variation.surface_color,
+      borderColor: variation.border_color
+    }
+  });
+
+  document.getElementById('partner-theme-detail-overlay').classList.add('hidden');
+});
+
+document.getElementById('partner-theme-detail-remove-btn').addEventListener('click', async () => {
+  await saveCustomization({ partnerTheme: null });
+  document.getElementById('partner-theme-detail-overlay').classList.add('hidden');
+});
+
+window.electron.store.onChange((key, value) => {
+  if (key === 'customization') applyPartnerThemeVars(value || {});
+});
+
 loadState();
+loadPartnerThemes();

@@ -748,3 +748,32 @@ input[type="checkbox"].w-5:checked::after {
   transform: translateX(18px);
   background: var(--accent-text, #ffffff);
 }
+
+/* Partner theme override for Settings/History/Downloads — colours come from
+   --pt-* custom properties set by each page's script from the applied
+   theme's DB data. Appended last on purpose: same specificity as the
+   body.theme-X blocks above, later wins. */
+body.partner-theme-active {
+  background: var(--pt-bg);
+  color: var(--pt-text);
+}
+
+body.partner-theme-active .drag-bar { background: var(--pt-bg); }
+body.partner-theme-active .primary-btn { background-color: var(--pt-accent); color: var(--pt-accent-text); }
+body.partner-theme-active .primary-btn:hover { background-color: var(--pt-surface-hover); }
+body.partner-theme-active .card { background-color: var(--pt-surface); border-color: var(--pt-border); }
+body.partner-theme-active .error-code-chip { background-color: var(--pt-surface); }
+body.partner-theme-active .danger-btn { background-color: var(--pt-surface); color: #f87171; border-color: #f87171; }
+body.partner-theme-active .danger-btn:hover { background-color: var(--pt-surface-hover); }
+body.partner-theme-active .settings-nav-link { color: var(--pt-text); }
+body.partner-theme-active .settings-nav-link:hover { background-color: var(--pt-surface-hover); }
+body.partner-theme-active .settings-select { background-color: var(--pt-surface); color: var(--pt-text); border-color: var(--pt-border); }
+body.partner-theme-active .shortcut-key { background-color: var(--pt-surface); color: var(--pt-text); }
+body.partner-theme-active .shortcut-row + .shortcut-row { border-top: 1px solid var(--pt-border); }
+body.partner-theme-active .history-view-tab { background-color: var(--pt-surface); border-color: var(--pt-border); color: var(--pt-text); }
+body.partner-theme-active .history-view-tab.active { background-color: var(--pt-accent); border-color: var(--pt-accent); color: var(--pt-accent-text); }
+body.partner-theme-active .history-search { background-color: var(--pt-surface); border-color: var(--pt-border); color: var(--pt-text); }
+body.partner-theme-active .history-entry,
+body.partner-theme-active .password-row,
+body.partner-theme-active .stat-card { background-color: var(--pt-surface); border-color: var(--pt-border); }
+body.partner-theme-active .history-entry:hover { background-color: var(--pt-surface-hover); border-color: var(--pt-accent); }

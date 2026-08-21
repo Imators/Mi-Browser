@@ -140,11 +140,11 @@
 
         <div id="bookmarks-bar" class="bookmarks-bar h-9 flex items-center gap-1 px-2 overflow-x-auto border-b border-opacity-20 hidden"></div>
 
-        <div id="tabs-container" class="tabs-bar h-10 flex items-center gap-1 px-2 overflow-x-auto border-b border-opacity-20">
-      <button id="new-tab-btn" class="px-3 h-8 rounded-t text-sm font-semibold hover:opacity-75 transition">+</button>
     </div>
-
-    </div>
+        <div id="content-row" class="flex-1 flex flex-col overflow-hidden">
+      <div id="tabs-container" class="tabs-bar h-10 flex items-center gap-1 px-2 overflow-x-auto border-b border-opacity-20">
+        <button id="new-tab-btn" class="px-3 h-8 rounded-t text-sm font-semibold hover:opacity-75 transition">+</button>
+      </div>
         <div id="update-installing-overlay" class="update-installing-overlay hidden">
       <div class="update-installing-spinner"></div>
       <p class="update-installing-text">Installing the update…</p>
@@ -184,7 +184,19 @@
         </button>
       </div>
     </div>
+    </div>
 
+  </div>
+
+  <div id="quit-confirm-overlay" class="quit-confirm-overlay hidden">
+    <div class="quit-confirm-box">
+      <p class="quit-confirm-title">Quit Mi Browser?</p>
+      <p class="quit-confirm-text">Your open tabs will be saved and reopened next time.</p>
+      <div class="quit-confirm-actions">
+        <button id="quit-confirm-cancel-btn" type="button" class="quit-confirm-cancel-btn">Cancel</button>
+        <button id="quit-confirm-ok-btn" type="button" class="quit-confirm-ok-btn">Quit</button>
+      </div>
+    </div>
   </div>
 
   <script src="script.js"></script>

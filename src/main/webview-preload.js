@@ -11,7 +11,13 @@ if (location.protocol === 'mi:') {
       reset: () => ipcRenderer.invoke('app-reset'),
       restart: () => ipcRenderer.invoke('app-restart'),
       clearBrowsingData: () => ipcRenderer.invoke('clear-browsing-data'),
-      openPrivateTab: () => ipcRenderer.invoke('open-private-tab')
+      openPrivateTab: () => ipcRenderer.invoke('open-private-tab'),
+      exportLogs: () => ipcRenderer.invoke('export-logs')
+    },
+    partnerThemes: {
+      list: () => ipcRenderer.invoke('partner-themes-list'),
+      detail: (slug) => ipcRenderer.invoke('partner-themes-detail', slug),
+      refreshApplied: () => ipcRenderer.invoke('partner-themes-refresh-applied')
     },
     defaultBrowser: {
       getStatus: () => ipcRenderer.invoke('default-browser-status'),

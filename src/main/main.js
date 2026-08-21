@@ -85,9 +85,25 @@ const MI_PAGES = {
 };
 
 const NEWTAB_BG_DIR = path.join(app.getPath('userData'), 'newtab-background');
+const PARTNER_THEMES_DIR = path.join(app.getPath('userData'), 'partner-themes');
+
+// Chromium's own file:// mime sniffing doesn't always land on the right
+// type for every extension (webp in particular), so pin the ones we serve
+// through mi:// explicitly rather than trust the guess.
+const MI_MIME_TYPES = {
+  '.webp': 'image/webp',
+  '.png': 'image/png',
+  '.jpg': 'image/jpeg',
+  '.jpeg': 'image/jpeg',
+  '.gif': 'image/gif',
+  '.svg': 'image/svg+xml',
+  '.ico': 'image/x-icon',
+  '.avif': 'image/avif',
+  '.mp4': 'video/mp4'
+};
 
 function registerMiProtocol(targetSession) {
-  targetSession.protocol.handle('mi', (request) => {
+  targetSession.protocol.handle('mi', async (request) => {
     const url = new URL(request.url);
     const host = url.hostname;
     const subPath = decodeURIComponent(url.pathname).replace(/^\/+/, '');
@@ -96,12 +112,20 @@ function registerMiProtocol(targetSession) {
       ? path.join(SRC_DIR, subPath)
       : host === 'background'
         ? path.join(NEWTAB_BG_DIR, subPath)
-        : (() => {
-          const pageFile = MI_PAGES[host] || MI_PAGES[404];
-          return subPath ? path.join(path.dirname(pageFile), subPath) : pageFile;
-        })();
+        : host === 'partner-theme'
+          ? path.join(PARTNER_THEMES_DIR, subPath)
+          : (() => {
+            const pageFile = MI_PAGES[host] || MI_PAGES[404];
+            return subPath ? path.join(path.dirname(pageFile), subPath) : pageFile;
+          })();
 
-    return net.fetch(`file://${filePath}`);
+    const response = await net.fetch(`file://${filePath}`);
+    const mime = MI_MIME_TYPES[path.extname(filePath).toLowerCase()];
+    if (mime && response.ok && response.headers.get('content-type') !== mime) {
+      const buffer = await response.arrayBuffer();
+      return new Response(buffer, { status: response.status, headers: { 'Content-Type': mime } });
+    }
+    return response;
   });
 }
 
@@ -144,6 +168,17 @@ app.on('ready', () => {
   mainWindow = windowManager.createMainWindow();
   securityManager.setupWebRtcProtection(mainWindow.webContents);
   ipcHandlers.register(mainWindow);
+
+  let quittingConfirmed = false;
+  mainWindow.on('close', (event) => {
+    if (quittingConfirmed) return;
+    event.preventDefault();
+    mainWindow.webContents.send('request-app-quit');
+  });
+  ipcMain.on('quit-confirmed', () => {
+    quittingConfirmed = true;
+    if (mainWindow && !mainWindow.isDestroyed()) mainWindow.close();
+  });
   cookieManager.start();
   permissionManager.setup(mainWindow);
   permissionManager.setup(mainWindow, privateSession);

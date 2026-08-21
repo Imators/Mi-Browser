@@ -23,7 +23,10 @@ contextBridge.exposeInMainWorld('electron', {
   },
   app: {
     reset: () => ipcRenderer.invoke('app-reset'),
+    exportLogs: () => ipcRenderer.invoke('export-logs'),
     openInOtherBrowser: (url) => ipcRenderer.invoke('open-in-other-browser', url),
+    onRequestQuit: (callback) => ipcRenderer.on('request-app-quit', () => callback()),
+    quitConfirmed: () => ipcRenderer.send('quit-confirmed'),
     onOpenPrivateTab: (callback) => ipcRenderer.on('open-private-tab', () => callback()),
     onOpenExternalUrl: (callback) => ipcRenderer.on('open-external-url', (event, url) => callback(url)),
     onGuestNewWindow: (callback) => ipcRenderer.on('guest-new-window', (event, webContentsId, url) => callback(webContentsId, url)),
@@ -88,5 +91,10 @@ contextBridge.exposeInMainWorld('electron', {
   },
   search: {
     googleSuggest: (query) => ipcRenderer.invoke('search-suggest-google', query)
+  },
+  partnerThemes: {
+    list: () => ipcRenderer.invoke('partner-themes-list'),
+    detail: (slug) => ipcRenderer.invoke('partner-themes-detail', slug),
+    refreshApplied: () => ipcRenderer.invoke('partner-themes-refresh-applied')
   }
 });

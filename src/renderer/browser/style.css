@@ -222,6 +222,14 @@ body {
   animation: tab-spin 0.7s linear infinite;
 }
 
+.tab-favicon {
+  flex-shrink: 0;
+  width: 14px;
+  height: 14px;
+  border-radius: 3px;
+  object-fit: contain;
+}
+
 @keyframes tab-spin {
   to { transform: rotate(360deg); }
 }
@@ -2661,6 +2669,40 @@ body.compact-tabs .tab {
   gap: 5px;
 }
 
+body.tab-bar-sidebar #content-row {
+  flex-direction: row;
+}
+
+body.tab-bar-sidebar #tabs-container {
+  flex-direction: column;
+  align-items: stretch;
+  width: 190px;
+  height: auto;
+  padding: 8px;
+  gap: 3px;
+  overflow-y: auto;
+  overflow-x: hidden;
+  border-bottom: none;
+  border-right-width: 1px;
+  border-right-style: solid;
+}
+
+body.tab-bar-sidebar .tab {
+  width: 100%;
+  max-width: none;
+  height: 34px;
+  border-radius: 8px;
+}
+
+body.tab-bar-sidebar #new-tab-btn {
+  width: 100%;
+  border-radius: 8px;
+}
+
+body.tab-bar-sidebar.compact-tabs .tab {
+  max-width: none;
+}
+
 body.always-show-tab-close .tab-close {
   opacity: 1;
 }
@@ -3114,4 +3156,165 @@ body.reduce-motion * {
 body.toolbar-icon-size-compact .toolbar-icon-btn {
   width: 26px;
   height: 26px;
+}
+
+.quit-confirm-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(10, 10, 10, 0.55);
+  z-index: 400;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.quit-confirm-overlay.hidden {
+  display: none;
+}
+
+.quit-confirm-box {
+  background: var(--surface, #fff);
+  color: var(--text, #0a0a0a);
+  border-radius: 14px;
+  border: 1px solid var(--border, rgba(0, 0, 0, 0.12));
+  padding: 22px 24px;
+  width: 320px;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.35);
+}
+
+.quit-confirm-title {
+  font-size: 15px;
+  font-weight: 700;
+  margin-bottom: 6px;
+}
+
+.quit-confirm-text {
+  font-size: 13px;
+  opacity: 0.75;
+  margin-bottom: 18px;
+}
+
+.quit-confirm-actions {
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+}
+
+.quit-confirm-cancel-btn,
+.quit-confirm-ok-btn {
+  padding: 8px 16px;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  border: 1px solid var(--border, rgba(0, 0, 0, 0.15));
+  background: transparent;
+  color: inherit;
+}
+
+.quit-confirm-ok-btn {
+  background: #dc2626;
+  border-color: #dc2626;
+  color: #fff;
+}
+
+.quit-confirm-cancel-btn:hover {
+  opacity: 0.8;
+}
+
+.quit-confirm-ok-btn:hover {
+  background: #b91c1c;
+}
+
+/* Partner theme chrome override — colours come from --pt-* custom
+   properties set in script.js from the applied theme's DB data, so this
+   block has to win over whichever body.theme-X block is also present.
+   It's appended last on purpose: same specificity, later wins. */
+body.partner-theme-active {
+  background: var(--pt-bg);
+  color: var(--pt-text);
+}
+
+body.partner-theme-active .drag-bar {
+  background: var(--pt-bg);
+}
+
+body.partner-theme-active .window-btn {
+  color: var(--pt-text);
+}
+
+body.partner-theme-active .window-btn:not(.window-btn-close):hover {
+  background-color: var(--pt-surface-hover);
+}
+
+body.partner-theme-active .toolbar {
+  background: var(--pt-bg);
+  border-color: var(--pt-border);
+}
+
+body.partner-theme-active .toolbar button {
+  color: var(--pt-text);
+}
+
+body.partner-theme-active .toolbar-icon-btn:hover {
+  background-color: var(--pt-surface-hover);
+}
+
+body.partner-theme-active .site-menu-popover {
+  background-color: var(--pt-surface);
+  border-color: var(--pt-border-strong);
+  color: var(--pt-text);
+}
+
+body.partner-theme-active .address-suggestions {
+  background-color: var(--pt-surface);
+  border-color: var(--pt-border-strong);
+  color: var(--pt-text);
+}
+
+body.partner-theme-active .address-suggestion-row:hover {
+  background-color: var(--pt-surface-hover);
+}
+
+body.partner-theme-active .bookmarks-bar {
+  background: var(--pt-bg);
+  border-color: var(--pt-border);
+}
+
+body.partner-theme-active .bookmark-chip {
+  background-color: var(--pt-surface);
+  color: var(--pt-text);
+}
+
+body.partner-theme-active .bookmark-chip:hover {
+  background-color: var(--pt-surface-hover);
+}
+
+body.partner-theme-active #address-bar {
+  background-color: var(--pt-surface);
+  color: var(--pt-text);
+  border: 1px solid var(--pt-border-strong);
+}
+
+body.partner-theme-active #address-bar::placeholder {
+  color: var(--pt-text);
+  opacity: 0.6;
+}
+
+body.partner-theme-active .tabs-bar {
+  background: var(--pt-bg);
+  border-color: var(--pt-border);
+}
+
+body.partner-theme-active .tab {
+  background: var(--pt-surface);
+  color: var(--pt-text);
+}
+
+body.partner-theme-active .tab:hover {
+  background: var(--pt-surface-hover);
+}
+
+body.partner-theme-active .tab.active {
+  background: var(--pt-bg);
 }

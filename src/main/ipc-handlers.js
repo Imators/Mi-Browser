@@ -12,6 +12,7 @@ const nativeIntegration = require('./native-integration');
 const securityManager = require('./security-manager');
 const updateManager = require('./update-manager');
 const getOutManager = require('./get-out-manager');
+const partnerThemesManager = require('./partner-themes-manager');
 
 function register(mainWindow) {
   ipcMain.handle('store-get', (event, key) => {
@@ -206,9 +207,85 @@ function register(mainWindow) {
     storage.set('security', { ...current, ...patch });
   });
 
+  ipcMain.handle('partner-themes-list', () => partnerThemesManager.list());
+  ipcMain.handle('partner-themes-detail', (event, slug) => partnerThemesManager.detail(slug));
+
+  ipcMain.handle('partner-themes-refresh-applied', async () => {
+    const customization = storage.get('customization') || {};
+    if (!customization.partnerTheme) return null;
+
+    const refreshed = await partnerThemesManager.refreshApplied(customization.partnerTheme);
+    if (!refreshed) return customization.partnerTheme;
+
+    if (JSON.stringify(refreshed) !== JSON.stringify(customization.partnerTheme)) {
+      const updated = { ...customization, partnerTheme: refreshed };
+      storage.set('customization', updated);
+      webContents.getAllWebContents().forEach((wc) => {
+        if (!wc.isDestroyed()) wc.send('store-changed', 'customization', updated);
+      });
+    }
+
+    return refreshed;
+  });
+
   ipcMain.handle('app-restart', () => {
     app.relaunch();
     app.exit();
+  });
+
+  ipcMain.handle('export-logs', async (event) => {
+    const win = BrowserWindow.fromWebContents(event.sender);
+    const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
+    const { canceled, filePath } = await dialog.showSaveDialog(win, {
+      title: 'Export Mi Browser diagnostics',
+      defaultPath: `mi-browser-diagnostics-${timestamp}.json`,
+      filters: [{ name: 'JSON', extensions: ['json'] }]
+    });
+    if (canceled || !filePath) return { success: false };
+
+    const os = require('os');
+    const bookmarks = storage.get('bookmarks') || [];
+    const history = storage.get('history') || [];
+    const downloads = storage.get('downloads') || [];
+    const passwords = storage.get('passwords') || [];
+
+    const snapshot = {
+      exportedAt: new Date().toISOString(),
+      app: {
+        version: app.getVersion(),
+        packaged: app.isPackaged
+      },
+      versions: process.versions,
+      platform: {
+        os: process.platform,
+        arch: process.arch,
+        release: os.release()
+      },
+      settings: {
+        customization: storage.get('customization') || {},
+        security: storage.get('security') || {},
+        features: storage.get('features') || {},
+        launchAtLogin: storage.get('launchAtLogin') || false,
+        downloadsFolder: storage.get('downloadsFolder') || null,
+        setupComplete: storage.get('setup-complete') || false
+      },
+      getOutSystems: {
+        enabled: getOutManager.isGloballyEnabled(),
+        categories: getOutManager.getEnabledCategories(),
+        stats: getOutManager.getStats(),
+        blocklistSize: getOutManager.getBlocklistSize(),
+        exceptionsCount: getOutManager.getExceptions().length
+      },
+      dataCounts: {
+        bookmarks: bookmarks.length,
+        historyEntries: history.length,
+        downloads: downloads.length,
+        savedPasswords: passwords.length
+      }
+    };
+
+    fs.writeFileSync(filePath, JSON.stringify(snapshot, null, 2));
+    return { success: true, path: filePath };
   });
 
   ipcMain.handle('update-check', () => updateManager.checkForUpdate());
